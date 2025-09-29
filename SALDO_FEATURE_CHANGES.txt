@@ -1,0 +1,45 @@
+# Summary of Saldo Calculation Feature Implementation
+
+## Changes Made
+
+### 1. Form Component Updates (centro-custo-form.component.ts)
+- Added default values for `saldoCredito: 0` and `saldoDespesa: 0` in initialization
+- Added a computed property `saldo` that calculates `saldoCredito - saldoDespesa` in real-time
+- Added validation for both saldo fields to ensure they are not negative
+
+### 2. Form Template Updates (centro-custo-form.component.html)
+- Added input fields for `saldoCredito` and `saldoDespesa` with proper number formatting
+- Added a read-only display field showing the calculated `saldo` that updates in real-time
+- Added proper labels and formatting for all financial fields
+
+### 3. List Component Updates (centro-custo.component.ts)
+- Added a method `getSaldo(centroCusto)` to calculate the frontend saldo for each centro custo
+- This method computes `saldoCredito - saldoDespesa` for display purposes
+
+### 4. List Template Updates (centro-custo.component.html)
+- Added both backend-calculated `saldoResultado` and frontend-calculated `saldo` as separate columns
+- Updated header to show "Saldo Resultado (Backend)" and "Saldo (Frontend)" for clarity
+- Updated the table body to display both values
+- Adjusted the colspan values to accommodate the new column
+
+### 5. Model Updates (centro-custo.model.ts)
+- Ensured all saldo fields (saldoCredito, saldoDespesa, saldoResultado) are properly typed
+
+### Key Features Added:
+- **Real-time Calculation**: The form now shows the calculated saldo (credito - despesa) that updates as the user types
+- **Dual Display**: The list view shows both the backend-calculated saldoResultado and the frontend-calculated saldo for comparison
+- **Input Validation**: Proper validation ensures saldo values are non-negative
+- **User-Friendly Labels**: Clear differentiation between backend-calculated and frontend-calculated values
+
+## Files Modified:
+1. src/app/pages/cadastros/centro-custo/centro-custo-form/centro-custo-form.component.ts
+2. src/app/pages/cadastros/centro-custo/centro-custo-form/centro-custo-form.component.html
+3. src/app/pages/cadastros/centro-custo/centro-custo.component.ts
+4. src/app/pages/cadastros/centro-custo/centro-custo.component.html
+5. src/app/pages/cadastros/centro-custo/centro-custo.model.ts (previously updated)
+
+## Functionality:
+- Users can now view and edit saldoCredito and saldoDespesa values in the form
+- The calculated saldo (credito - despesa) is displayed in real-time during form editing
+- The list view shows both backend-calculated and frontend-calculated saldo values for verification
+- All changes maintain compatibility with the existing backend API

@@ -1,0 +1,39 @@
+/* Estilos para o componente de formulário de centro de custo */
+.card {
+  box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03);
+  border: 1px solid var(--bs-border-color);
+}
+
+.card-title {
+  font-weight: 600;
+  color: #212529;
+}
+
+.form-control:disabled {
+  background-color: #e9ecef;
+  opacity: 1;
+}
+
+.btn i {
+  vertical-align: middle;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.alert-danger ul {
+  margin-bottom: 0;
+}
+
+.form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.spinner-border {
+  width: 1.5rem;
+  height: 1.5rem;
+}

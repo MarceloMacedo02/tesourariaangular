@@ -1,0 +1,70 @@
+/* Estilos para o componente de centro de custo */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box .ri-search-line {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd;
+}
+
+.search-box input {
+  padding-right: 35px;
+}
+
+.btn-soft-info {
+  background-color: rgba(33, 150, 243, 0.1);
+  border-color: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+}
+
+.btn-soft-info:hover {
+  background-color: rgba(33, 150, 243, 0.2);
+  border-color: rgba(33, 150, 243, 0.2);
+}
+
+.btn-soft-primary {
+  background-color: rgba(56, 135, 240, 0.1);
+  border-color: rgba(56, 135, 240, 0.1);
+  color: #3887f0;
+}
+
+.btn-soft-primary:hover {
+  background-color: rgba(56, 135, 240, 0.2);
+  border-color: rgba(56, 135, 240, 0.2);
+}
+
+.btn-soft-danger {
+  background-color: rgba(246, 84, 84, 0.1);
+  border-color: rgba(246, 84, 84, 0.1);
+  color: #f65454;
+}
+
+.btn-soft-danger:hover {
+  background-color: rgba(246, 84, 84, 0.2);
+  border-color: rgba(246, 84, 84, 0.2);
+}
+
+.list-inline-item:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
+.pagination-separated .page-link {
+  margin-left: 0.25rem;
+  border-radius: 0.375rem !important;
+}
+
+.table th {
+  font-weight: 600;
+}
+
+.text-center {
+  text-align: center !important;
+}
