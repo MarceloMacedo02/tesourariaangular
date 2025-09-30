@@ -50,6 +50,10 @@ export class TopbarComponent {
   newNotify: number = 0;
   readNotify: number = 0;
 
+  // User information
+  userName: string = 'Usuário';
+  userRole: string = 'Função';
+
   @Output() mobileMenuButtonClicked = new EventEmitter();
   @ViewChild('removeNotificationModal', { static: false }) removeNotificationModal?: ModalDirective;
   @ViewChild('removeCartModal', { static: false }) removeCartModal?: ModalDirective;
@@ -96,6 +100,13 @@ export class TopbarComponent {
         this.readNotify = element.items.length
       }
     });
+    
+    // Get current user information
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.userName = user.nome || user.username || user.email || 'Usuário';
+      this.userRole = user.role || 'Função';
+    }
   }
 
   /***
@@ -333,6 +344,18 @@ export class TopbarComponent {
     if (this.totalNotify == 0) {
       document.querySelector('.empty-notification-elem')?.classList.remove('d-none')
     }
+  }
+
+  // Logout functionality
+  logout(): void {
+    // Call the auth service to handle logout (clear tokens, etc.)
+    this.authService.logout();
+    
+    // Dispatch logout action to clear store state
+    this.store.dispatch(logout());
+    
+    // Navigate to login page
+    this.router.navigate(['/auth/signin']);
   }
 
 

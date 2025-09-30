@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -10,10 +10,16 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 // Animations
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// Locale
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+registerLocaleData(localePt);
+
 // Translation
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -25,6 +31,26 @@ import { AuthGuard } from './guards/auth.guard';
 // Required for AOT compilation
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+// App initializer function to set default language
+export function appInitializerFactory(translate: TranslateService) {
+  return () => {
+    // Set the default language to Portuguese (Brazil)
+    translate.setDefaultLang('br');
+    // Use Portuguese (Brazil) as the current language
+    translate.use('br').subscribe(
+      () => {},
+      (error) => {
+        console.error('Error setting language to Portuguese (Brazil):', error);
+        // Fallback to English if Portuguese is not available
+        translate.use('en').subscribe(
+          () => {},
+          (err) => console.error('Error setting language to English:', err)
+        );
+      }
+    );
+  };
 }
 
 @NgModule({
@@ -55,7 +81,13 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: AuthInterceptor, 
       multi: true 
     },
-    AuthGuard
+    AuthGuard,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFactory,
+      deps: [TranslateService],
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

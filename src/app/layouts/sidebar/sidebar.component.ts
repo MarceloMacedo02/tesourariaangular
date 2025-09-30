@@ -20,7 +20,7 @@ export class SidebarComponent {
   @Output() mobileMenuButtonClicked = new EventEmitter();
 
   constructor(private router: Router, public translate: TranslateService, private roleService: RoleService) {
-    translate.setDefaultLang('br');
+    // Language is set in app module APP_INITIALIZER
   }
 
   ngOnInit(): void {

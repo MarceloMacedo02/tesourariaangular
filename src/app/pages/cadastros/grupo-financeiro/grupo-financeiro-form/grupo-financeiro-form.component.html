@@ -1,15 +1,15 @@
 <!-- Start Breadcrumbs -->
-<app-breadcrumbs [title]="isEditing ? 'Editar Centro de Custo' : 'Novo Centro de Custo'" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs [title]="isEditing ? 'Editar Grupo Financeiro' : 'Novo Grupo Financeiro'" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-0">{{ isEditing ? 'Editar Centro de Custo' : 'Novo Centro de Custo' }}</h4>
+                <h4 class="card-title mb-0">{{ isEditing ? 'Editar Grupo Financeiro' : 'Novo Grupo Financeiro' }}</h4>
             </div>
             <div class="card-body">
-                <form (ngSubmit)="onSubmit()" #centroCustoForm="ngForm">
+                <form (ngSubmit)="onSubmit()" #grupoFinanceiroForm="ngForm">
                     <!-- Erros de validação -->
                     <div *ngIf="errors.length > 0" class="alert alert-danger">
                         <ul class="mb-0">
@@ -19,21 +19,21 @@
 
                     <div class="row g-3">
                         <div class="col-lg-12">
-                            <!-- Campo Nome do Centro de Custo -->
+                            <!-- Campo Nome do Grupo Financeiro -->
                             <div class="mb-3">
-                                <label for="nomeCentroCusto" class="form-label">
-                                    Nome do Centro de Custo *
+                                <label for="nomeGrupoFinanceiro" class="form-label">
+                                    Nome do Grupo Financeiro *
                                 </label>
                                 <input 
                                     type="text" 
                                     class="form-control" 
-                                    id="nomeCentroCusto"
-                                    name="nomeCentroCusto"
-                                    [(ngModel)]="centroCusto.nomeCentroCusto"
+                                    id="nomeGrupoFinanceiro"
+                                    name="nomeGrupoFinanceiro"
+                                    [(ngModel)]="grupoFinanceiro.nomeGrupoFinanceiro"
                                     [disabled]="loading"
                                     required
                                     maxlength="100"
-                                    placeholder="Informe o nome do centro de custo">
+                                    placeholder="Informe o nome do grupo financeiro">
                             </div>
 
                             <!-- Campo Descrição -->
@@ -45,60 +45,33 @@
                                     class="form-control" 
                                     id="descricao"
                                     name="descricao"
-                                    [(ngModel)]="centroCusto.descricao"
+                                    [(ngModel)]="grupoFinanceiro.descricao"
                                     [disabled]="loading"
                                     maxlength="255"
                                     rows="3"
-                                    placeholder="Descrição do centro de custo (opcional)">
+                                    placeholder="Descrição do grupo financeiro (opcional)">
                                 </textarea>
                             </div>
                         </div>
 
                         <div class="col-lg-6">
-                            <!-- Campo Saldo Crédito -->
+                            <!-- Campo Centro de Custo -->
                             <div class="mb-3">
-                                <label for="saldoCredito" class="form-label">
-                                    Saldo Crédito
+                                <label for="centroCustoId" class="form-label">
+                                    Centro de Custo *
                                 </label>
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="saldoCredito"
-                                    name="saldoCredito"
-                                    [(ngModel)]="centroCusto.saldoCredito"
+                                <select 
+                                    class="form-select" 
+                                    id="centroCustoId"
+                                    name="centroCustoId"
+                                    [(ngModel)]="grupoFinanceiro.centroCustoId"
                                     [disabled]="loading"
-                                    placeholder="R$ 0,00"
-                                    [currencyMask]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, nullable: true, precision: 2 }">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <!-- Campo Saldo Despesa -->
-                            <div class="mb-3">
-                                <label for="saldoDespesa" class="form-label">
-                                    Saldo Despesa
-                                </label>
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="saldoDespesa"
-                                    name="saldoDespesa"
-                                    [(ngModel)]="centroCusto.saldoDespesa"
-                                    [disabled]="loading"
-                                    placeholder="R$ 0,00"
-                                    [currencyMask]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, nullable: true, precision: 2 }">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <!-- Campo Saldo Calculado -->
-                            <div class="mb-3">
-                                <label class="form-label">
-                                    Saldo (Crédito - Despesa)
-                                </label>
-                                <div class="form-control-plaintext">
-                                    {{ saldo | currency:'BRL':'symbol':'1.2-2' }}
-                                </div>
+                                    required>
+                                    <option value="" disabled>Selecione um centro de custo</option>
+                                    <option *ngFor="let centroCusto of centrosCusto" [value]="centroCusto.id">
+                                        {{ centroCusto.nomeCentroCusto }}
+                                    </option>
+                                </select>
                             </div>
                         </div>
 
@@ -114,10 +87,10 @@
                                         class="form-check-input" 
                                         id="ativo"
                                         name="ativo"
-                                        [(ngModel)]="centroCusto.ativo"
+                                        [(ngModel)]="grupoFinanceiro.ativo"
                                         [disabled]="loading">
                                     <label class="form-check-label" for="ativo">
-                                        {{ centroCusto.ativo ? 'Ativo' : 'Inativo' }}
+                                        {{ grupoFinanceiro.ativo ? 'Ativo' : 'Inativo' }}
                                     </label>
                                 </div>
                             </div>
@@ -143,7 +116,7 @@
                         <button 
                             type="submit" 
                             class="btn btn-primary"
-                            [disabled]="loading || !centroCusto.nomeCentroCusto.trim()">
+                            [disabled]="loading || !grupoFinanceiro.nomeGrupoFinanceiro.trim()">
                             <i class="ri-save-line align-bottom me-1"></i> Salvar
                         </button>
                     </div>

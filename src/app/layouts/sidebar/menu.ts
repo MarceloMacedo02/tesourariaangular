@@ -41,7 +41,7 @@ export const MENU: MenuItem[] = [
         id: 14,
         label: 'MENUITEMS.CADASTROS.LIST.GRUPOFINANCEIRO',
         icon: 'ti ti-category',
-        link: '/cadastros/grupo-financeiro',
+        link: '/pages/cadastros/grupo-financeiro/lista',
         parentId: 12
     },
     {

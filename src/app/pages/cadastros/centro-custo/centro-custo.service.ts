@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CentroCusto, Page } from './centro-custo.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CentroCustoService {
-  private apiUrl = '/api/centros-custo';
+  // Use relative URL for development (to go through proxy) and absolute in production
+  private apiUrl = environment.production ? `${environment.apiBaseUrl}/api/centros-custo` : '/api/centros-custo';
 
   constructor(private http: HttpClient) { }
 

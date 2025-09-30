@@ -105,20 +105,7 @@ export class CentroCustoComponent implements OnInit {
     return pages;
   }
   
-  deleteCentroCusto(id: number): void {
-    if (confirm('Tem certeza que deseja excluir este centro de custo?')) {
-      this.centroCustoService.deleteCentroCusto(id).subscribe({
-        next: () => {
-          // Recarregar a lista após exclusão
-          this.loadCentrosCusto();
-        },
-        error: (error) => {
-          console.error('Erro ao excluir centro de custo:', error);
-          alert('Erro ao excluir centro de custo: ' + (error.error?.message || 'Erro desconhecido'));
-        }
-      });
-    }
-  }
+  
 
   // Calculated property: Saldo = creditos - saidas
   getSaldo(centroCusto: CentroCusto): number {

@@ -1,5 +1,5 @@
 <!-- Start Breadcrumbs -->
-<app-breadcrumbs title="Centro de Custo" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs title="Grupo Financeiro" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
 <div class="row">
@@ -7,9 +7,9 @@
     <div class="card">
       <div class="card-header">
         <div class="d-flex gap-2">
-          <h4 class="card-title mb-0 flex-grow-1">Centro de Custo</h4>
+          <h4 class="card-title mb-0 flex-grow-1">Grupo Financeiro</h4>
           <div class="flex-shrink-0">
-            <button type="button" class="btn btn-light" (click)="loadCentrosCusto()">
+            <button type="button" class="btn btn-light" (click)="loadGruposFinanceiros()">
               <i class="ri-refresh-line align-bottom"></i>
             </button>
           </div>
@@ -24,14 +24,14 @@
               <input 
                 type="text" 
                 class="form-control" 
-                placeholder="Filtrar centros de custo..." 
+                placeholder="Filtrar grupos financeiros..." 
                 [(ngModel)]="filtro"
                 (input)="onFiltroChange()"
               >
             </div>
           </div>
           <div class="col-xl-6 text-xl-end">
-            <a routerLink="/pages/cadastros/centro-custo/novo" class="btn btn-primary">
+            <a routerLink="/pages/cadastros/grupo-financeiro/novo" class="btn btn-primary">
               <i class="ri-add-line align-bottom me-1"></i> Adicionar
             </a>
           </div>
@@ -45,10 +45,7 @@
                 <th scope="col">ID</th>
                 <th scope="col">Nome</th>
                 <th scope="col">Descrição</th>
-                <th scope="col">Saldo Crédito</th>
-                <th scope="col">Saldo Despesa</th>
-                <th scope="col">Saldo Resultado (Backend)</th>
-                <th scope="col">Saldo (Frontend)</th>
+                <th scope="col">Centro de Custo</th>
                 <th scope="col">Status</th>
                 <th scope="col">Data Registro</th>
                 <th scope="col">Data Atualização</th>
@@ -56,25 +53,22 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let centroCusto of centrosCusto">
-                <td>{{ centroCusto.id }}</td>
-                <td>{{ centroCusto.nomeCentroCusto }}</td>
-                <td>{{ centroCusto.descricao || '-' }}</td>
-                <td>{{ centroCusto.saldoCredito | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
-                <td>{{ centroCusto.saldoDespesa | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
-                <td>{{ centroCusto.saldoResultado | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
-                <td>{{ getSaldo(centroCusto) | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
+              <tr *ngFor="let grupoFinanceiro of gruposFinanceiros">
+                <td>{{ grupoFinanceiro.id }}</td>
+                <td>{{ grupoFinanceiro.nomeGrupoFinanceiro }}</td>
+                <td>{{ grupoFinanceiro.descricao || '-' }}</td>
+                <td>{{ grupoFinanceiro.centroCustoId }}</td>
                 <td>
-                  <span class="badge" [ngClass]="getStatusBadgeClass(centroCusto.ativo!)">
-                    {{ getStatusText(centroCusto.ativo!) }}
+                  <span class="badge" [ngClass]="getStatusBadgeClass(grupoFinanceiro.ativo!)">
+                    {{ getStatusText(grupoFinanceiro.ativo!) }}
                   </span>
                 </td>
-                <td>{{ centroCusto.dataRegistro ? (centroCusto.dataRegistro | date:'short') : '-' }}</td>
-                <td>{{ centroCusto.dataAtualizacao ? (centroCusto.dataAtualizacao | date:'short') : '-' }}</td>
+                <td>{{ grupoFinanceiro.dataRegistro ? (grupoFinanceiro.dataRegistro | date:'short') : '-' }}</td>
+                <td>{{ grupoFinanceiro.dataAtualizacao ? (grupoFinanceiro.dataAtualizacao | date:'short') : '-' }}</td>
                 <td>
                   <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                      <a [routerLink]="['/pages/cadastros/centro-custo/editar', centroCusto.id]" class="btn btn-soft-primary btn-sm">
+                      <a [routerLink]="['/pages/cadastros/grupo-financeiro/editar', grupoFinanceiro.id]" class="btn btn-soft-primary btn-sm">
                         <i class="ri-pencil-fill align-bottom"></i>
                       </a>
                     </li>
@@ -82,7 +76,7 @@
                 </td>
               </tr>
               <tr *ngIf="loading">
-                <td colspan="11" class="text-center">
+                <td colspan="8" class="text-center">
                   <div class="d-flex justify-content-center">
                     <div class="spinner-border text-primary" role="status">
                       <span class="visually-hidden">Carregando...</span>
@@ -91,8 +85,8 @@
                 </td>
               </tr>
               <tr *ngIf="!loading && (!page.content || page.content.length === 0)">
-                <td colspan="11" class="text-center">
-                  Nenhum centro de custo encontrado.
+                <td colspan="8" class="text-center">
+                  Nenhum grupo financeiro encontrado.
                 </td>
               </tr>
             </tbody>

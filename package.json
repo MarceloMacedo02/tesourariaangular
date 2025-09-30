@@ -60,6 +60,7 @@
     "ngx-color-picker": "^16.0.0",
     "ngx-cookie-service": "^17.0.0",
     "ngx-countup": "^13.1.0",
+    "ngx-currency": "^19.0.0",
     "ngx-drag-drop": "^17.0.0",
     "ngx-dropzone-wrapper": "^16.0.0",
     "ngx-editor": "^16.0.1",

@@ -416,14 +416,14 @@
                     </button>
                     <div *dropdownMenu class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
-                        <h6 class="dropdown-header">Welcome Alexandra!</h6>
+                        <h6 class="dropdown-header">Welcome {{ userName }}!</h6>
                         <a class="dropdown-item fs-sm" routerLink="/pages/profile"><i class="bi bi-person-circle text-muted align-middle me-1"></i> <span class="align-middle"> Profile</span></a>
                         <a class="dropdown-item fs-sm" routerLink="/apps/calendar"><i class="bi bi-cart4 text-muted align-middle me-1"></i> <span class="align-middle"> Order Track</span></a>
                         <a class="dropdown-item fs-sm" routerLink="/apps/chat"><i class="bi bi-box-seam text-muted align-middle me-1"></i> <span class="align-middle"> Chat</span></a>
                         <a class="dropdown-item fs-sm" routerLink="/apps/to-do"><span class="badge bg-success-subtle text-success float-end ms-2">New</span><i class="bi bi-cassette text-muted align-middle me-1"></i> <span class="align-middle"> To Do</span></a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item fs-sm" routerLink="/pages/profile-settings"><i class="bi bi-gear text-muted align-middle me-1"></i> <span class="align-middle"> Settings</span></a>
-                        <a class="dropdown-item fs-sm" routerLink="/auth/logout"><i class="bi bi-box-arrow-right text-muted align-middle me-1"></i> <span class="align-middle" data-key="t-logout"> Logout</span></a>
+                        <a class="dropdown-item fs-sm" (click)="logout()" href="javascript:void(0);"><i class="bi bi-box-arrow-right text-muted align-middle me-1"></i> <span class="align-middle" data-key="t-logout"> Logout</span></a>
                     </div>
                 </div>
             </div>
