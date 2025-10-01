@@ -8,8 +8,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class CentroCustoService {
-  // Use relative URL for development (to go through proxy) and absolute in production
-  private apiUrl = environment.production ? `${environment.apiBaseUrl}/api/centros-custo` : '/api/centros-custo';
+  private apiUrl = `${environment.apiBaseUrl}/api/centros-custo`;
 
   constructor(private http: HttpClient) { }
 

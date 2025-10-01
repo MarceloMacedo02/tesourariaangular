@@ -1,40 +1,69 @@
 import { Injectable } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { Subject, Observable } from 'rxjs';
 
-interface Event {
-    type: string;
-    payload?: any;
+export interface EventData {
+  name: string;
+  data?: any;
 }
 
-type EventCallback = (payload: any) => void;
-
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class EventService {
+  private eventSubject = new Subject<EventData>();
 
-    private handler = new Subject<Event>();
-    constructor() { }
+  constructor() { }
 
-    /**
-     * Broadcast the event
-     * @param type type of event
-     * @param payload payload
-     */
-    broadcast(type: string, payload = {}) {
-        this.handler.next({ type, payload });
-    }
+  /**
+   * Emit an event
+   */
+  emit(event: EventData): void {
+    this.eventSubject.next(event);
+  }
 
-    /**
-     * Subscribe to event
-     * @param type type of event
-     * @param callback call back function
-     */
-    subscribe(type: string, callback: EventCallback): Subscription {
-        return this.handler.pipe(
-            filter(event => event.type === type)).pipe(
-                map(event => event.payload))
-            .subscribe(callback);
-    }
+  /**
+   * Listen to an event
+   */
+  on(eventName: string): Observable<EventData> {
+    return this.eventSubject.asObservable()
+      .pipe(
+        // Filter events by name
+        (source) => new Observable<EventData>(subscriber => {
+          const subscription = source.subscribe({
+            next: (eventData) => {
+              if (eventData.name === eventName) {
+                subscriber.next(eventData);
+              }
+            },
+            error: (err) => subscriber.error(err),
+            complete: () => subscriber.complete()
+          });
+          
+          return subscription;
+        })
+      );
+  }
+
+  /**
+   * Listen to multiple events
+   */
+  onAny(...eventNames: string[]): Observable<EventData> {
+    return this.eventSubject.asObservable()
+      .pipe(
+        // Filter events by any of the provided names
+        (source) => new Observable<EventData>(subscriber => {
+          const subscription = source.subscribe({
+            next: (eventData) => {
+              if (eventNames.includes(eventData.name)) {
+                subscriber.next(eventData);
+              }
+            },
+            error: (err) => subscriber.error(err),
+            complete: () => subscriber.complete()
+          });
+          
+          return subscription;
+        })
+      );
+  }
 }

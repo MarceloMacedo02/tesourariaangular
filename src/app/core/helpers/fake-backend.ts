@@ -18,8 +18,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
+        // Armazenar usuários localmente em memória em vez de usar localStorage
         // tslint:disable-next-line: max-line-length
-        const users: any[] = JSON.parse(localStorage.getItem('users')!) || [{ username: 'admin', email: 'admin@themesbrand.com', password: '123456' }];
+        const users: any[] = [{ username: 'admin', email: 'admin@themesbrand.com', password: '123456' }]; // Definindo usuário padrão
 
         // wrap in delayed observable to simulate server api call
         return of(null).pipe(mergeMap(() => {
@@ -93,7 +94,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 // save new user
                 newUser.id = users.length + 1;
                 users.push(newUser);
-                localStorage.setItem('users', JSON.stringify(users));
+                // Não salva no localStorage, mantendo em memória
 
                 // respond 200 OK
                 return of(new HttpResponse({ status: 200 }));
@@ -113,7 +114,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                         if (user.id === id) {
                             // delete user
                             users.splice(i, 1);
-                            localStorage.setItem('users', JSON.stringify(users));
+                            // Não salva no localStorage, mantendo em memória
                             break;
                         }
                     }

@@ -9,13 +9,15 @@ import { Observable } from 'rxjs';
 
 import { AuthenticationService } from '../services/auth.service';
 import { AuthfakeauthenticationService } from '../services/authfake.service';
+import { TokenStorageService } from '../services/token-storage.service';
 import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
     constructor(
         private authenticationService: AuthenticationService,
-        private authfackservice: AuthfakeauthenticationService
+        private authfackservice: AuthfakeauthenticationService,
+        private tokenStorageService: TokenStorageService
     ) { }
 
     intercept(
@@ -34,11 +36,12 @@ export class JwtInterceptor implements HttpInterceptor {
             }
         } else {
             // add authorization header with jwt token if available
-            const currentUser = this.authfackservice.currentUserValue;
-            if (currentUser && currentUser.token) {
+            // Use the centralized token storage service
+            const token = this.tokenStorageService.getAccessToken();
+            if (token) {
                 request = request.clone({
                     setHeaders: {
-                        Authorization: `Bearer ${currentUser.token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
             }

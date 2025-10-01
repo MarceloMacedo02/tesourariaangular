@@ -1,53 +1,74 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service'; // Updated import path
-import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('AuthInterceptor: Intercept method called for URL:', req.url);
-    // Add auth header if the user is logged in and the request is to our API
-    const token = this.authService.getAccessToken();
-    const isLoggedIn = this.authService.isAuthenticated();
-    
-    // Check if the request URL matches our API (both absolute and relative)
-    const isApiUrl = req.url.startsWith(environment.apiBaseUrl) || req.url.startsWith('/api/');
-    
-    console.log('AuthInterceptor: Token exists:', !!token);
-    console.log('AuthInterceptor: User is logged in:', isLoggedIn);
-    console.log('AuthInterceptor: Is API URL:', isApiUrl);
-    
-    if (isLoggedIn && isApiUrl && token) {
-      console.log('AuthInterceptor: Adding auth header to request');
-      req = req.clone({
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // Get the auth token from the service
+    const authToken = this.authService.getToken();
+
+    // Clone the request and add the authorization header if token exists
+    if (authToken) {
+      request = request.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${authToken}`
         }
       });
-    } else {
-      console.log('AuthInterceptor: Not adding auth header');
     }
 
-    return next.handle(req).pipe(
+    return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.log('AuthInterceptor: HTTP error caught:', error);
-        // If the error is a 401 or 403 (unauthorized/forbidden), logout the user
-        if (error.status === 401 || error.status === 403) {
-          console.log('AuthInterceptor: Unauthorized or forbidden error, clearing tokens and redirecting to login');
-          this.authService.logout();
-          this.router.navigate(['/account/auth/signin']);
+        if (error.status === 401) {
+          // Token might be expired, try to refresh it
+          const refreshToken = this.authService.currentUserValue?.refreshToken;
+
+          if (refreshToken) {
+            // Attempt to refresh the token
+            return this.authService.refreshToken().pipe(
+              switchMap((response) => {
+                if (response && response.token) {
+                  // Retry the original request with the new token
+                  const newRequest = request.clone({
+                    setHeaders: {
+                      Authorization: `Bearer ${response.token}`
+                    }
+                  });
+                  return next.handle(newRequest);
+                } else {
+                  // If refresh fails, redirect to login
+                  this.logout();
+                  return throwError(error);
+                }
+              }),
+              catchError(() => {
+                // If refresh fails, redirect to login
+                this.logout();
+                return throwError(error);
+              })
+            );
+          } else {
+            // No refresh token, redirect to login
+            this.logout();
+            return throwError(error);
+          }
         }
-        return throwError(() => error);
+        return throwError(error);
       })
     );
+  }
+
+  private logout() {
+    this.authService.logout();
+    this.router.navigate(['/auth/signin']);
   }
 }

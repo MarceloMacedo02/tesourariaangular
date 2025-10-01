@@ -1,27 +1,32 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, EventEmitter, Inject, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { EventService } from 'src/app/core/services/event.service';
-import { LanguageService } from 'src/app/core/services/language.service';
-import { AuthService } from 'src/app/services/auth.service'; // Using custom auth service
+import { EventService } from '../../core/services/event.service';
+import { LanguageService } from '../../core/services/language.service';
 // Get Cart Data
-import { cartList, notification } from './data';
-import { ModalDirective } from 'ngx-bootstrap/modal';
-import { RootReducerState, getLayoutMode } from 'src/app/store/reducers';
 import { Store } from '@ngrx/store';
-import { changeMode } from 'src/app/store/actions/layout-action';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { logout } from 'src/app/store/actions/authentication.actions';
+import { changeMode } from 'src/app/store/actions/layout-action';
+import { RootReducerState, getLayoutMode } from 'src/app/store/reducers';
+import { AuthService } from '../../services/auth.service';
+import { cartList, notification } from './data';
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
-  styleUrls: ['./topbar.component.scss']
+  styleUrls: ['./topbar.component.scss'],
 })
 
 // Topbar Component
 export class TopbarComponent {
-
   country: any;
   selectedItem!: any;
 
@@ -55,52 +60,62 @@ export class TopbarComponent {
   userRole: string = 'Função';
 
   @Output() mobileMenuButtonClicked = new EventEmitter();
-  @ViewChild('removeNotificationModal', { static: false }) removeNotificationModal?: ModalDirective;
-  @ViewChild('removeCartModal', { static: false }) removeCartModal?: ModalDirective;
+  @ViewChild('removeNotificationModal', { static: false })
+  removeNotificationModal?: ModalDirective;
+  @ViewChild('removeCartModal', { static: false })
+  removeCartModal?: ModalDirective;
   deleteid: any;
 
-  constructor(@Inject(DOCUMENT) private document: any,
+  constructor(
+    @Inject(DOCUMENT) private document: any,
     private eventService: EventService,
     public languageService: LanguageService,
     private authService: AuthService, // Using custom auth service
     private router: Router,
     private store: Store<RootReducerState>,
-    public _cookiesService: CookieService) { }
+    public _cookiesService: CookieService
+  ) {}
 
   ngOnInit(): void {
     this.element = document.documentElement;
-    this.cartData = cartList
+    this.cartData = cartList;
     this.cartData.map((x: any) => {
-      x['total'] = (x['qty'] * x['price']).toFixed(2)
-      this.subtotal += parseFloat(x['total'])
-    })
-    this.subtotal = this.subtotal.toFixed(2)
-    this.discount = (this.subtotal * this.discountRate).toFixed(2)
+      x['total'] = (x['qty'] * x['price']).toFixed(2);
+      this.subtotal += parseFloat(x['total']);
+    });
+    this.subtotal = this.subtotal.toFixed(2);
+    this.discount = (this.subtotal * this.discountRate).toFixed(2);
     this.tax = (this.subtotal * this.taxRate).toFixed(2);
-    this.totalsum = (parseFloat(this.subtotal) + parseFloat(this.tax) + parseFloat(this.shippingRate) - parseFloat(this.discount)).toFixed(2)
-
+    this.totalsum = (
+      parseFloat(this.subtotal) +
+      parseFloat(this.tax) +
+      parseFloat(this.shippingRate) -
+      parseFloat(this.discount)
+    ).toFixed(2);
 
     // Cookies wise Language set
     this.cookieValue = this._cookiesService.get('lang');
-    const val = this.listLang.filter(x => x.lang === this.cookieValue);
-    this.countryName = val.map(element => element.text);
+    const val = this.listLang.filter((x) => x.lang === this.cookieValue);
+    this.countryName = val.map((element) => element.text);
     if (val.length === 0) {
-      if (this.flagvalue === undefined) { this.valueset = 'assets/images/flags/us.svg'; }
-      this.countryName = 'English'
+      if (this.flagvalue === undefined) {
+        this.valueset = 'assets/images/flags/us.svg';
+      }
+      this.countryName = 'English';
     } else {
-      this.flagvalue = val.map(element => element.flag);
+      this.flagvalue = val.map((element) => element.flag);
     }
 
-    this.notificationList = notification
+    this.notificationList = notification;
     this.notificationList.forEach((element: any) => {
-      this.totalNotify += element.items.length
+      this.totalNotify += element.items.length;
       if (element.title == 'New') {
-        this.newNotify = element.items.length
+        this.newNotify = element.items.length;
       } else {
-        this.readNotify = element.items.length
+        this.readNotify = element.items.length;
       }
     });
-    
+
     // Get current user information
     const user = this.authService.getCurrentUser();
     if (user) {
@@ -110,8 +125,8 @@ export class TopbarComponent {
   }
 
   /***
- * Language Listing
- */
+   * Language Listing
+   */
   listLang = [
     { text: 'English', flag: 'assets/images/flags/us.svg', lang: 'en' },
     { text: 'Española', flag: 'assets/images/flags/spain.svg', lang: 'sp' },
@@ -124,12 +139,17 @@ export class TopbarComponent {
   ];
 
   windowScroll() {
-    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-      (document.getElementById('back-to-top') as HTMLElement).style.display = "block";
-      document.getElementById('page-topbar')?.classList.add('topbar-shadow')
+    if (
+      document.body.scrollTop > 50 ||
+      document.documentElement.scrollTop > 50
+    ) {
+      (document.getElementById('back-to-top') as HTMLElement).style.display =
+        'block';
+      document.getElementById('page-topbar')?.classList.add('topbar-shadow');
     } else {
-      (document.getElementById('back-to-top') as HTMLElement).style.display = "none";
-      document.getElementById('page-topbar')?.classList.remove('topbar-shadow')
+      (document.getElementById('back-to-top') as HTMLElement).style.display =
+        'none';
+      document.getElementById('page-topbar')?.classList.remove('topbar-shadow');
     }
   }
 
@@ -139,8 +159,10 @@ export class TopbarComponent {
   fullscreen() {
     document.body.classList.toggle('fullscreen-enable');
     if (
-      !document.fullscreenElement && !this.element.mozFullScreenElement &&
-      !this.element.webkitFullscreenElement) {
+      !document.fullscreenElement &&
+      !this.element.mozFullScreenElement &&
+      !this.element.webkitFullscreenElement
+    ) {
       if (this.element.requestFullscreen) {
         this.element.requestFullscreen();
       } else if (this.element.mozRequestFullScreen) {
@@ -170,8 +192,8 @@ export class TopbarComponent {
   }
 
   /***
-* Language Value Set
-*/
+   * Language Value Set
+   */
   setLanguage(text: string, lang: string, flag: string) {
     this.countryName = text;
     this.flagvalue = flag;
@@ -180,68 +202,85 @@ export class TopbarComponent {
   }
 
   /**
- * Toggle the menu bar when having mobile screen
- */
+   * Toggle the menu bar when having mobile screen
+   */
   toggleMobileMenu(event: any) {
-    document.querySelector('.hamburger-icon')?.classList.toggle('open')
-    document.body.classList.contains("twocolumn-panel") ? document.body.classList.remove("twocolumn-panel") : document.body.classList.add("twocolumn-panel");
+    document.querySelector('.hamburger-icon')?.classList.toggle('open');
+    document.body.classList.contains('twocolumn-panel')
+      ? document.body.classList.remove('twocolumn-panel')
+      : document.body.classList.add('twocolumn-panel');
     event.preventDefault();
     this.mobileMenuButtonClicked.emit();
   }
 
   /**
-* Topbar Light-Dark Mode Change
-*/
+   * Topbar Light-Dark Mode Change
+   */
   changeMode(mode: string) {
     this.mode = mode;
     this.store.dispatch(changeMode({ mode }));
     this.store.select(getLayoutMode).subscribe((mode) => {
-      document.documentElement.setAttribute('data-bs-theme', mode)
-      document.documentElement.classList.remove('mode-auto')
-    })
+      document.documentElement.setAttribute('data-bs-theme', mode);
+      document.documentElement.classList.remove('mode-auto');
+    });
     if (mode == 'auto') {
       this.store.select(getLayoutMode).subscribe((mode) => {
-        document.documentElement.setAttribute('data-bs-theme', 'light')
-        document.documentElement.classList.add('mode-auto')
-      })
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+        document.documentElement.classList.add('mode-auto');
+      });
     }
   }
 
   // Search Topbar
   Search() {
-    var searchOptions = document.getElementById("search-close-options") as HTMLAreaElement;
-    var dropdown = document.getElementById("search-dropdown") as HTMLAreaElement;
-    var input: any, filter: any, ul: any, li: any, a: any | undefined, i: any, txtValue: any;
-    input = document.getElementById("search-options") as HTMLAreaElement;
+    var searchOptions = document.getElementById(
+      'search-close-options'
+    ) as HTMLAreaElement;
+    var dropdown = document.getElementById(
+      'search-dropdown'
+    ) as HTMLAreaElement;
+    var input: any,
+      filter: any,
+      ul: any,
+      li: any,
+      a: any | undefined,
+      i: any,
+      txtValue: any;
+    input = document.getElementById('search-options') as HTMLAreaElement;
     filter = input.value.toUpperCase();
     var inputLength = filter.length;
 
     if (inputLength > 0) {
-      dropdown.classList.add("show");
-      searchOptions.classList.remove("d-none");
+      dropdown.classList.add('show');
+      searchOptions.classList.remove('d-none');
       var inputVal = input.value.toUpperCase();
-      var notifyItem = document.getElementsByClassName("notify-item");
+      var notifyItem = document.getElementsByClassName('notify-item');
 
       Array.from(notifyItem).forEach(function (element: any) {
-        var notifiTxt = ''
-        if (element.querySelector("h6")) {
-          var spantext = element.getElementsByTagName("span")[0].innerText.toLowerCase()
-          var name = element.querySelector("h6").innerText.toLowerCase()
+        var notifiTxt = '';
+        if (element.querySelector('h6')) {
+          var spantext = element
+            .getElementsByTagName('span')[0]
+            .innerText.toLowerCase();
+          var name = element.querySelector('h6').innerText.toLowerCase();
           if (name.includes(inputVal)) {
-            notifiTxt = name
+            notifiTxt = name;
           } else {
-            notifiTxt = spantext
+            notifiTxt = spantext;
           }
-        } else if (element.getElementsByTagName("span")) {
-          notifiTxt = element.getElementsByTagName("span")[0].innerText.toLowerCase()
+        } else if (element.getElementsByTagName('span')) {
+          notifiTxt = element
+            .getElementsByTagName('span')[0]
+            .innerText.toLowerCase();
         }
         if (notifiTxt)
-          element.style.display = notifiTxt.includes(inputVal) ? "block" : "none";
-
+          element.style.display = notifiTxt.includes(inputVal)
+            ? 'block'
+            : 'none';
       });
     } else {
-      dropdown.classList.remove("show");
-      searchOptions.classList.add("d-none");
+      dropdown.classList.remove('show');
+      searchOptions.classList.add('d-none');
     }
   }
 
@@ -249,12 +288,18 @@ export class TopbarComponent {
    * Search Close Btn
    */
   closeBtn() {
-    var searchOptions = document.getElementById("search-close-options") as HTMLAreaElement;
-    var dropdown = document.getElementById("search-dropdown") as HTMLAreaElement;
-    var searchInputReponsive = document.getElementById("search-options") as HTMLInputElement;
-    dropdown.classList.remove("show");
-    searchOptions.classList.add("d-none");
-    searchInputReponsive.value = "";
+    var searchOptions = document.getElementById(
+      'search-close-options'
+    ) as HTMLAreaElement;
+    var dropdown = document.getElementById(
+      'search-dropdown'
+    ) as HTMLAreaElement;
+    var searchInputReponsive = document.getElementById(
+      'search-options'
+    ) as HTMLInputElement;
+    dropdown.classList.remove('show');
+    searchOptions.classList.add('d-none');
+    searchInputReponsive.value = '';
   }
 
   // Increment Decrement Quantity
@@ -263,46 +308,60 @@ export class TopbarComponent {
     this.subtotal = 0;
     if (id == '0' && qty > 1) {
       qty--;
-      this.cartData[i].qty = qty
-      this.cartData[i].total = (this.cartData[i].qty * this.cartData[i].price).toFixed(2)
+      this.cartData[i].qty = qty;
+      this.cartData[i].total = (
+        this.cartData[i].qty * this.cartData[i].price
+      ).toFixed(2);
     }
     if (id == '1') {
       qty++;
-      this.cartData[i].qty = qty
-      this.cartData[i].total = (this.cartData[i].qty * this.cartData[i].price).toFixed(2)
+      this.cartData[i].qty = qty;
+      this.cartData[i].total = (
+        this.cartData[i].qty * this.cartData[i].price
+      ).toFixed(2);
     }
 
     this.cartData.map((x: any) => {
-      this.subtotal += parseFloat(x['total'])
-    })
+      this.subtotal += parseFloat(x['total']);
+    });
 
-    this.subtotal = this.subtotal.toFixed(2)
-    this.discount = (this.subtotal * this.discountRate).toFixed(2)
+    this.subtotal = this.subtotal.toFixed(2);
+    this.discount = (this.subtotal * this.discountRate).toFixed(2);
     this.tax = (this.subtotal * this.taxRate).toFixed(2);
-    this.totalsum = (parseFloat(this.subtotal) + parseFloat(this.tax) + parseFloat(this.shippingRate) - parseFloat(this.discount)).toFixed(2)
+    this.totalsum = (
+      parseFloat(this.subtotal) +
+      parseFloat(this.tax) +
+      parseFloat(this.shippingRate) -
+      parseFloat(this.discount)
+    ).toFixed(2);
   }
 
   removeCart(id: any) {
-    this.removeCartModal?.show()
+    this.removeCartModal?.show();
     this.deleteid = id;
   }
 
   confirmDelete() {
-    this.removeCartModal?.hide()
+    this.removeCartModal?.hide();
 
-    this.subtotal -= this.cartData[this.deleteid].total
-    this.subtotal = this.subtotal.toFixed(2)
-    this.discount = (this.subtotal * this.discountRate).toFixed(2)
+    this.subtotal -= this.cartData[this.deleteid].total;
+    this.subtotal = this.subtotal.toFixed(2);
+    this.discount = (this.subtotal * this.discountRate).toFixed(2);
     this.tax = (this.subtotal * this.taxRate).toFixed(2);
-    this.totalsum = (parseFloat(this.subtotal) + parseFloat(this.tax) + parseFloat(this.shippingRate) - parseFloat(this.discount)).toFixed(2)
-    this.cartData.splice(this.deleteid, 1)
+    this.totalsum = (
+      parseFloat(this.subtotal) +
+      parseFloat(this.tax) +
+      parseFloat(this.shippingRate) -
+      parseFloat(this.discount)
+    ).toFixed(2);
+    this.cartData.splice(this.deleteid, 1);
   }
 
   // Remove Notification
   checkedValGet: any[] = [];
   onCheckboxChange(event: any, id: any) {
     var checkedVal: any[] = [];
-    var result
+    var result;
     for (var i = 0; i < this.notificationList.length; i++) {
       for (var x = 0; x < this.notificationList[i].items.length; x++) {
         if (this.notificationList[i].items[x].state == true) {
@@ -311,8 +370,14 @@ export class TopbarComponent {
         }
       }
     }
-    this.checkedValGet = checkedVal
-    checkedVal.length > 0 ? (document.getElementById("notification-actions") as HTMLElement).style.display = 'block' : (document.getElementById("notification-actions") as HTMLElement).style.display = 'none';
+    this.checkedValGet = checkedVal;
+    checkedVal.length > 0
+      ? ((
+          document.getElementById('notification-actions') as HTMLElement
+        ).style.display = 'block')
+      : ((
+          document.getElementById('notification-actions') as HTMLElement
+        ).style.display = 'none');
   }
 
   notificationDelete() {
@@ -320,29 +385,37 @@ export class TopbarComponent {
       for (var j = 0; j < this.notificationList.length; j++) {
         for (var x = 0; x < this.notificationList[j].items.length; x++) {
           if (this.notificationList[j].items[x].id == this.checkedValGet[i]) {
-            this.notificationList[j].items.splice(x, 1)
+            this.notificationList[j].items.splice(x, 1);
           }
         }
       }
     }
-    this.calculatenotification()
+    this.calculatenotification();
     this.removeNotificationModal?.hide();
   }
 
   calculatenotification() {
     this.totalNotify = 0;
-    this.checkedValGet = []
+    this.checkedValGet = [];
     this.notificationList.forEach((element: any) => {
-      this.totalNotify += element.items.length
+      this.totalNotify += element.items.length;
       if (element.title == 'New') {
-        this.newNotify = element.items.length
+        this.newNotify = element.items.length;
       } else {
-        this.readNotify = element.items.length
+        this.readNotify = element.items.length;
       }
     });
-    this.checkedValGet.length > 0 ? (document.getElementById("notification-actions") as HTMLElement).style.display = 'block' : (document.getElementById("notification-actions") as HTMLElement).style.display = 'none';
+    this.checkedValGet.length > 0
+      ? ((
+          document.getElementById('notification-actions') as HTMLElement
+        ).style.display = 'block')
+      : ((
+          document.getElementById('notification-actions') as HTMLElement
+        ).style.display = 'none');
     if (this.totalNotify == 0) {
-      document.querySelector('.empty-notification-elem')?.classList.remove('d-none')
+      document
+        .querySelector('.empty-notification-elem')
+        ?.classList.remove('d-none');
     }
   }
 
@@ -350,13 +423,11 @@ export class TopbarComponent {
   logout(): void {
     // Call the auth service to handle logout (clear tokens, etc.)
     this.authService.logout();
-    
+
     // Dispatch logout action to clear store state
     this.store.dispatch(logout());
-    
+
     // Navigate to login page
     this.router.navigate(['/auth/signin']);
   }
-
-
 }

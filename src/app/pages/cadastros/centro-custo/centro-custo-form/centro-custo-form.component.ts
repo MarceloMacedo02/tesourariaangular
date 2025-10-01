@@ -110,7 +110,14 @@ export class CentroCustoFormComponent implements OnInit {
         error: (error) => {
           console.error('Erro ao atualizar centro de custo:', error);
           this.loading = false;
-          this.errors.push('Erro ao atualizar centro de custo: ' + (error.error?.message || 'Erro desconhecido'));
+          
+          // Verificar se o erro é de autenticação
+          if (error.status === 401 || error.status === 403) {
+            // O interceptor já tratou o logout, só mostrar uma mensagem mais amigável
+            this.errors.push('Sua sessão expirou. Por favor, faça login novamente.');
+          } else {
+            this.errors.push('Erro ao atualizar centro de custo: ' + (error.error?.message || 'Erro desconhecido'));
+          }
         }
       });
     } else {
@@ -123,7 +130,14 @@ export class CentroCustoFormComponent implements OnInit {
         error: (error) => {
           console.error('Erro ao criar centro de custo:', error);
           this.loading = false;
-          this.errors.push('Erro ao criar centro de custo: ' + (error.error?.message || 'Erro desconhecido'));
+          
+          // Verificar se o erro é de autenticação
+          if (error.status === 401 || error.status === 403) {
+            // O interceptor já tratou o logout, só mostrar uma mensagem mais amigável
+            this.errors.push('Sua sessão expirou. Por favor, faça login novamente.');
+          } else {
+            this.errors.push('Erro ao criar centro de custo: ' + (error.error?.message || 'Erro desconhecido'));
+          }
         }
       });
     }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 // Page Route
 import { AuthRoutingModule } from './auth-routing.module';
@@ -35,6 +36,7 @@ import { OfflineComponent } from './errors/offline/offline.component';
   imports: [
     CommonModule,
     FormsModule,  // Required for ngModel and template-driven forms
+    HttpClientModule,  // Required for HTTP calls in auth components
     AuthRoutingModule
   ]
 })

@@ -1,30 +1,30 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 // Simplebar
 import { SimplebarAngularModule } from 'simplebar-angular';
 
 // Language
-import { LanguageService } from '../core/services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../core/services/language.service';
 
 // Bootstap Component
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 // component
-import { LayoutComponent } from './layout.component';
-import { TopbarComponent } from './topbar/topbar.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { VerticalComponent } from './vertical/vertical.component';
-import { FooterComponent } from './footer/footer.component';
 import { CustomizerComponent } from './customizer/customizer.component';
-import { HorizontalComponent } from './horizontal/horizontal.component';
+import { FooterComponent } from './footer/footer.component';
 import { HorizontalTopbarComponent } from './horizontal-topbar/horizontal-topbar.component';
-import { TwoColumnComponent } from './two-column/two-column.component';
+import { HorizontalComponent } from './horizontal/horizontal.component';
+import { LayoutComponent } from './layout.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { TopbarComponent } from './topbar/topbar.component';
 import { TwoColumnSidebarComponent } from './two-column-sidebar/two-column-sidebar.component';
+import { TwoColumnComponent } from './two-column/two-column.component';
+import { VerticalComponent } from './vertical/vertical.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,7 @@ import { TwoColumnSidebarComponent } from './two-column-sidebar/two-column-sideb
     HorizontalComponent,
     HorizontalTopbarComponent,
     TwoColumnComponent,
-    TwoColumnSidebarComponent
+    TwoColumnSidebarComponent,
   ],
   imports: [
     CommonModule,
@@ -47,8 +47,8 @@ import { TwoColumnSidebarComponent } from './two-column-sidebar/two-column-sideb
     TranslateModule, // This will use the root configuration
     ModalModule.forRoot(),
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [LanguageService],
 })
-export class LayoutsModule { }
+export class LayoutsModule {}

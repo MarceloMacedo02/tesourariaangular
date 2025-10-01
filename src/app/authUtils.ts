@@ -1,77 +1,45 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+// Placeholder auth utilities - Firebase has been removed
+// This file exists to maintain compatibility until all references are updated
 
-class FirebaseAuthBackend {
-
-    constructor(firebaseConfig: any) {
-        if (firebaseConfig) {
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            firebase.auth().onAuthStateChanged((user: any) => {
-                if (user) {
-                    sessionStorage.setItem('authUser', JSON.stringify(user));
-                } else {
-                    sessionStorage.removeItem('authUser');
-                }
-            });
-        }
-    }
-
+class AuthUtils {
     /**
-     * Registers the user with given details
+     * Placeholder for register user function
      */
     registerUser = (email: any, password: any) => {
-        return new Promise((resolve, reject) => {
-            firebase.auth().createUserWithEmailAndPassword(email, password).then((user: any) => {
-                var user: any = firebase.auth().currentUser;
-                resolve(user);
-            }, (error: any) => {
-                reject(this._handleError(error));
-            });
-        });
+        // This should be replaced with your actual authentication method
+        // For example, calling your backend API directly
+        console.warn('Firebase removed - implement your own registration');
+        return Promise.reject('Firebase removed - implement your own registration');
     }
 
     /**
-     * Login user with given details
+     * Placeholder for login user function
      */
     loginUser = (email: any, password: any) => {
-        return new Promise((resolve, reject) => {
-            firebase.auth().signInWithEmailAndPassword(email, password).then((user: any) => {
-                // eslint-disable-next-line no-redeclare
-                var user: any = firebase.auth().currentUser;
-                resolve(user);
-            }, (error: any) => {
-                reject(this._handleError(error));
-            });
-        });
+        // This should be replaced with your actual authentication method
+        // For example, calling your backend API directly
+        console.warn('Firebase removed - implement your own login');
+        return Promise.reject('Firebase removed - implement your own login');
     }
 
     /**
-     * Logout the user
+     * Placeholder for logout function
      */
     logout = () => {
-        return new Promise((resolve, reject) => {
-            firebase.auth().signOut().then(() => {
-                resolve(true);
-            }).catch((error: any) => {
-                reject(this._handleError(error));
-            });
-        });
+        // This should be replaced with your actual authentication method
+        // For example, calling your backend API directly
+        console.warn('Firebase removed - implement your own logout');
+        return Promise.reject('Firebase removed - implement your own logout');
     }
 
     /**
-     * forget Password user with given details
+     * Placeholder for password reset function
      */
     forgetPassword = (email: any) => {
-        return new Promise((resolve, reject) => {
-            // tslint:disable-next-line: max-line-length
-            firebase.auth().sendPasswordResetEmail(email, { url: window.location.protocol + '//' + window.location.host + '/login' }).then(() => {
-                resolve(true);
-            }).catch((error: any) => {
-                reject(this._handleError(error));
-            });
-        });
+        // This should be replaced with your actual authentication method
+        // For example, calling your backend API directly
+        console.warn('Firebase removed - implement your own password reset');
+        return Promise.reject('Firebase removed - implement your own password reset');
     }
 
     setLoggeedInUser = (user: any) => {
@@ -100,24 +68,25 @@ class FirebaseAuthBackend {
 }
 
 // tslint:disable-next-line: variable-name
-let _fireBaseBackend: FirebaseAuthBackend | null = null;
+let _authBackend: AuthUtils | null = null;
 
 /**
- * Initilize the backend
+ * Initialize the backend
  * @param {*} config
  */
-const initFirebaseBackend = (config: any) => {
-    if (!_fireBaseBackend) {
-        _fireBaseBackend = new FirebaseAuthBackend(config);
+const initAuthBackend = (config: any) => {
+    if (!_authBackend) {
+        _authBackend = new AuthUtils();
     }
-    return _fireBaseBackend;
+    return _authBackend;
 };
 
 /**
- * Returns the firebase backend
+ * Returns the auth backend
  */
-const getFirebaseBackend = () => {
-    return _fireBaseBackend;
+const getAuthBackend = () => {
+    // Return null to indicate Firebase has been removed
+    return null;
 };
 
-export { initFirebaseBackend, getFirebaseBackend };
+export { initAuthBackend, getAuthBackend };

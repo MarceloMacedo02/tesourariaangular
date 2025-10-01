@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { EventService } from 'src/app/core/services/event.service';
+import { EventService } from '../../core/services/event.service';
 import { changeDataPreloader, changeLayoutPosition, changelayoutTheme, changeLayoutWidth, changeMode, changeSidebarColor, changeSidebarImage, changeSidebarSize, changeSidebarView, changeTopbar } from 'src/app/store/actions/layout-action';
 import { getLayoutMode, getLayoutPosition, getLayoutTheme, getLayoutWith, getPreloader, getSidebarColor, getSidebarImage, getSidebarSize, getSidebarView, getTopbarColor, RootReducerState } from 'src/app/store/reducers';
 import { initialState, LayoutState } from 'src/app/store/reducers/layout-reducers';

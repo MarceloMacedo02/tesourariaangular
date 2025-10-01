@@ -22,8 +22,6 @@ export interface LoginResponse {
   expiresIn: number;
   username: string;
   firstName: string;
-  nome?: string;  // Added to support topbar component usage
-  email?: string; // Added to support topbar component usage
   grade: string;
   role: string;
   socioImageUrl: string;
@@ -33,7 +31,7 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8080/api/auth';
+  private readonly API_URL = '/api/auth';
   private currentUserSubject = new BehaviorSubject<LoginResponse | null>(this.getCurrentUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -120,25 +118,6 @@ export class AuthService {
   }
 
   /**
-   * Password recovery method with PasswordRecoveryRequest object
-   */
-  recoverPassword(request: PasswordRecoveryRequest): Observable<{message: string}> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    
-    return this.http.post<{message: string}>(`${this.API_URL}/recovery`, request, { headers })
-      .pipe(
-        map(response => {
-          console.log('Password recovery email sent:', response.message);
-          return response;
-        }),
-        catchError(error => {
-          console.error('Password recovery error:', error);
-          return of({message: 'An error occurred during password recovery'});
-        })
-      );
-  }
-
-  /**
    * Check if user is authenticated
    */
   isAuthenticated(): boolean {
@@ -192,12 +171,5 @@ export class AuthService {
           return of(null as any);
         })
       );
-  }
-
-  /**
-   * Get current user (synchronous method)
-   */
-  getCurrentUser(): LoginResponse | null {
-    return this.currentUserValue;
   }
 }

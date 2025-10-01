@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError, exhaustMap, tap } from 'rxjs/operators';
 import { from, of } from 'rxjs';
 import { AuthenticationService } from '../../core/services/auth.service';
+import { TokenStorageService } from '../../core/services/token-storage.service';
 import { login, loginSuccess, loginFailure, logout, logoutSuccess, Register, signInWithFacebook, signInWithGoogle } from '../actions/authentication.actions';
 import { Router } from '@angular/router';
 
@@ -30,8 +31,10 @@ export class AuthenticationEffects {
       exhaustMap(({ email, password }) =>
         this.AuthenticationService.login(email, password).pipe(
           map((user) => {
-            localStorage.setItem('currentUser', JSON.stringify(user.data));
-            localStorage.setItem('token', user.token);
+            // Armazenar dados do usuário usando o serviço centralizado
+            this.tokenStorageService.saveUser(user.data);
+            // Supondo que o user.token seja o access token
+            this.tokenStorageService.saveToken(user.token);
             this.router.navigate(['/']);
             return loginSuccess({ user });
           }),
@@ -83,6 +86,7 @@ export class AuthenticationEffects {
   constructor(
     @Inject(Actions) private actions$: Actions,
     private AuthenticationService: AuthenticationService,
+    private tokenStorageService: TokenStorageService,
     private router: Router) { }
 
 }

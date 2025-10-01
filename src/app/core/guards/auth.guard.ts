@@ -4,6 +4,7 @@ import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/ro
 // Auth Services
 import { AuthenticationService } from '../services/auth.service';
 import { AuthfakeauthenticationService } from '../services/authfake.service';
+import { TokenStorageService } from '../services/token-storage.service';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +12,8 @@ export class AuthGuard  {
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
-        private authFackservice: AuthfakeauthenticationService
+        private authFackservice: AuthfakeauthenticationService,
+        private tokenStorageService: TokenStorageService
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -28,7 +30,8 @@ export class AuthGuard  {
                 return true;
             }
             // check if user data is in storage is logged in via API.
-            if (localStorage.getItem('currentUser')) {
+            // Using the centralized service instead of direct localStorage access
+            if (this.tokenStorageService.getUser()) {
                 return true;
             }
         }

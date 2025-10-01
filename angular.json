@@ -110,8 +110,7 @@
               "buildTarget": "vixon:build:production"
             },
             "development": {
-              "buildTarget": "vixon:build:development",
-              "proxyConfig": "proxy.conf.json"
+              "buildTarget": "vixon:build:development"
             }
           },
           "defaultConfiguration": "development"

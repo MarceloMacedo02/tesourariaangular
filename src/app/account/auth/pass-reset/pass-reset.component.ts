@@ -39,23 +39,22 @@ export class PassResetComponent {
       return;
     }
 
-    // Create password recovery request
-    const recoveryRequest: PasswordRecoveryRequest = {
-      email: email
-    };
-
-    // Call password recovery using our authentication service
-    this.authService.recoverPassword(recoveryRequest).subscribe({
-      next: (response) => {
-        this.loading = false;
-        this.message = response.message || 'Password recovery instructions sent to your email.';
-        console.log('Password recovery successful', response);
-      },
-      error: (err) => {
-        this.loading = false;
-        this.error = 'Password recovery failed. Please try again.';
-        console.error('Password recovery error:', err);
-      }
-    });
+    // Call the password recovery method
+    this.authService.sendPasswordRecoveryEmail(email)
+      .subscribe({
+        next: (success: boolean) => {
+          this.loading = false;
+          if (success) {
+            this.message = 'Password reset instructions have been sent to your email address.';
+          } else {
+            this.error = 'An error occurred while sending the recovery email. Please try again.';
+          }
+        },
+        error: (err) => {
+          this.loading = false;
+          console.error('Password recovery error:', err);
+          this.error = 'An error occurred while sending the recovery email. Please try again.';
+        }
+      });
   }
 }

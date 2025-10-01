@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService, LoginRequest } from '../../../services/auth.service';
+import { AuthService, LoginResponse, LoginRequest } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-signin',
@@ -50,25 +50,29 @@ export class SigninComponent {
       return;
     }
 
-    // Create login request
-    const loginRequest: LoginRequest = {
-      username: username,
-      password: password
-    };
-
-    // Login using our authentication service
-    this.authService.login(loginRequest).subscribe({
-      next: (response) => {
-        this.loading = false;
-        console.log('Login successful', response);
-        // Navigate to the dashboard page after successful login
-        this.router.navigate(['/pages']);
-      },
-      error: (err) => {
-        this.loading = false;
-        this.error = 'Login failed. Please check your credentials.';
-        console.error('Login error:', err);
-      }
-    });
+    // Attempt login
+    this.authService.login(username, password)
+      .subscribe({
+        next: (response: LoginResponse) => {
+          this.loading = false;
+          if (response && response.token) {
+            // Navigate to dashboard or home page after successful login
+            this.router.navigate(['/pages']);
+          } else {
+            this.error = 'Login failed: Invalid response from server';
+          }
+        },
+        error: (err) => {
+          this.loading = false;
+          console.error('Login error:', err);
+          if (err.status === 401) {
+            this.error = 'Invalid username or password';
+          } else if (err.status === 403) {
+            this.error = 'Access denied';
+          } else {
+            this.error = 'An error occurred during login. Please try again.';
+          }
+        }
+      });
   }
 }

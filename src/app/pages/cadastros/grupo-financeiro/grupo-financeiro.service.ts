@@ -8,8 +8,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class GrupoFinanceiroService {
-  // Use relative URL for development (to go through proxy) and absolute in production
-  private apiUrl = environment.production ? `${environment.apiBaseUrl}/api/grupos-financeiros` : '/api/grupos-financeiros';
+  private apiUrl = `${environment.apiBaseUrl}/api/grupos-financeiros`;
 
   constructor(private http: HttpClient) { }
 
