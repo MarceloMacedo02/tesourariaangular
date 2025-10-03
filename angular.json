@@ -61,7 +61,9 @@
               "ev-emitter/ev-emitter",
               "prismjs",
               "lodash",
-              "dropzone"
+              "dropzone",
+              "jspdf",
+              "jspdf-autotable"
             ]
           },
           "configurations": {

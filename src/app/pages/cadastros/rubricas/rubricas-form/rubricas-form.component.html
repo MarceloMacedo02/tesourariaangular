@@ -1,15 +1,15 @@
 <!-- Start Breadcrumbs -->
-<app-breadcrumbs [title]="isEditing ? 'Editar Grupo Financeiro' : 'Novo Grupo Financeiro'" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs [title]="isEditing ? 'Editar Rubrica' : 'Nova Rubrica'" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-0">{{ isEditing ? 'Editar Grupo Financeiro' : 'Novo Grupo Financeiro' }}</h4>
+                <h4 class="card-title mb-0">{{ isEditing ? 'Editar Rubrica' : 'Nova Rubrica' }}</h4>
             </div>
             <div class="card-body">
-                <form (ngSubmit)="onSubmit()" #grupoFinanceiroForm="ngForm">
+                <form (ngSubmit)="onSubmit()" #rubricaForm="ngForm">
                     <!-- Erros de validação -->
                     <div *ngIf="errors.length > 0" class="alert alert-danger">
                         <ul class="mb-0">
@@ -19,21 +19,21 @@
 
                     <div class="row g-3">
                         <div class="col-lg-12">
-                            <!-- Campo Nome do Grupo Financeiro -->
+                            <!-- Campo Nome -->
                             <div class="mb-3">
-                                <label for="nomeGrupoFinanceiro" class="form-label">
-                                    Nome do Grupo Financeiro *
+                                <label for="nome" class="form-label">
+                                    Nome *
                                 </label>
                                 <input 
                                     type="text" 
                                     class="form-control" 
-                                    id="nomeGrupoFinanceiro"
-                                    name="nomeGrupoFinanceiro"
-                                    [(ngModel)]="grupoFinanceiro.nomeGrupoFinanceiro"
+                                    id="nome"
+                                    name="nome"
+                                    [(ngModel)]="rubrica.nome"
                                     [disabled]="loading"
                                     required
                                     maxlength="100"
-                                    placeholder="Informe o nome do grupo financeiro">
+                                    placeholder="Informe o nome da rubrica">
                             </div>
 
                             <!-- Campo Descrição -->
@@ -45,32 +45,72 @@
                                     class="form-control" 
                                     id="descricao"
                                     name="descricao"
-                                    [(ngModel)]="grupoFinanceiro.descricao"
+                                    [(ngModel)]="rubrica.descricao"
                                     [disabled]="loading"
                                     maxlength="255"
                                     rows="3"
-                                    placeholder="Descrição do grupo financeiro (opcional)">
+                                    placeholder="Descrição da rubrica (opcional)">
                                 </textarea>
                             </div>
                         </div>
 
                         <div class="col-lg-6">
-                            <!-- Campo Centro de Custo -->
+                            <!-- Campo Valor -->
                             <div class="mb-3">
-                                <label for="centroCustoId" class="form-label">
-                                    Centro de Custo *
+                                <label for="valor" class="form-label">
+                                    Valor *
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="valor"
+                                    name="valor"
+                                    [(ngModel)]="rubrica.valor"
+                                    [disabled]="loading"
+                                    required
+                                    placeholder="R$ 0,00"
+                                    [currencyMask]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, nullable: true, precision: 2 }"
+                                    (blur)="onValorChange($event)">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <!-- Campo Tipo -->
+                            <div class="mb-3">
+                                <label for="tipo" class="form-label">
+                                    Tipo *
+                                </label>
+                                <select 
+                                    class="form-select" 
+                                    id="tipo"
+                                    name="tipo"
+                                    [(ngModel)]="rubrica.tipo"
+                                    [disabled]="loading"
+                                    required>
+                                    <option *ngFor="let tipo of tiposDisponiveis" [value]="tipo.id">
+                                        {{ tipo.nome }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <!-- Campo Grupo Financeiro -->
+                            <div class="mb-3">
+                                <label for="grupoFinanceiroId" class="form-label">
+                                    Grupo Financeiro *
                                 </label>
                                 <ng-select 
-                                    [(ngModel)]="selectedCentroCustoId"
+                                    [(ngModel)]="selectedGrupoFinanceiroId"
                                     [disabled]="loading"
                                     [clearable]="false"
                                     [searchable]="true"
                                     [closeOnSelect]="true"
-                                    placeholder="Selecione um centro de custo"
-                                    [items]="centrosCusto"
+                                    placeholder="Selecione um grupo financeiro"
+                                    [items]="gruposFinanceiros"
                                     bindValue="id"
-                                    bindLabel="nomeCentroCusto"
-                                    (change)="onCentroCustoChange($event)">
+                                    bindLabel="nomeGrupoFinanceiro"
+                                    (change)="onGrupoFinanceiroChange($event)">
                                 </ng-select>
                             </div>
                         </div>
@@ -87,48 +127,30 @@
                                         class="form-check-input" 
                                         id="ativo"
                                         name="ativo"
-                                        [(ngModel)]="grupoFinanceiro.ativo"
+                                        [(ngModel)]="rubrica.ativo"
                                         [disabled]="loading">
                                     <label class="form-check-label" for="ativo">
-                                        {{ grupoFinanceiro.ativo ? 'Ativo' : 'Inativo' }}
+                                        {{ rubrica.ativo ? 'Ativo' : 'Inativo' }}
                                     </label>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Campos de data (somente leitura) - Campos de uso exclusivo do backend -->
-                        <div class="col-lg-6" *ngIf="grupoFinanceiro.dataRegistro">
-                            <!-- Campo Data de Registro - Campo de uso exclusivo do backend, exibido apenas para informação -->
+                        <!-- Campo de data (somente leitura) - Campo de uso exclusivo do backend -->
+                        <div class="col-lg-6" *ngIf="rubrica.dataCriacao">
+                            <!-- Campo Data de Criação - Campo de uso exclusivo do backend, exibido apenas para informação -->
                             <div class="mb-3">
-                                <label for="dataRegistro" class="form-label">
-                                    Data de Registro
+                                <label for="dataCriacao" class="form-label">
+                                    Data de Criação
                                 </label>
                                 <input 
                                     type="text" 
                                     class="form-control" 
-                                    id="dataRegistro"
-                                    name="dataRegistro"
-                                    [value]="(grupoFinanceiro.dataRegistro | date:'short') || ''"
+                                    id="dataCriacao"
+                                    name="dataCriacao"
+                                    [value]="(rubrica.dataCriacao | date:'short') || ''"
                                     readonly
-                                    placeholder="Data de registro">
-                                <small class="text-muted">Campo de uso exclusivo do backend</small>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6" *ngIf="grupoFinanceiro.dataAtualizacao">
-                            <!-- Campo Data de Atualização - Campo de uso exclusivo do backend, exibido apenas para informação -->
-                            <div class="mb-3">
-                                <label for="dataAtualizacao" class="form-label">
-                                    Data de Atualização
-                                </label>
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="dataAtualizacao"
-                                    name="dataAtualizacao"
-                                    [value]="(grupoFinanceiro.dataAtualizacao | date:'short') || ''"
-                                    readonly
-                                    placeholder="Data de atualização">
+                                    placeholder="Data de criação">
                                 <small class="text-muted">Campo de uso exclusivo do backend</small>
                             </div>
                         </div>
@@ -153,7 +175,7 @@
                         <button 
                             type="submit" 
                             class="btn btn-primary"
-                            [disabled]="loading || !grupoFinanceiro.nomeGrupoFinanceiro.trim()">
+                            [disabled]="loading || !rubrica.nome.trim()">
                             <i class="ri-save-line align-bottom me-1"></i> Salvar
                         </button>
                     </div>

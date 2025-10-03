@@ -52,6 +52,13 @@ export class SidebarComponent {
             return { ...item, hidden: true } as MenuItem;
           }
         }
+        
+        // Verificar permissão específica para o item de geração de cobranças (IDs 21 e 22)
+        if (item.id && (item.id === 21 || item.id === 22)) {
+          if (!this.roleService.isTesoureiro()) {
+            return { ...item, hidden: true } as MenuItem;
+          }
+        }
 
         // Se o item tiver subitens, filtrar os subitens também
         if (item.subItems && item.subItems.length > 0) {

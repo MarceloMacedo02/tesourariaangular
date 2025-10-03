@@ -1,5 +1,5 @@
 <!-- Start Breadcrumbs -->
-<app-breadcrumbs title="Grupo Financeiro" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs title="Sócios" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
 <div class="row">
@@ -7,9 +7,9 @@
     <div class="card">
       <div class="card-header">
         <div class="d-flex gap-2">
-          <h4 class="card-title mb-0 flex-grow-1">Grupo Financeiro</h4>
+          <h4 class="card-title mb-0 flex-grow-1">Sócios</h4>
           <div class="flex-shrink-0">
-            <button type="button" class="btn btn-light" (click)="loadGruposFinanceiros()">
+            <button type="button" class="btn btn-light" (click)="loadSocios()">
               <i class="ri-refresh-line align-bottom"></i>
             </button>
           </div>
@@ -24,14 +24,14 @@
               <input 
                 type="text" 
                 class="form-control" 
-                placeholder="Filtrar grupos financeiros..." 
+                placeholder="Filtrar sócios..." 
                 [(ngModel)]="filtro"
                 (input)="onFiltroChange()"
               >
             </div>
           </div>
           <div class="col-xl-6 text-xl-end">
-            <a routerLink="/pages/cadastros/grupo-financeiro/novo" class="btn btn-primary">
+            <a routerLink="/pages/cadastros/socio/novo" class="btn btn-primary">
               <i class="ri-add-line align-bottom me-1"></i> Adicionar
             </a>
           </div>
@@ -44,33 +44,33 @@
               <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Nome</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Centro de Custo</th>
+                <th scope="col">CPF</th>
+                <th scope="col">Grau</th>
                 <th scope="col">Status</th>
-                <th scope="col">Data Registro</th>
-                <th scope="col">Data Atualização</th>
+                <th scope="col">Data Adesão</th>
                 <th scope="col">Ações</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let grupoFinanceiro of gruposFinanceiros">
-                <td>{{ grupoFinanceiro.id }}</td>
-                <td>{{ grupoFinanceiro.nomeGrupoFinanceiro }}</td>
-                <td>{{ grupoFinanceiro.descricao || '-' }}</td>
-                <td>{{ grupoFinanceiro.centroCustoNome || grupoFinanceiro.centroCustoId || '-' }}</td>
+              <tr *ngFor="let socio of socios">
+                <td>{{ socio.id }}</td>
+                <td>{{ socio.nomeSocio }}</td>
+                <td>{{ socio.cpf }}</td>
                 <td>
-                  <span class="badge" [ngClass]="getStatusBadgeClass(grupoFinanceiro.ativo!)">
-                    {{ getStatusText(grupoFinanceiro.ativo!) }}
+                  <span class="badge bg-primary">
+                    {{ getGrauSocioText(socio.grau) }}
                   </span>
                 </td>
-                <!-- Campo de uso exclusivo do backend, exibido apenas para informação -->
-                <td>{{ grupoFinanceiro.dataRegistro ? (grupoFinanceiro.dataRegistro | date:'short') : '-' }}</td>
-                <!-- Campo de uso exclusivo do backend, exibido apenas para informação -->
-                <td>{{ grupoFinanceiro.dataAtualizacao ? (grupoFinanceiro.dataAtualizacao | date:'short') : '-' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(socio.status || '')">
+                    {{ getStatusText(socio.status || '') }}
+                  </span>
+                </td>
+                <td>{{ socio.dataAdesao ? (socio.dataAdesao | date:'shortDate') : '-' }}</td>
                 <td>
                   <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                      <a [routerLink]="['/pages/cadastros/grupo-financeiro/editar', grupoFinanceiro.id]" class="btn btn-soft-primary btn-sm">
+                      <a [routerLink]="['/pages/cadastros/socio/editar', socio.id]" class="btn btn-soft-primary btn-sm">
                         <i class="ri-pencil-fill align-bottom"></i>
                       </a>
                     </li>
@@ -78,7 +78,7 @@
                 </td>
               </tr>
               <tr *ngIf="loading">
-                <td colspan="8" class="text-center">
+                <td colspan="7" class="text-center">
                   <div class="d-flex justify-content-center">
                     <div class="spinner-border text-primary" role="status">
                       <span class="visually-hidden">Carregando...</span>
@@ -87,8 +87,8 @@
                 </td>
               </tr>
               <tr *ngIf="!loading && (!page.content || page.content.length === 0)">
-                <td colspan="8" class="text-center">
-                  Nenhum grupo financeiro encontrado.
+                <td colspan="7" class="text-center">
+                  Nenhum sócio encontrado.
                 </td>
               </tr>
             </tbody>

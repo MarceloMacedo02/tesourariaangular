@@ -1,5 +1,5 @@
 <!-- Start Breadcrumbs -->
-<app-breadcrumbs title="Grupo Financeiro" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs title="Rubricas" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
 <div class="row">
@@ -7,9 +7,9 @@
     <div class="card">
       <div class="card-header">
         <div class="d-flex gap-2">
-          <h4 class="card-title mb-0 flex-grow-1">Grupo Financeiro</h4>
+          <h4 class="card-title mb-0 flex-grow-1">Rubricas</h4>
           <div class="flex-shrink-0">
-            <button type="button" class="btn btn-light" (click)="loadGruposFinanceiros()">
+            <button type="button" class="btn btn-light" (click)="loadRubricas()">
               <i class="ri-refresh-line align-bottom"></i>
             </button>
           </div>
@@ -24,14 +24,14 @@
               <input 
                 type="text" 
                 class="form-control" 
-                placeholder="Filtrar grupos financeiros..." 
+                placeholder="Filtrar rubricas..." 
                 [(ngModel)]="filtro"
                 (input)="onFiltroChange()"
               >
             </div>
           </div>
           <div class="col-xl-6 text-xl-end">
-            <a routerLink="/pages/cadastros/grupo-financeiro/novo" class="btn btn-primary">
+            <a routerLink="/pages/cadastros/rubricas/novo" class="btn btn-primary">
               <i class="ri-add-line align-bottom me-1"></i> Adicionar
             </a>
           </div>
@@ -44,33 +44,36 @@
               <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Nome</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Centro de Custo</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Grupo Financeiro</th>
                 <th scope="col">Status</th>
-                <th scope="col">Data Registro</th>
-                <th scope="col">Data Atualização</th>
+                <th scope="col">Data Criação</th>
                 <th scope="col">Ações</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let grupoFinanceiro of gruposFinanceiros">
-                <td>{{ grupoFinanceiro.id }}</td>
-                <td>{{ grupoFinanceiro.nomeGrupoFinanceiro }}</td>
-                <td>{{ grupoFinanceiro.descricao || '-' }}</td>
-                <td>{{ grupoFinanceiro.centroCustoNome || grupoFinanceiro.centroCustoId || '-' }}</td>
+              <tr *ngFor="let rubrica of rubricas">
+                <td>{{ rubrica.id }}</td>
+                <td>{{ rubrica.nome }}</td>
+                <td>{{ formatarValor(rubrica.valor) }}</td>
                 <td>
-                  <span class="badge" [ngClass]="getStatusBadgeClass(grupoFinanceiro.ativo!)">
-                    {{ getStatusText(grupoFinanceiro.ativo!) }}
+                  <span class="badge" [ngClass]="rubrica.tipo === 'RECEITA' ? 'bg-success' : 'bg-warning'">
+                    {{ rubrica.tipo }}
+                  </span>
+                </td>
+                <td>{{ rubrica.grupoFinanceiroNome || rubrica.grupoFinanceiroId || '-' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(rubrica.ativo!)">
+                    {{ getStatusText(rubrica.ativo!) }}
                   </span>
                 </td>
                 <!-- Campo de uso exclusivo do backend, exibido apenas para informação -->
-                <td>{{ grupoFinanceiro.dataRegistro ? (grupoFinanceiro.dataRegistro | date:'short') : '-' }}</td>
-                <!-- Campo de uso exclusivo do backend, exibido apenas para informação -->
-                <td>{{ grupoFinanceiro.dataAtualizacao ? (grupoFinanceiro.dataAtualizacao | date:'short') : '-' }}</td>
+                <td>{{ rubrica.dataCriacao ? (rubrica.dataCriacao | date:'short') : '-' }}</td>
                 <td>
                   <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                      <a [routerLink]="['/pages/cadastros/grupo-financeiro/editar', grupoFinanceiro.id]" class="btn btn-soft-primary btn-sm">
+                      <a [routerLink]="['/pages/cadastros/rubricas/editar', rubrica.id]" class="btn btn-soft-primary btn-sm">
                         <i class="ri-pencil-fill align-bottom"></i>
                       </a>
                     </li>
@@ -88,7 +91,7 @@
               </tr>
               <tr *ngIf="!loading && (!page.content || page.content.length === 0)">
                 <td colspan="8" class="text-center">
-                  Nenhum grupo financeiro encontrado.
+                  Nenhuma rubrica encontrada.
                 </td>
               </tr>
             </tbody>

@@ -1,27 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { GrupoFinanceiro, Page } from './grupo-financeiro.model';
-import { GrupoFinanceiroService } from './grupo-financeiro.service';
+import { Socio, Page, SocioDependente } from './socio.model';
+import { SocioService } from './socio.service';
 
-@Component({
-  selector: 'app-grupo-financeiro',
-  templateUrl: './grupo-financeiro.component.html',
-  styleUrls: ['./grupo-financeiro.component.scss']
-})
 /**
- * Componente de listagem de Grupos Financeiros
- * Campos dataRegistro e dataAtualizacao são de uso exclusivo do backend
- * e são exibidos apenas para informação, não sendo utilizados para operações no frontend
+ * Componente de listagem de Sócios
+ * Campos dataRegistro e dataAtualizacao são de uso exclusivo do backend 
+ * e são exibidos apenas para informação
  */
-export class GrupoFinanceiroComponent implements OnInit {
-  gruposFinanceiros: GrupoFinanceiro[] = [];  // Array de grupos financeiros retornados pela API
-  page: Page<GrupoFinanceiro> = {} as Page<GrupoFinanceiro>;  // Objeto de paginação
+@Component({
+  selector: 'app-socio',
+  templateUrl: './socio.component.html',
+  styleUrls: ['./socio.component.scss']
+})
+export class SocioComponent implements OnInit {
+  socios: Socio[] = [];  // Array de sócios retornados pela API
+  page: Page<Socio> = {} as Page<Socio>;  // Objeto de paginação
   currentPage = 0;  // Página atual na navegação
   pageSize = 30;  // Número de itens por página
   filtro = '';  // Filtro de busca
   loading = false;  // Indicador de carregamento
   breadCrumbItems!: Array<{}>;  // Itens do breadcrumb
 
-  constructor(private grupoFinanceiroService: GrupoFinanceiroService) { }
+  constructor(private socioService: SocioService) { }
 
   ngOnInit(): void {
     /**
@@ -29,23 +29,23 @@ export class GrupoFinanceiroComponent implements OnInit {
     */
     this.breadCrumbItems = [
       { label: 'Cadastros' },
-      { label: 'Grupo Financeiro', active: true }
+      { label: 'Sócios', active: true }
     ];
     
-    this.loadGruposFinanceiros();
+    this.loadSocios();
   }
 
-  loadGruposFinanceiros(): void {
+  loadSocios(): void {
     this.loading = true;
-    this.grupoFinanceiroService.getGruposFinanceiros(this.currentPage, this.pageSize, this.filtro)
+    this.socioService.getSocios(this.currentPage, this.pageSize, this.filtro)
       .subscribe({
-        next: (response) => {
+        next: (response: Page<Socio>) => {
           this.page = response;
-          this.gruposFinanceiros = response.content;
+          this.socios = response.content;
           this.loading = false;
         },
-        error: (error) => {
-          console.error('Erro ao carregar grupos financeiros:', error);
+        error: (error: any) => {
+          console.error('Erro ao carregar sócios:', error);
           this.loading = false;
         }
       });
@@ -54,21 +54,33 @@ export class GrupoFinanceiroComponent implements OnInit {
   onPageChange(page: number): void {
     if (page >= 0 && page < this.page.totalPages) {
       this.currentPage = page;
-      this.loadGruposFinanceiros();
+      this.loadSocios();
     }
   }
 
   onFiltroChange(): void {
     this.currentPage = 0; // Resetar para a primeira página ao alterar o filtro
-    this.loadGruposFinanceiros();
+    this.loadSocios();
   }
 
-  getStatusText(ativo: boolean): string {
-    return ativo ? 'Ativo' : 'Inativo';
+  getStatusText(status: string): string {
+    return status || 'Desconhecido';
   }
 
-  getStatusBadgeClass(ativo: boolean): string {
-    return ativo ? 'bg-success' : 'bg-danger';
+  getStatusBadgeClass(status: string): string {
+    const statusLower = status?.toLowerCase();
+    switch(statusLower) {
+      case 'ativo':
+        return 'bg-success';
+      case 'inativo':
+        return 'bg-danger';
+      default:
+        return 'bg-secondary';
+    }
+  }
+
+  getGrauSocioText(grau: string): string {
+    return grau || 'Desconhecido';
   }
 
   getVisiblePages(): number[] {
@@ -108,11 +120,5 @@ export class GrupoFinanceiroComponent implements OnInit {
     }
     
     return pages;
-  }
-
-  // Calculated property: Saldo = creditos - saidas
-  getSaldo(grupoFinanceiro: GrupoFinanceiro): number {
-    // Placeholder - depends on actual implementation, maybe related to centro de custo
-    return 0; // This would need to be implemented based on business logic
   }
 }

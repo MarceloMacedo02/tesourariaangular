@@ -207,7 +207,10 @@
         "GRUPO_MENSALIDADE": "Grupo Mensalidade",
         "SOCIO": "Sócio",
         "SOCIO.LISTAR": "Listar",
-        "SOCIO.IMPORTARCSV": "Importar CSV"
+        "SOCIO.CADASTRAR": "Cadastrar",
+        "SOCIO.IMPORTARCSV": "Importar CSV",
+        "SOCIO.GERARCOBRANCAS": "Gerar Cobranças",
+        "SOCIO.GERARCOBRANCAMENSALIDADE": "Gerar Cobrança de Mensalidade"
       }
     }
   }

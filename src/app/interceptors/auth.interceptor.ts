@@ -61,6 +61,10 @@ export class AuthInterceptor implements HttpInterceptor {
             this.logout();
             return throwError(error);
           }
+        } else if (error.status === 403) {
+          // Forbidden - user does not have permission for this resource
+          this.logout();
+          return throwError(error);
         }
         return throwError(error);
       })
@@ -69,6 +73,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private logout() {
     this.authService.logout();
-    this.router.navigate(['/auth/signin']);
+    this.router.navigate(['/account/auth/signin']);
   }
 }

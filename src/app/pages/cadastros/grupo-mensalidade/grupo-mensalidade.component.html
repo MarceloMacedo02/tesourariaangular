@@ -1,5 +1,5 @@
 <!-- Start Breadcrumbs -->
-<app-breadcrumbs title="Grupo Financeiro" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs title="Grupos de Mensalidade" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
 <div class="row">
@@ -7,9 +7,9 @@
     <div class="card">
       <div class="card-header">
         <div class="d-flex gap-2">
-          <h4 class="card-title mb-0 flex-grow-1">Grupo Financeiro</h4>
+          <h4 class="card-title mb-0 flex-grow-1">Grupos de Mensalidade</h4>
           <div class="flex-shrink-0">
-            <button type="button" class="btn btn-light" (click)="loadGruposFinanceiros()">
+            <button type="button" class="btn btn-light" (click)="loadGruposMensalidade()">
               <i class="ri-refresh-line align-bottom"></i>
             </button>
           </div>
@@ -24,14 +24,14 @@
               <input 
                 type="text" 
                 class="form-control" 
-                placeholder="Filtrar grupos financeiros..." 
+                placeholder="Filtrar grupos de mensalidade..." 
                 [(ngModel)]="filtro"
                 (input)="onFiltroChange()"
               >
             </div>
           </div>
           <div class="col-xl-6 text-xl-end">
-            <a routerLink="/pages/cadastros/grupo-financeiro/novo" class="btn btn-primary">
+            <a routerLink="/pages/cadastros/grupo-mensalidade/novo" class="btn btn-primary">
               <i class="ri-add-line align-bottom me-1"></i> Adicionar
             </a>
           </div>
@@ -45,32 +45,29 @@
                 <th scope="col">ID</th>
                 <th scope="col">Nome</th>
                 <th scope="col">Descrição</th>
-                <th scope="col">Centro de Custo</th>
+                <th scope="col">Valor Total</th>
                 <th scope="col">Status</th>
                 <th scope="col">Data Registro</th>
-                <th scope="col">Data Atualização</th>
                 <th scope="col">Ações</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let grupoFinanceiro of gruposFinanceiros">
-                <td>{{ grupoFinanceiro.id }}</td>
-                <td>{{ grupoFinanceiro.nomeGrupoFinanceiro }}</td>
-                <td>{{ grupoFinanceiro.descricao || '-' }}</td>
-                <td>{{ grupoFinanceiro.centroCustoNome || grupoFinanceiro.centroCustoId || '-' }}</td>
+              <tr *ngFor="let grupo of gruposMensalidade">
+                <td>{{ grupo.id }}</td>
+                <td>{{ grupo.nomeGrupoMensalidade }}</td>
+                <td>{{ grupo.descricao || '-' }}</td>
+                <td>{{ grupo.valorTotal | currency:'BRL':'symbol':'1.2-2' }}</td>
                 <td>
-                  <span class="badge" [ngClass]="getStatusBadgeClass(grupoFinanceiro.ativo!)">
-                    {{ getStatusText(grupoFinanceiro.ativo!) }}
+                  <span class="badge" [ngClass]="getStatusBadgeClass(grupo.ativo)">
+                    {{ getStatusText(grupo.ativo) }}
                   </span>
                 </td>
                 <!-- Campo de uso exclusivo do backend, exibido apenas para informação -->
-                <td>{{ grupoFinanceiro.dataRegistro ? (grupoFinanceiro.dataRegistro | date:'short') : '-' }}</td>
-                <!-- Campo de uso exclusivo do backend, exibido apenas para informação -->
-                <td>{{ grupoFinanceiro.dataAtualizacao ? (grupoFinanceiro.dataAtualizacao | date:'short') : '-' }}</td>
+                <td>{{ grupo.dataRegistro ? (grupo.dataRegistro | date:'short') : '-' }}</td>
                 <td>
                   <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                      <a [routerLink]="['/pages/cadastros/grupo-financeiro/editar', grupoFinanceiro.id]" class="btn btn-soft-primary btn-sm">
+                      <a [routerLink]="['/pages/cadastros/grupo-mensalidade/editar', grupo.id]" class="btn btn-soft-primary btn-sm">
                         <i class="ri-pencil-fill align-bottom"></i>
                       </a>
                     </li>
@@ -78,7 +75,7 @@
                 </td>
               </tr>
               <tr *ngIf="loading">
-                <td colspan="8" class="text-center">
+                <td colspan="6" class="text-center">
                   <div class="d-flex justify-content-center">
                     <div class="spinner-border text-primary" role="status">
                       <span class="visually-hidden">Carregando...</span>
@@ -87,8 +84,8 @@
                 </td>
               </tr>
               <tr *ngIf="!loading && (!page.content || page.content.length === 0)">
-                <td colspan="8" class="text-center">
-                  Nenhum grupo financeiro encontrado.
+                <td colspan="6" class="text-center">
+                  Nenhum grupo de mensalidade encontrado.
                 </td>
               </tr>
             </tbody>

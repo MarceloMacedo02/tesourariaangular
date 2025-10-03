@@ -6,9 +6,14 @@ import { CentroCustoFormComponent } from './centro-custo/centro-custo-form/centr
 import { GrupoFinanceiroComponent } from './grupo-financeiro/grupo-financeiro.component';
 import { GrupoFinanceiroFormComponent } from './grupo-financeiro/grupo-financeiro-form/grupo-financeiro-form.component';
 import { RubricasComponent } from './rubricas/rubricas.component';
+import { RubricasFormComponent } from './rubricas/rubricas-form/rubricas-form.component';
 import { GrupoMensalidadeComponent } from './grupo-mensalidade/grupo-mensalidade.component';
+import { GrupoMensalidadeFormComponent } from './grupo-mensalidade/grupo-mensalidade-form/grupo-mensalidade-form.component';
+import { SocioComponent } from './socio/socio.component';
+import { SocioFormComponent } from './socio/socio-form/socio-form.component';
 import { SocioListarComponent } from './socio/socio-listar/socio-listar.component';
 import { SocioImportarComponent } from './socio/socio-importar/socio-importar.component';
+import { CobrancaLoteComponent } from './socio/cobranca-lote/cobranca-lote.component';
 
 const routes: Routes = [
   {
@@ -53,12 +58,62 @@ const routes: Routes = [
   },
   {
     path: 'rubricas',
+    redirectTo: 'rubricas/lista',
+    pathMatch: 'full'
+  },
+  {
+    path: 'rubricas/lista',
     component: RubricasComponent,
     canActivate: [AuthGuard]
   },
   {
+    path: 'rubricas/novo',
+    component: RubricasFormComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'rubricas/editar/:id',
+    component: RubricasFormComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'grupo-mensalidade',
+    redirectTo: 'grupo-mensalidade/lista',
+    pathMatch: 'full'
+  },
+  {
+    path: 'grupo-mensalidade/lista',
     component: GrupoMensalidadeComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'grupo-mensalidade/novo',
+    component: GrupoMensalidadeFormComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'grupo-mensalidade/editar/:id',
+    component: GrupoMensalidadeFormComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'socio',
+    redirectTo: 'socio/lista',
+    pathMatch: 'full'
+  },
+  {
+    path: 'socio/lista',
+    component: SocioComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'socio/novo',
+    component: SocioFormComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'socio/editar/:id',
+    component: SocioFormComponent,
     canActivate: [AuthGuard]
   },
   {
@@ -72,6 +127,11 @@ const routes: Routes = [
       {
         path: 'importar',
         component: SocioImportarComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'gerar-cobrancas',
+        component: CobrancaLoteComponent,
         canActivate: [AuthGuard]
       }
     ]
