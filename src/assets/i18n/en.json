@@ -199,18 +199,31 @@
       }
     },
     "CADASTROS": {
-      "TEXT": "Cadastros",
+      "TEXT": "Registros",
       "LIST": {
-        "CENTROCUSTO": "Centro de Custo",
-        "GRUPOFINANCEIRO": "Grupo Financeiro",
-        "RUBRICAS": "Rubricas",
-        "GRUPO_MENSALIDADE": "Grupo Mensalidade",
-        "SOCIO": "Sócio",
-        "SOCIO.LISTAR": "Listar",
-        "SOCIO.CADASTRAR": "Cadastrar",
-        "SOCIO.IMPORTARCSV": "Importar CSV",
-        "SOCIO.GERARCOBRANCAS": "Gerar Cobranças",
-        "SOCIO.GERARCOBRANCAMENSALIDADE": "Gerar Cobrança de Mensalidade"
+        "CENTROCUSTO": "Cost Center",
+        "GRUPOFINANCEIRO": "Financial Group",
+        "RUBRICAS": "Line Items",
+        "GRUPO_MENSALIDADE": "Monthly Fee Group",
+        "SOCIO": "Member",
+        "SOCIO.LISTAR": "List",
+        "SOCIO.CADASTRAR": "Register",
+        "SOCIO.IMPORTARCSV": "Import CSV",
+        "SOCIO.GERARCOBRANCAS": "Generate Billings",
+        "SOCIO.GERARCOBRANCAMENSALIDADE": "Generate Monthly Fee Billing"
+      }
+    },
+    "COBRANCAS": {
+      "TEXT": "Billings",
+      "LIST": {
+        "GERARCOBRANCAS": "Generate Billings",
+        "LISTARCOBRANCAS": "List Billings",
+        "COBRANCASNAOMENSALIDADE": "Non-Monthly Billings",
+        "GERARCOBRANCASNAOMENSALIDADEINDIVIDUAL": "Generate Individual Non-Monthly Billing",
+        "GERARCOBRANCASNAOMENSALIDADELOTE": "Generate Batch Non-Monthly Billing",
+        "COBRANCASOUTRASRUBRICAS": "Other Categories Billings",
+        "GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL": "Generate Individual Other Categories Billing",
+        "GERARCOBRANCASOUTRASRUBRICASLOTE": "Generate Batch Other Categories Billing"
       }
     }
   }

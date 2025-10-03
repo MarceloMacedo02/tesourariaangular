@@ -1,22 +1,22 @@
 {
   "MENUITEMS": {
     "MENU": {
-      "TEXT": "MENÚ"
+      "TEXT": "MENU"
     },
     "DASHBOARD": {
-      "TEXT": "Tableros",
+      "TEXT": "Dashboards",
       "LIST": {
-        "ANALYTICS": "Analítica",
-        "ECOMMERCE": "Comercio Electrónico"
+        "ANALYTICS": "Analytics",
+        "ECOMMERCE": "Ecommerce"
       }
     },
     "APPS": {
-      "TEXT": "Aplicaciones",
+      "TEXT": "Apps",
       "LIST": {
         "CALENDAR": "Calendario",
         "CHAT": "Chat",
-        "EMAIL": "Correo Electrónico",
-        "FILEMANAGER": "Administrador de Archivos",
+        "EMAIL": "Email",
+        "FILEMANAGER": "Gestor de Archivos",
         "TODO": "Tareas",
         "CONTACTS": "Contactos",
         "LEARNING": "Aprendizaje",
@@ -24,7 +24,7 @@
         "KANBANBOARD": "Tablero Kanban",
         "INVOICES": "Facturas",
         "LISTVIEW": "Vista de Lista",
-        "OVERVIEW": "Resumen",
+        "OVERVIEW": "Visión General",
         "CREATEINVOICE": "Crear Factura"
       }
     },
@@ -38,13 +38,13 @@
         "SIGNUP": "Registrarse",
         "PASSWORDRESET": "Restablecer Contraseña",
         "PASSWORDCREATE": "Crear Contraseña",
-        "LOCKSCREEN": "Bloquear Pantalla",
+        "LOCKSCREEN": "Pantalla de Bloqueo",
         "LOGOUT": "Cerrar Sesión",
         "SUCCESSMESSAGE": "Mensaje de Éxito",
         "TWOSTEPVERIFICATION": "Verificación de Dos Pasos",
         "ERRORS": "Errores",
         "404ERROR": "Error 404",
-        "500": "500",
+        "500": "Error 500",
         "OFFLINE": "Página Sin Conexión"
       }
     },
@@ -78,7 +78,7 @@
         "COLORS": "Colores",
         "CARDS": "Tarjetas",
         "CAROUSEL": "Carrusel",
-        "DROPDOWNS": "Desplegables",
+        "DROPDOWNS": "Menús Desplegables",
         "GRID": "Cuadrícula",
         "IMAGES": "Imágenes",
         "TABS": "Pestañas",
@@ -90,13 +90,13 @@
       "TEXT": "Bootstrap UI2",
       "LIST": {
         "MEDIAOBJECT": "Objeto de Medios",
-        "EMBEDVIDEO": "Video Incrustado",
+        "EMBEDVIDEO": "Vídeo Incrustado",
         "TYPOGRAPHY": "Tipografía",
         "LISTS": "Listas",
         "LINKS": "Enlaces",
         "GENERAL": "General",
         "UTILITIES": "Utilidades",
-        "OFFCANVAS": "Fuera de Lienzo",
+        "OFFCANVAS": "Fuera del Lienzo",
         "PLACEHOLDERS": "Marcadores de Posición",
         "PROGRESS": "Progreso",
         "NOTIFICATIONS": "Notificaciones"
@@ -105,13 +105,13 @@
     "ADVANCEUI": {
       "TEXT": "UI Avanzada",
       "LIST": {
-        "SWEETALERTS": "Alertas Sweet",
+        "SWEETALERTS": "Alertas Dulces",
         "NESTABLELIST": "Lista Anidada",
         "SCROLLBAR": "Barra de Desplazamiento",
-        "SWIPERSLIDER": "Slider Swiper",
+        "SWIPERSLIDER": "Control Deslizante",
         "RATTINGS": "Calificaciones",
         "HIGHLIGHT": "Resaltar",
-        "SCROLLSPY": "ScrollSpy"
+        "SCROLLSPY": "Espía de Desplazamiento"
       }
     },
     "WIDGETS": {
@@ -122,15 +122,15 @@
       "LIST": {
         "BASICELEMENTS": "Elementos Básicos",
         "FORMSELECT": "Selección de Formulario",
-        "CHECKBOXS&RADIOS": "Casillas de Verificación y Botones de Radio",
-        "PICKERS": "Selección de Fecha/Hora",
+        "CHECKBOXS&RADIOS": "Casillas de Verificación y Radios",
+        "PICKERS": "Selectores",
         "INPUTMASKS": "Máscaras de Entrada",
         "ADVANCED": "Avanzado",
-        "RANGESLIDER": "Control de Rango",
+        "RANGESLIDER": "Control Deslizante de Rango",
         "VALIDATION": "Validación",
         "WIZARD": "Asistente",
         "EDITORS": "Editores",
-        "FILEUPLOADS": "Carga de Archivos",
+        "FILEUPLOADS": "Cargas de Archivos",
         "FORMLAYOUTS": "Diseños de Formulario"
       }
     },
@@ -140,7 +140,7 @@
         "BASICTABLES": "Tablas Básicas",
         "GRIDJS": "Grid Js",
         "LISTJS": "List Js",
-        "DATATABLES": "DataTables"
+        "DATATABLES": "Tablas de Datos"
       }
     },
     "CHARTS": {
@@ -151,14 +151,14 @@
         "COLUMN": "Columna",
         "BAR": "Barra",
         "MIXED": "Mixto",
-        "TIMELINE": "Línea de Tiempo",
-        "CANDLSTICK": "Vela",
-        "BOXPLOT": "Diagrama de Caja",
+        "TIMELINE": "Cronología",
+        "CANDLSTICK": "Vela Japonesa",
+        "BOXPLOT": "Gráfico de Caja",
         "BUBBLE": "Burbuja",
         "SCATTER": "Dispersión",
         "HEATMAP": "Mapa de Calor",
         "TREEMAP": "Mapa de Árbol",
-        "PIE": "Pastel",
+        "PIE": "Circular",
         "RADIALBAR": "Barra Radial",
         "RADAR": "Radar",
         "POLARAREA": "Área Polar"
@@ -168,7 +168,7 @@
       "TEXT": "Iconos",
       "LIST": {
         "REMIX": "Remix",
-        "BOOTSTRAP": "Oreja",
+        "BOOTSTRAP": "Bootstrap",
         "PHOSPHOR": "Phosphor",
         "TABLER": "Tabler"
       }
@@ -178,11 +178,11 @@
       "LIST": {
         "GOOGLE": "Google",
         "VECTOR": "Vector",
-        "LEAFLET": "Leaflet"
+        "LEAFLET": "Folleto"
       }
     },
     "MULTILEVEL": {
-      "TEXT": "Multi Nivel",
+      "TEXT": "Nivel Múltiple",
       "LIST": {
         "LEVEL1": {
           "1": "Nivel 1.1",
@@ -196,6 +196,34 @@
             }
           }
         }
+      }
+    },
+    "CADASTROS": {
+      "TEXT": "Registros",
+      "LIST": {
+        "CENTROCUSTO": "Centro de Costo",
+        "GRUPOFINANCEIRO": "Grupo Financiero",
+        "RUBRICAS": "Rubros",
+        "GRUPO_MENSALIDADE": "Grupo de Cuotas Mensuales",
+        "SOCIO": "Socio",
+        "SOCIO.LISTAR": "Listar",
+        "SOCIO.CADASTRAR": "Registrar",
+        "SOCIO.IMPORTARCSV": "Importar CSV",
+        "SOCIO.GERARCOBRANCAS": "Generar Cobros",
+        "SOCIO.GERARCOBRANCAMENSALIDADE": "Generar Cobro de Cuota Mensual"
+      }
+    },
+    "COBRANCAS": {
+      "TEXT": "Cobros",
+      "LIST": {
+        "GERARCOBRANCAS": "Generar Cobros",
+        "LISTARCOBRANCAS": "Listar Cobros",
+        "COBRANCASNAOMENSALIDADE": "Cobros No Mensuales",
+        "GERARCOBRANCASNAOMENSALIDADEINDIVIDUAL": "Generar Cobro No Mensual Individual",
+        "GERARCOBRANCASNAOMENSALIDADELOTE": "Generar Cobro No Mensual en Lote",
+        "COBRANCASOUTRASRUBRICAS": "Cobros Otras Rubricas",
+        "GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL": "Generar Cobro Individual Otras Rubricas",
+        "GERARCOBRANCASOUTRASRUBRICASLOTE": "Generar Cobro en Lote Otras Rubricas"
       }
     }
   }

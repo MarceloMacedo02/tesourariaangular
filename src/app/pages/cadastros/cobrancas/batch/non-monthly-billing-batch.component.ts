@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Socio, Page } from '../socio.model';
-import { GrupoMensalidade } from '../../grupo-mensalidade/grupo-mensalidade.model';
-import { SocioService } from '../socio.service';
-import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalidade.service';
+import { Router } from '@angular/router';
+import { Socio, Page } from '../../socio/socio.model';
+import { Rubrica } from '../../rubricas/rubricas.model';
+import { SocioService } from '../../socio/socio.service';
+import { RubricasService } from '../../rubricas/rubricas.service';
+import { NonMonthlyBillingService } from '../non-monthly-billing.service';
+import { Cobranca, BatchBillingRequest } from '../non-monthly-billing.model';
 
 @Component({
-  selector: 'app-cobranca-lote',
+  selector: 'app-non-monthly-billing-batch',
   template: `
     <div class="page-content">
       <div class="container-fluid">
@@ -14,40 +17,91 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
           <div class="col-12">
             <div class="card">
               <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Geração em Lote de Cobranças de Mensalidade</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Geração em Lote de Cobranças Outras Rubricas</h4>
               </div>
               <div class="card-body">
-                <form [formGroup]="cobrancaForm" (ngSubmit)="gerarCobrancas()">
-                  <div class="row g-3">
-                    <div class="col-lg-4">
-                      <label for="mes" class="form-label">Mês</label>
-                      <select class="form-control" id="mes" formControlName="mes" required>
-                        <option value="1">Janeiro</option>
-                        <option value="2">Fevereiro</option>
-                        <option value="3">Março</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Maio</option>
-                        <option value="6">Junho</option>
-                        <option value="7">Julho</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Setembro</option>
-                        <option value="10">Outubro</option>
-                        <option value="11">Novembro</option>
-                        <option value="12">Dezembro</option>
-                      </select>
+                <!-- Formulário para dados da cobrança -->
+                <form [formGroup]="billingForm" (ngSubmit)="generateBatchBillings()">
+                  <div class="row g-3 mb-4">
+                    <div class="col-lg-6">
+                      <label for="rubricaId" class="form-label">Rubrica *</label>
+                      <ng-select 
+                        [(ngModel)]="selectedRubricaId"
+                        [disabled]="loadingRubricas"
+                        [clearable]="false"
+                        [searchable]="true"
+                        [closeOnSelect]="true"
+                        placeholder="Selecione uma rubrica"
+                        [items]="rubricas"
+                        bindValue="id"
+                        bindLabel="nome"
+                        (change)="onRubricaChange($event)">
+                      </ng-select>
+                      <div *ngIf="!selectedRubricaId && billingForm.get('rubricaId')?.touched" 
+                           class="text-danger mt-1">
+                        Rubrica é obrigatória
+                      </div>
                     </div>
                     
-                    <div class="col-lg-4">
-                      <label for="ano" class="form-label">Ano</label>
-                      <input type="number" class="form-control" id="ano" formControlName="ano" 
-                             placeholder="Ex: 2025" min="2000" max="3000" required>
+                    <div class="col-lg-6">
+                      <label for="descricao" class="form-label">Descrição *</label>
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        id="descricao" 
+                        formControlName="descricao" 
+                        placeholder="Descrição da cobrança"
+                        required>
+                      <div *ngIf="billingForm.get('descricao')?.invalid && billingForm.get('descricao')?.touched" 
+                           class="text-danger mt-1">
+                        Descrição é obrigatória
+                      </div>
                     </div>
                     
-                    <div class="col-lg-4 d-flex align-items-end">
-                      <button type="submit" class="btn btn-primary w-100" 
-                              [disabled]="cobrancaForm.invalid || !sociosSelecionados.length || loading">
+                    <div class="col-lg-6">
+                      <label for="valor" class="form-label">Valor *</label>
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        id="valor"
+                        formControlName="valor"
+                        [disabled]="loading"
+                        required
+                        placeholder="R$ 0,00"
+                        [currencyMask]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, nullable: true, precision: 2 }">
+                      <div *ngIf="billingForm.get('valor')?.invalid && billingForm.get('valor')?.touched" 
+                           class="text-danger mt-1">
+                        Valor é obrigatório e deve ser maior que zero
+                      </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                      <label for="dataVencimento" class="form-label">Data de Vencimento *</label>
+                      <input 
+                        type="text"
+                        class="form-control"
+                        id="dataVencimento"
+                        formControlName="dataVencimento"
+                        [disabled]="loading"
+                        placeholder="dd/mm/aaaa"
+                        mwlFlatpickr
+                        [altInput]="true"
+                        [convertModelValue]="true"
+                        [dateFormat]="'Y-m-d'"
+                        altFormat="d/m/Y">
+                      <div *ngIf="billingForm.get('dataVencimento')?.invalid && billingForm.get('dataVencimento')?.touched" 
+                           class="text-danger mt-1">
+                        Data de vencimento é obrigatória
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <button 
+                        type="submit" 
+                        class="btn btn-primary w-100" 
+                        [disabled]="billingForm.invalid || !sociosSelecionados.length || loading">
                         <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        {{ loading ? 'Gerando Cobranças...' : 'Gerar Cobranças' }}
+                        {{ loading ? 'Gerando Cobranças...' : 'Gerar Cobranças em Lote de Outras Rubricas' }}
                       </button>
                     </div>
                   </div>
@@ -85,8 +139,6 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
                         <th>Grau</th>
                         <th>Status</th>
                         <th>Data Adesão</th>
-                        <th>Grupo Mensalidade</th>
-                        <th>Valor Mensalidade</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -112,11 +164,9 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
                           </span>
                         </td>
                         <td>{{ socio.dataAdesao ? (socio.dataAdesao | date:'shortDate') : '-' }}</td>
-                        <td>{{ getGrupoMensalidadeNome(socio.grupoMensalidadeId) }}</td>
-                        <td>{{ getValorMensalidade(socio.grupoMensalidadeId) > 0 ? (getValorMensalidade(socio.grupoMensalidadeId) | currency:'BRL':'symbol':'1.2-2') : '-' }}</td>
                       </tr>
-                      <tr *ngIf="loading">
-                        <td colspan="9" class="text-center">
+                      <tr *ngIf="loadingSocios">
+                        <td colspan="7" class="text-center">
                           <div class="d-flex justify-content-center">
                             <div class="spinner-border text-primary" role="status">
                               <span class="visually-hidden">Carregando...</span>
@@ -124,8 +174,8 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
                           </div>
                         </td>
                       </tr>
-                      <tr *ngIf="!loading && (!page.content || page.content.length === 0)">
-                        <td colspan="9" class="text-center">
+                      <tr *ngIf="!loadingSocios && (!page.content || page.content.length === 0)">
+                        <td colspan="7" class="text-center">
                           Nenhum sócio encontrado.
                         </td>
                       </tr>
@@ -134,7 +184,7 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
                 </div>
 
                 <!-- Paginação -->
-                <div class="row g-0 mt-3 align-items-center" *ngIf="!loading && page.totalElements > 0">
+                <div class="row g-0 mt-3 align-items-center" *ngIf="!loadingSocios && page.totalElements > 0">
                   <div class="col-sm-6">
                     <div class="text-muted">
                       Mostrando <b>{{ page.number * page.size + 1 }}</b> a 
@@ -190,17 +240,19 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
 
                 <!-- Resultado da geração -->
                 <div *ngIf="resultadoGeracao" class="mt-4">
-                  <div class="alert" [ngClass]="resultadoGeracao.mensagem && resultadoGeracao.mensagem.includes('Erro') ? 'alert-danger' : 'alert-success'">
-                    <h5 class="alert-heading">Resultado da Geração em Lote</h5>
-                    <p>{{ resultadoGeracao.mensagem }}</p>
-                    <p class="mb-0">
-                      <strong>Cobranças Geradas:</strong> {{ resultadoGeracao.cobrancasGeradas }} |
-                      <strong>Cobranças Atualizadas:</strong> {{ resultadoGeracao.cobrancasAtualizadas }} |
-                      <strong>Sócios Ignorados:</strong> {{ resultadoGeracao.sociosIgnorados }}
-                    </p>
-                    <div *ngIf="resultadoGeracao.detalhes" class="mt-2">
-                      <h6>Detalhes:</h6>
-                      <pre class="text-muted" style="white-space: pre-wrap;">{{ resultadoGeracao.detalhes }}</pre>
+                  <div class="alert" [class.alert-success]="!erroGeracao" [class.alert-danger]="erroGeracao">
+                    <h5 class="alert-heading">{{ erroGeracao ? 'Erro' : 'Sucesso' }}</h5>
+                    <p>{{ resultadoGeracao }}</p>
+                    <div *ngIf="!erroGeracao" class="mt-2">
+                      <p class="mb-0">
+                        <strong>Cobranças Geradas:</strong> {{ cobrancasGeradas }} |
+                        <strong>Cobranças Atualizadas:</strong> {{ cobrancasAtualizadas }} |
+                        <strong>Sócios Ignorados:</strong> {{ sociosIgnorados }}
+                      </p>
+                      <div *ngIf="detalhes && detalhes.length > 0" class="mt-2">
+                        <h6>Detalhes:</h6>
+                        <pre class="text-muted" style="white-space: pre-wrap;">{{ detalhes }}</pre>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -213,64 +265,74 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
   `,
   styles: []
 })
-export class CobrancaLoteComponent implements OnInit {
-  cobrancaForm: FormGroup;
+export class NonMonthlyBillingBatchComponent implements OnInit {
+  billingForm: FormGroup;
   socios: Socio[] = [];
-  gruposMensalidade: GrupoMensalidade[] = [];
+  rubricas: Rubrica[] = [];
+  selectedRubricaId: number | null = null;
   page: Page<Socio> = {} as Page<Socio>;
   currentPage = 0;
   pageSize = 30;
   filtro = '';
+  loadingSocios = false;
+  loadingRubricas = false;
   loading = false;
-  loadingGrupos = false;
   sociosSelecionados: number[] = [];
-  resultadoGeracao: any = null;
+  resultadoGeracao: string | null = null;
+  erroGeracao = false;
+  cobrancasGeradas = 0;
+  cobrancasAtualizadas = 0;
+  sociosIgnorados = 0;
+  detalhes: string[] | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
     private socioService: SocioService,
-    private grupoMensalidadeService: GrupoMensalidadeService
+    private rubricaService: RubricasService,
+    private billingService: NonMonthlyBillingService,
+    private router: Router
   ) {
-    this.cobrancaForm = this.formBuilder.group({
-      mes: [new Date().getMonth() + 1, [Validators.required, Validators.min(1), Validators.max(12)]],
-      ano: [new Date().getFullYear(), [Validators.required, Validators.min(2000), Validators.max(3000)]]
+    this.billingForm = this.formBuilder.group({
+      rubricaId: ['', [Validators.required]],
+      descricao: ['', [Validators.required, Validators.minLength(3)]],
+      valor: ['', [Validators.required, Validators.min(0.01)]],
+      dataVencimento: ['', [Validators.required]]
     });
   }
 
   ngOnInit(): void {
-    this.loadGruposMensalidade();
     this.loadSocios();
-  }
-
-  loadGruposMensalidade(): void {
-    this.loadingGrupos = true;
-    // Primeiro, obtemos todos os grupos de mensalidade
-    this.grupoMensalidadeService.getAllGruposMensalidade().subscribe({
-      next: (data: GrupoMensalidade[]) => {
-        this.gruposMensalidade = data;
-        this.loadingGrupos = false;
-      },
-      error: (error: any) => {
-        console.error('Erro ao carregar grupos de mensalidade:', error);
-        this.loadingGrupos = false;
-      }
-    });
+    this.loadRubricas();
   }
 
   loadSocios(): void {
-    this.loading = true;
+    this.loadingSocios = true;
     this.socioService.getSocios(this.currentPage, this.pageSize, this.filtro)
       .subscribe({
         next: (response: Page<Socio>) => {
           this.page = response;
           this.socios = response.content;
-          this.loading = false;
+          this.loadingSocios = false;
         },
         error: (error: any) => {
           console.error('Erro ao carregar sócios:', error);
-          this.loading = false;
+          this.loadingSocios = false;
         }
       });
+  }
+
+  loadRubricas(): void {
+    this.loadingRubricas = true;
+    this.rubricaService.getRubricas(0, 1000).subscribe({
+      next: (response) => {
+        this.rubricas = response.content;
+        this.loadingRubricas = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar rubricas:', error);
+        this.loadingRubricas = false;
+      }
+    });
   }
 
   onPageChange(page: number): void {
@@ -283,6 +345,14 @@ export class CobrancaLoteComponent implements OnInit {
   onFiltroChange(): void {
     this.currentPage = 0; // Resetar para a primeira página ao alterar o filtro
     this.loadSocios();
+  }
+
+  onRubricaChange(event: any): void {
+    this.selectedRubricaId = event?.id || null;
+    console.log('Rubrica selecionada:', event, 'selectedRubricaId:', this.selectedRubricaId);
+    
+    // Atualizar o valor do form control também
+    this.billingForm.get('rubricaId')?.setValue(this.selectedRubricaId || '');
   }
 
   getStatusText(status: string): string {
@@ -345,27 +415,6 @@ export class CobrancaLoteComponent implements OnInit {
     return pages;
   }
 
-  getGrupoMensalidadeNome(grupoMensalidadeId: number | undefined): string {
-    if (!grupoMensalidadeId) {
-      return '-';
-    }
-    const grupo = this.gruposMensalidade.find(g => g.id === grupoMensalidadeId);
-    return grupo ? grupo.nomeGrupoMensalidade : 'Grupo não encontrado';
-  }
-
-  // Método para obter o valor total do grupo de mensalidade (soma dos valores das rubricas)
-  getValorMensalidade(grupoMensalidadeId: number | undefined): number {
-    if (!grupoMensalidadeId) {
-      return 0;
-    }
-    const grupo = this.gruposMensalidade.find(g => g.id === grupoMensalidadeId);
-    // Calcular a soma dos valores das rubricas do grupo (itensRubricaMensalidade)
-    if (grupo && grupo.itensRubricaMensalidade) {
-      return grupo.itensRubricaMensalidade.reduce((total, item) => total + (item.valor || 0), 0);
-    }
-    return 0;
-  }
-
   selecionarTodos(event: any): void {
     if (event.target.checked) {
       this.sociosSelecionados = this.socios.map(s => s.id!).filter(id => id !== undefined) as number[];
@@ -389,44 +438,70 @@ export class CobrancaLoteComponent implements OnInit {
     return socioId ? this.sociosSelecionados.includes(socioId) : false;
   }
 
-  gerarCobrancas(): void {
-    if (this.cobrancaForm.invalid || this.sociosSelecionados.length === 0) {
+  generateBatchBillings(): void {
+    // Atualizar o valor do form control com o valor do ng-select
+    this.billingForm.get('rubricaId')?.setValue(this.selectedRubricaId);
+    
+    // Verificar se o ng-select tem valor selecionado
+    if (this.billingForm.invalid || this.sociosSelecionados.length === 0 || !this.selectedRubricaId) {
+      // Marcar campos como tocados para exibir erros de validação
+      this.billingForm.markAllAsTouched();
+      
+      // Verificar se rubrica não está selecionada
+      if (!this.selectedRubricaId) {
+        this.billingForm.get('rubricaId')?.setErrors({ required: true });
+      }
+      
+      if (this.sociosSelecionados.length === 0) {
+        this.resultadoGeracao = 'Selecione pelo menos um sócio para gerar cobranças';
+        this.erroGeracao = true;
+      }
       return;
     }
 
-    this.loading = true; // Mostrar o indicador de carregamento
-    this.resultadoGeracao = null; // Limpar resultado anterior
+    const formData = this.billingForm.value;
 
-    const { mes, ano } = this.cobrancaForm.value;
+    // Prepare the request object for OUTRAS_RUBRICAS batch billing
+    const request: BatchBillingRequest = {
+      sociosIds: this.sociosSelecionados,
+      rubricaId: this.selectedRubricaId,
+      valor: formData.valor,
+      dataVencimento: formData.dataVencimento,
+      descricao: formData.descricao
+    };
 
-    this.socioService.gerarCobrancasMensalidade(this.sociosSelecionados, mes, ano).subscribe({
+    this.loading = true;
+    this.resultadoGeracao = null;
+    this.erroGeracao = false;
+
+    this.billingService.createBatchOutrasRubricasBillings(request).subscribe({
       next: (response) => {
-        this.resultadoGeracao = response;
-        this.loading = false; // Esconder o indicador de carregamento
-        console.log('Cobranças geradas com sucesso:', response);
+        this.loading = false;
+        this.cobrancasGeradas = response.cobrancasGeradas;
+        this.cobrancasAtualizadas = response.cobrancasAtualizadas;
+        this.sociosIgnorados = response.sociosIgnorados;
+        this.detalhes = response.detalhes || [];
+        this.resultadoGeracao = response.mensagem;
+        this.erroGeracao = false;
         
-        // Mostrar mensagem de sucesso se não houver detalhes no response
-        if (!response.mensagem) {
-          // Criar mensagem padrão se o backend não retornar uma
-          this.resultadoGeracao = {
-            mensagem: "Cobranças geradas com sucesso!",
-            cobrancasGeradas: this.sociosSelecionados.length,
-            cobrancasAtualizadas: 0,
-            sociosIgnorados: 0
-          };
-        }
+        // Clear form and selection after successful creation
+        this.billingForm.reset();
+        this.sociosSelecionados = [];
+        
+        // Clear the validation errors
+        Object.keys(this.billingForm.controls).forEach(key => {
+          this.billingForm.get(key)?.setErrors(null);
+        });
+        
+        setTimeout(() => {
+          this.router.navigate(['/pages/cadastros/cobrancas/lista']); // Redirect to billing list after success
+        }, 2000);
       },
       error: (error) => {
-        console.error('Erro ao gerar cobranças:', error);
-        this.loading = false; // Esconder o indicador de carregamento
-        
-        // Exibir mensagem de erro
-        this.resultadoGeracao = {
-          mensagem: "Erro ao gerar cobranças: " + (error.error?.message || 'Erro desconhecido'),
-          cobrancasGeradas: 0,
-          cobrancasAtualizadas: 0,
-          sociosIgnorados: 0
-        };
+        this.loading = false;
+        this.erroGeracao = true;
+        this.resultadoGeracao = `Erro ao gerar cobranças: ${error.error?.message || 'Erro desconhecido'}`;
+        console.error('Erro ao gerar cobranças em lote:', error);
       }
     });
   }

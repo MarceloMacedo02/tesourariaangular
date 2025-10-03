@@ -212,6 +212,19 @@
         "SOCIO.GERARCOBRANCAS": "Gerar Cobranças",
         "SOCIO.GERARCOBRANCAMENSALIDADE": "Gerar Cobrança de Mensalidade"
       }
+    },
+    "COBRANCAS": {
+      "TEXT": "Cobranças",
+      "LIST": {
+        "GERARCOBRANCAS": "Gerar Cobranças",
+        "LISTARCOBRANCAS": "Listar Cobranças",
+        "COBRANCASNAOMENSALIDADE": "Cobranças Não Mensalidade",
+        "GERARCOBRANCASNAOMENSALIDADEINDIVIDUAL": "Gerar Cobrança Não Mensalidade Individual",
+        "GERARCOBRANCASNAOMENSALIDADELOTE": "Gerar Cobrança Não Mensalidade em Lote",
+        "COBRANCASOUTRASRUBRICAS": "Cobranças Outras Rubricas",
+        "GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL": "Gerar Cobrança Individual Outras Rubricas",
+        "GERARCOBRANCASOUTRASRUBRICASLOTE": "Gerar Cobrança em Lote Outras Rubricas"
+      }
     }
   }
 }

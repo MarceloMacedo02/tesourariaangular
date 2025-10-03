@@ -215,6 +215,16 @@ export class GrupoMensalidadeFormComponent implements OnInit {
 
     this.loading = true;
 
+    // Garantir que todos os itens de rubrica tenham o grupoMensalidadeId definido antes de enviar
+    if (this.grupoMensalidade.itensRubricaMensalidade) {
+      this.grupoMensalidade.itensRubricaMensalidade = this.grupoMensalidade.itensRubricaMensalidade.map(item => {
+        return {
+          ...item,
+          grupoMensalidadeId: this.grupoMensalidade.id || undefined
+        };
+      });
+    }
+
     if (this.isEditing && this.grupoMensalidade.id) {
       this.grupoMensalidadeService.updateGrupoMensalidade(this.grupoMensalidade.id!, this.grupoMensalidade).subscribe({
         next: () => {

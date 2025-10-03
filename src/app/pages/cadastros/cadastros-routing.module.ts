@@ -14,6 +14,10 @@ import { SocioFormComponent } from './socio/socio-form/socio-form.component';
 import { SocioListarComponent } from './socio/socio-listar/socio-listar.component';
 import { SocioImportarComponent } from './socio/socio-importar/socio-importar.component';
 import { CobrancaLoteComponent } from './socio/cobranca-lote/cobranca-lote.component';
+import { NonMonthlyBillingIndividualComponent } from './cobrancas/individual/non-monthly-billing-individual.component';
+import { NonMonthlyBillingBatchComponent } from './cobrancas/batch/non-monthly-billing-batch.component';
+import { BillingListComponent } from './cobrancas/billing-list.component';
+import { SocioBillingsComponent } from './cobrancas/socio-billings/socio-billings.component';
 
 const routes: Routes = [
   {
@@ -132,6 +136,31 @@ const routes: Routes = [
       {
         path: 'gerar-cobrancas',
         component: CobrancaLoteComponent,
+        canActivate: [AuthGuard]
+      }
+    ]
+  },
+  {
+    path: 'cobrancas',
+    children: [
+      {
+        path: 'lista',
+        component: BillingListComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'outras-rubricas-individual',
+        component: NonMonthlyBillingIndividualComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'outras-rubricas-lote',
+        component: NonMonthlyBillingBatchComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'socio/:id',
+        component: SocioBillingsComponent,
         canActivate: [AuthGuard]
       }
     ]

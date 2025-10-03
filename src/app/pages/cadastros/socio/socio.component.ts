@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Socio, Page, SocioDependente } from './socio.model';
+import { Socio, Page, SocioDependente, GrupoMensalidade } from './socio.model';
 import { SocioService } from './socio.service';
+import { GrupoMensalidadeService } from '../grupo-mensalidade/grupo-mensalidade.service';
 
 /**
  * Componente de listagem de Sócios
@@ -14,14 +15,19 @@ import { SocioService } from './socio.service';
 })
 export class SocioComponent implements OnInit {
   socios: Socio[] = [];  // Array de sócios retornados pela API
+  gruposMensalidade: GrupoMensalidade[] = [];  // Array de grupos de mensalidade
   page: Page<Socio> = {} as Page<Socio>;  // Objeto de paginação
   currentPage = 0;  // Página atual na navegação
   pageSize = 30;  // Número de itens por página
   filtro = '';  // Filtro de busca
   loading = false;  // Indicador de carregamento
+  loadingGruposMensalidade = false;  // Indicador de carregamento dos grupos
   breadCrumbItems!: Array<{}>;  // Itens do breadcrumb
 
-  constructor(private socioService: SocioService) { }
+  constructor(
+    private socioService: SocioService,
+    private grupoMensalidadeService: GrupoMensalidadeService
+  ) { }
 
   ngOnInit(): void {
     /**
@@ -32,7 +38,22 @@ export class SocioComponent implements OnInit {
       { label: 'Sócios', active: true }
     ];
     
+    this.loadGruposMensalidade();
     this.loadSocios();
+  }
+
+  loadGruposMensalidade(): void {
+    this.loadingGruposMensalidade = true;
+    this.grupoMensalidadeService.getAllGruposMensalidade().subscribe({
+      next: (data: GrupoMensalidade[]) => {
+        this.gruposMensalidade = data;
+        this.loadingGruposMensalidade = false;
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar grupos de mensalidade:', error);
+        this.loadingGruposMensalidade = false;
+      }
+    });
   }
 
   loadSocios(): void {
@@ -81,6 +102,14 @@ export class SocioComponent implements OnInit {
 
   getGrauSocioText(grau: string): string {
     return grau || 'Desconhecido';
+  }
+
+  getGrupoMensalidadeNome(grupoMensalidadeId: number | undefined): string {
+    if (!grupoMensalidadeId) {
+      return '-';
+    }
+    const grupo = this.gruposMensalidade.find(g => g.id === grupoMensalidadeId);
+    return grupo ? grupo.nomeGrupoMensalidade : 'Grupo não encontrado';
   }
 
   getVisiblePages(): number[] {

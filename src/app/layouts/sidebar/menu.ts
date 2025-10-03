@@ -82,24 +82,43 @@ export const MENU: MenuItem[] = [
         link: '/pages/cadastros/socio/importar',
         parentId: 17,
       },
-      {
-        id: 21,
-        label: 'MENUITEMS.CADASTROS.LIST.SOCIO.GERARCOBRANCAS',
-        icon: 'ti ti-file-dollar',
-        link: '/pages/cadastros/socio/gerar-cobrancas',
-        parentId: 17,
-      },
-      {
-        id: 22,
-        label: 'MENUITEMS.CADASTROS.LIST.SOCIO.GERARCOBRANCAMENSALIDADE',
-        icon: 'ti ti-file-invoice',
-        link: '/pages/cadastros/socio/gerar-cobrancas',
-        parentId: 17,
-      },
     ],
   },
   {
-    id: 20,
+    id: 24,
+    label: 'MENUITEMS.COBRANCAS.TEXT',
+    isTitle: true,
+  },
+  {
+    id: 25,
+    label: 'MENUITEMS.CADASTROS.LIST.SOCIO.GERARCOBRANCAMENSALIDADE',
+    icon: 'ti ti-file-dollar',
+    link: '/pages/cadastros/socio/gerar-cobrancas',
+    parentId: 24,
+  },
+
+  {
+    id: 30,
+    label: 'MENUITEMS.COBRANCAS.LIST.COBRANCASOUTRASRUBRICAS',
+    icon: 'ti ti-file-invoice',
+    parentId: 24,
+    subItems: [
+      {
+        id: 31,
+        label: 'MENUITEMS.COBRANCAS.LIST.GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL',
+        link: '/pages/cadastros/cobrancas/outras-rubricas-individual',
+        parentId: 30,
+      },
+      {
+        id: 32,
+        label: 'MENUITEMS.COBRANCAS.LIST.GERARCOBRANCASOUTRASRUBRICASLOTE',
+        link: '/pages/cadastros/cobrancas/outras-rubricas-lote',
+        parentId: 30,
+      }
+    ],
+  },
+  {
+    id: 33,
     label: 'MENUITEMS.APPS.TEXT',
     isTitle: true,
   },

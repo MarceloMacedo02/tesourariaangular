@@ -201,7 +201,8 @@ export class SocioService {
       ano: ano
     };
     
-    return this.http.post(`${this.apiUrl}/cobrancas/salvar-mensalidade`, requestBody);
+    const cobrancasUrl = `${environment.apiBaseUrl}/api/cobrancas/salvar-mensalidade`;
+    return this.http.post(cobrancasUrl, requestBody);
   }
 
 
