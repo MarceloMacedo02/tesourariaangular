@@ -164,6 +164,16 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       }
     ]
+  },
+  {
+    path: 'fornecedores',
+    redirectTo: 'fornecedores/lista',
+    pathMatch: 'full'
+  },
+  {
+    path: 'fornecedores/lista',
+    loadChildren: () => import('./fornecedor/fornecedor.module').then(m => m.FornecedorModule),
+    canActivate: [AuthGuard]
   }
 ];
 

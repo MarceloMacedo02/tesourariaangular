@@ -1,0 +1,29 @@
+<div class="fornecedor-container">
+  <div *ngIf="!fornecedorSelecionado && !modoEdicao; else formView">
+    <app-fornecedor-list 
+      [fornecedores]="fornecedores"
+      [totalElements]="totalElements"
+      [currentPage]="currentPage"
+      [pageSize]="pageSize"
+      (edit)="onEditarFornecedor($event)"
+      (delete)="onExcluirFornecedor($event)"
+      (addNew)="onAdicionarNovo()"
+      *ngIf="!loading; else loadingView">
+    </app-fornecedor-list>
+  </div>
+
+  <ng-template #formView>
+    <app-fornecedor-form 
+      [fornecedor]="fornecedorSelecionado"
+      (onSave)="onSalvarFornecedor($event)"
+      (onCancel)="onCancelForm()">
+    </app-fornecedor-form>
+  </ng-template>
+
+  <ng-template #loadingView>
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Carregando fornecedores...</p>
+    </div>
+  </ng-template>
+</div>

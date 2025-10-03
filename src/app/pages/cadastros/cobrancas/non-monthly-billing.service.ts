@@ -37,6 +37,11 @@ export class NonMonthlyBillingService {
     return this.http.get<Cobranca[]>(`${this.apiUrl}/socio/${socioId}`);
   }
 
+  // Get billings for a specific socio by status
+  getBillingsBySocioIdAndStatus(socioId: number, status: string): Observable<Cobranca[]> {
+    return this.http.get<Cobranca[]>(`${this.apiUrl}/socio/${socioId}/${status.toLowerCase() === 'pago' ? 'quitadas' : 'abertas'}`);
+  }
+
   // Update non-monthly billing
   updateNonMonthlyBilling(id: number, billing: Cobranca): Observable<Cobranca> {
     return this.http.put<Cobranca>(`${this.apiUrl}/nao-mensalidade/${id}`, billing);

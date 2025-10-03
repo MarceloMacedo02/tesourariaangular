@@ -10,6 +10,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 // Animations
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// Material modules
+import { MatChipsModule } from '@angular/material/chips';
+
 // Locale
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
@@ -64,6 +67,7 @@ export function appInitializerFactory(translate: TranslateService) {
     RouterModule,      // Needed for router-outlet
     AppRoutingModule,   // Routing module
     BrowserAnimationsModule, // Required for animations
+    MatChipsModule, // Required for mat-chip and mat-chip-list
     StoreModule.forRoot(rootReducer, {}),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),

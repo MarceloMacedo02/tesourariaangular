@@ -50,6 +50,9 @@ import { SocioService } from '../socio.service';
                                 (click)="excluirSocio(socio.id || 0)">
                                 Excluir
                               </button>
+                              <a [routerLink]="['/pages/cobrancas/socio', socio.id]" class="btn btn-sm btn-soft-primary" title="Visualizar Cobranças">
+                                <i class="ri-file-list-fill align-bottom"></i> Cobranças
+                              </a>
                             </div>
                           </td>
                         </tr>

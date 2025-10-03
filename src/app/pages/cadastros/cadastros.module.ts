@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FlatpickrModule } from 'angularx-flatpickr';
@@ -23,6 +24,7 @@ import { NonMonthlyBillingIndividualComponent } from './cobrancas/individual/non
 import { NonMonthlyBillingBatchComponent } from './cobrancas/batch/non-monthly-billing-batch.component';
 import { BillingListComponent } from './cobrancas/billing-list.component';
 import { SocioBillingsComponent } from './cobrancas/socio-billings/socio-billings.component';
+import { FornecedorModule } from './fornecedor/fornecedor.module';
 
 @NgModule({
   declarations: [
@@ -48,11 +50,17 @@ import { SocioBillingsComponent } from './cobrancas/socio-billings/socio-billing
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterModule,
     NgxCurrencyDirective,
     NgSelectModule,
     FlatpickrModule.forRoot(),
     SharedModule,
-    CadastrosRoutingModule
+    CadastrosRoutingModule,
+    FornecedorModule
+  ],
+  providers: [
+    CurrencyPipe,
+    DatePipe
   ]
 })
 export class CadastrosModule { }

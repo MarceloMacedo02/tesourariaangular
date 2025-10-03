@@ -1,0 +1,83 @@
+<div class="fornecedor-form-container">
+  <h2>{{ fornecedor?.id ? 'Editar Fornecedor' : 'Novo Fornecedor' }}</h2>
+  
+  <form [formGroup]="fornecedorForm" (ngSubmit)="onSubmit()" class="fornecedor-form">
+    
+    <div class="form-row">
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label>Nome Fantasia *</mat-label>
+        <input matInput formControlName="nomeFantasia" placeholder="Nome fantasia">
+        <mat-error *ngIf="hasError('nomeFantasia', 'required')">{{ getErrorMessage('nomeFantasia') }}</mat-error>
+        <mat-error *ngIf="hasError('nomeFantasia', 'maxlength')">Nome fantasia deve ter no máximo 100 caracteres</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label>Razão Social</mat-label>
+        <input matInput formControlName="razaoSocial" placeholder="Razão social">
+        <mat-error *ngIf="hasError('razaoSocial', 'maxlength')">Razão social deve ter no máximo 150 caracteres</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label>CPF/CNPJ *</mat-label>
+        <input matInput formControlName="cpfCnpj" placeholder="CPF ou CNPJ">
+        <mat-error *ngIf="hasError('cpfCnpj', 'required')">{{ getErrorMessage('cpfCnpj') }}</mat-error>
+        <mat-error *ngIf="hasError('cpfCnpj', 'maxlength')">CPF/CNPJ deve ter no máximo 18 caracteres</mat-error>
+        <mat-error *ngIf="hasError('cpfCnpj', 'invalidCpfCnpj')">{{ getErrorMessage('cpfCnpj') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label>RG</mat-label>
+        <input matInput formControlName="rg" placeholder="RG">
+        <mat-error *ngIf="hasError('rg', 'maxlength')">RG deve ter no máximo 20 caracteres</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label>Endereço</mat-label>
+        <input matInput formControlName="endereco" placeholder="Endereço completo">
+        <mat-error *ngIf="hasError('endereco', 'maxlength')">Endereço deve ter no máximo 200 caracteres</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input matInput formControlName="telefone" placeholder="(00) 00000-0000">
+        <mat-error *ngIf="hasError('telefone', 'maxlength')">Telefone deve ter no máximo 15 caracteres</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="email@exemplo.com">
+        <mat-error *ngIf="hasError('email', 'email')">{{ getErrorMessage('email') }}</mat-error>
+        <mat-error *ngIf="hasError('email', 'maxlength')">Email deve ter no máximo 100 caracteres</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label>Inscrição Estadual</mat-label>
+        <input matInput formControlName="inscricaoEstadual" placeholder="Inscrição estadual">
+        <mat-error *ngIf="hasError('inscricaoEstadual', 'maxlength')">Inscrição estadual deve ter no máximo 20 caracteres</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Observações</mat-label>
+      <textarea matInput formControlName="observacoes" placeholder="Observações adicionais" rows="3"></textarea>
+      <mat-error *ngIf="hasError('observacoes', 'maxlength')">Observações devem ter no máximo 500 caracteres</mat-error>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="ativo" class="ativo-checkbox">
+      Ativo
+    </mat-checkbox>
+
+    <div class="form-actions">
+      <button mat-raised-button type="button" (click)="onCancelForm()" class="cancel-btn">Cancelar</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="fornecedorForm.invalid" class="save-btn">
+        {{ fornecedor?.id ? 'Atualizar' : 'Salvar' }}
+      </button>
+    </div>
+  </form>
+</div>

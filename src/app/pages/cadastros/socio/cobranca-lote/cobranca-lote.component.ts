@@ -87,6 +87,7 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
                         <th>Data Adesão</th>
                         <th>Grupo Mensalidade</th>
                         <th>Valor Mensalidade</th>
+                        <th>Ações</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -114,9 +115,16 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
                         <td>{{ socio.dataAdesao ? (socio.dataAdesao | date:'shortDate') : '-' }}</td>
                         <td>{{ getGrupoMensalidadeNome(socio.grupoMensalidadeId) }}</td>
                         <td>{{ getValorMensalidade(socio.grupoMensalidadeId) > 0 ? (getValorMensalidade(socio.grupoMensalidadeId) | currency:'BRL':'symbol':'1.2-2') : '-' }}</td>
+                        <td>
+                          <button type="button" class="btn btn-soft-info btn-sm" 
+                                  [routerLink]="'/pages/cobrancas/socio/' + socio.id" 
+                                  title="Visualizar Cobranças">
+                            <i class="ri-file-list-fill align-bottom"></i>
+                          </button>
+                        </td>
                       </tr>
                       <tr *ngIf="loading">
-                        <td colspan="9" class="text-center">
+                        <td colspan="10" class="text-center">
                           <div class="d-flex justify-content-center">
                             <div class="spinner-border text-primary" role="status">
                               <span class="visually-hidden">Carregando...</span>
@@ -125,7 +133,7 @@ import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalida
                         </td>
                       </tr>
                       <tr *ngIf="!loading && (!page.content || page.content.length === 0)">
-                        <td colspan="9" class="text-center">
+                        <td colspan="10" class="text-center">
                           Nenhum sócio encontrado.
                         </td>
                       </tr>
