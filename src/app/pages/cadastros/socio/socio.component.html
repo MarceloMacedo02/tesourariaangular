@@ -21,13 +21,8 @@
         <div class="row g-3">
           <div class="col-xl-6">
             <div class="search-box">
-              <input 
-                type="text" 
-                class="form-control" 
-                placeholder="Filtrar sócios..." 
-                [(ngModel)]="filtro"
-                (input)="onFiltroChange()"
-              >
+              <input type="text" class="form-control" placeholder="Filtrar sócios..." [(ngModel)]="filtro"
+                (input)="onFiltroChange()">
             </div>
           </div>
           <div class="col-xl-6 text-xl-end">
@@ -72,12 +67,14 @@
                 <td>
                   <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                      <a [routerLink]="['/pages/cadastros/socio/editar', socio.id]" class="btn btn-soft-primary btn-sm" title="Editar Sócio">
+                      <a [routerLink]="['/pages/cadastros/socio/editar', socio.id]" class="btn btn-soft-primary btn-sm"
+                        title="Editar Sócio">
                         <i class="ri-pencil-fill align-bottom"></i>
                       </a>
                     </li>
                     <li class="list-inline-item">
-                      <a [routerLink]="'/pages/cobrancas/socio/' + socio.id" class="btn btn-soft-info btn-sm" title="Visualizar Cobranças">
+                      <a [routerLink]="['/pages/cadastros/cobrancas/socio', socio.id]" class="btn btn-soft-info btn-sm"
+                        title="Visualizar Cobranças">
                         <i class="ri-file-list-fill align-bottom"></i>
                       </a>
                     </li>
@@ -106,8 +103,8 @@
         <div class="row g-0 mt-3 align-items-center" *ngIf="!loading && page.totalElements > 0">
           <div class="col-sm-6">
             <div class="text-muted">
-              Mostrando <b>{{ page.number * page.size + 1 }}</b> a 
-              <b>{{ page.number * page.size + page.numberOfElements }}</b> de 
+              Mostrando <b>{{ page.number * page.size + 1 }}</b> a
+              <b>{{ page.number * page.size + page.numberOfElements }}</b> de
               <b>{{ page.totalElements }}</b> resultados
             </div>
           </div>
@@ -118,36 +115,33 @@
                   Anterior
                 </a>
               </li>
-              
+
               <li class="page-item" [class.active]="currentPage === 0">
                 <a class="page-link" href="javascript:void(0)" (click)="onPageChange(0)">1</a>
               </li>
-              
+
               <!-- Exibir páginas intermediárias se necessário -->
               <li class="page-item disabled" *ngIf="currentPage > 3">
                 <span class="page-link">...</span>
               </li>
-              
-              <li *ngFor="let pageNr of getVisiblePages(); let i = index" 
-                  class="page-item" 
-                  [class.active]="currentPage === pageNr"
-                  [class.disabled]="pageNr === -1">
+
+              <li *ngFor="let pageNr of getVisiblePages(); let i = index" class="page-item"
+                [class.active]="currentPage === pageNr" [class.disabled]="pageNr === -1">
                 <span class="page-link" *ngIf="pageNr === -1">...</span>
-                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pageNr)" *ngIf="pageNr !== -1">{{ pageNr + 1 }}</a>
+                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pageNr)" *ngIf="pageNr !== -1">{{
+                  pageNr + 1 }}</a>
               </li>
-              
+
               <li class="page-item disabled" *ngIf="currentPage < page.totalPages - 4">
                 <span class="page-link">...</span>
               </li>
-              
-              <li class="page-item" 
-                  [class.active]="currentPage === page.totalPages - 1" 
-                  *ngIf="page.totalPages > 1">
+
+              <li class="page-item" [class.active]="currentPage === page.totalPages - 1" *ngIf="page.totalPages > 1">
                 <a class="page-link" href="javascript:void(0)" (click)="onPageChange(page.totalPages - 1)">
                   {{ page.totalPages }}
                 </a>
               </li>
-              
+
               <li class="page-item" [class.disabled]="currentPage === page.totalPages - 1">
                 <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)">
                   Próximo

@@ -1,12 +1,16 @@
 export interface MenuItem {
     id?: number;
-    label?: any;
+    label?: string;
     icon?: string;
     link?: string;
-    subItems?: any;
+    subItems?: MenuItem[];
     isTitle?: boolean;
-    badge?: any;
+    badge?: {
+        variant: string;
+        text: string;
+    };
     parentId?: number;
-    isLayout?: boolean;
+    isParent?: boolean;
     hidden?: boolean;
+    isLayout?: boolean;
 }

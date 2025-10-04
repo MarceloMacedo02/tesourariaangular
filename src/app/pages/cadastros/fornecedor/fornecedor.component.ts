@@ -1,129 +1,114 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Fornecedor, FornecedorPage } from './fornecedor.model';
+import { Fornecedor, Page } from './fornecedor.model';
 import { FornecedorService } from './fornecedor.service';
-import { ConfirmDialogComponent, ConfirmDialogData } from './confirm-dialog/confirm-dialog.component';
 
+/**
+ * Componente de listagem de Fornecedores
+ * Campos dataRegistro e dataAtualizacao são de uso exclusivo do backend 
+ * e são exibidos apenas para informação
+ */
 @Component({
   selector: 'app-fornecedor',
   templateUrl: './fornecedor.component.html',
   styleUrls: ['./fornecedor.component.scss']
 })
 export class FornecedorComponent implements OnInit {
-  fornecedores: Fornecedor[] = [];
-  fornecedorSelecionado: Fornecedor | null = null;
-  modoEdicao: boolean = false;
-  filtro: string = '';
-  totalElements: number = 0;
-  currentPage: number = 0;
-  pageSize: number = 10;
-  loading: boolean = false;
+  fornecedores: Fornecedor[] = [];  // Array de fornecedores retornados pela API
+  page: Page<Fornecedor> = {} as Page<Fornecedor>;  // Objeto de paginação
+  currentPage = 0;  // Página atual na navegação
+  pageSize = 30;  // Número de itens por página
+  filtro = '';  // Filtro de busca
+  loading = false;  // Indicador de carregamento
+  breadCrumbItems!: Array<{}>;  // Itens do breadcrumb
 
   constructor(
-    private fornecedorService: FornecedorService,
-    public dialog: MatDialog
+    private fornecedorService: FornecedorService
   ) { }
 
   ngOnInit(): void {
+    /**
+    * BreadCrumb
+    */
+    this.breadCrumbItems = [
+      { label: 'Cadastros' },
+      { label: 'Fornecedores', active: true }
+    ];
+    
     this.carregarFornecedores();
   }
 
-  carregarFornecedores(page: number = 0, size: number = 10, filtro: string = ''): void {
+  carregarFornecedores(): void {
     this.loading = true;
-    this.fornecedorService.listarFornecedores(page, size, filtro).subscribe({
-      next: (response: FornecedorPage) => {
-        this.fornecedores = response.content;
-        this.totalElements = response.totalElements;
-        this.currentPage = response.number;
-        this.pageSize = response.size;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Erro ao carregar fornecedores:', error);
-        this.loading = false;
-      }
-    });
+    this.fornecedorService.getFornecedores(this.currentPage, this.pageSize, this.filtro)
+      .subscribe({
+        next: (response: Page<Fornecedor>) => {
+          this.page = response;
+          this.fornecedores = response.content;
+          this.loading = false;
+        },
+        error: (error: any) => {
+          console.error('Erro ao carregar fornecedores:', error);
+          this.loading = false;
+        }
+      });
   }
 
-  onSalvarFornecedor(fornecedor: Fornecedor): void {
-    if (fornecedor.id) {
-      // Atualizar fornecedor existente
-      this.fornecedorService.atualizarFornecedor(fornecedor.id, fornecedor).subscribe({
-        next: (response: Fornecedor) => {
-          // Atualizar a lista localmente
-          const index = this.fornecedores.findIndex(f => f.id === response.id);
-          if (index !== -1) {
-            this.fornecedores[index] = response;
-          }
-          this.resetForm();
-        },
-        error: (error) => {
-          console.error('Erro ao atualizar fornecedor:', error);
-        }
-      });
-    } else {
-      // Criar novo fornecedor
-      this.fornecedorService.criarFornecedor(fornecedor).subscribe({
-        next: (response: Fornecedor) => {
-          // Adicionar novo fornecedor à lista
-          this.fornecedores.unshift(response);
-          this.resetForm();
-        },
-        error: (error) => {
-          console.error('Erro ao criar fornecedor:', error);
-        }
-      });
+  onPageChange(page: number): void {
+    if (page >= 0 && page < this.page.totalPages) {
+      this.currentPage = page;
+      this.carregarFornecedores();
     }
   }
 
-  onEditarFornecedor(fornecedor: Fornecedor): void {
-    this.fornecedorSelecionado = { ...fornecedor }; // Fazer cópia para evitar alterações indesejadas
-    this.modoEdicao = true;
+  onFiltroChange(): void {
+    this.currentPage = 0; // Resetar para a primeira página ao alterar o filtro
+    this.carregarFornecedores();
   }
 
-  onExcluirFornecedor(id: number): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      data: { 
-        title: 'Confirmar Exclusão', 
-        message: 'Tem certeza que deseja excluir este fornecedor? Esta ação não pode ser desfeita.'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.fornecedorService.excluirFornecedor(id).subscribe({
-          next: () => {
-            // Remover da lista localmente
-            this.fornecedores = this.fornecedores.filter(f => f.id !== id);
-          },
-          error: (error) => {
-            console.error('Erro ao excluir fornecedor:', error);
-          }
-        });
-      }
-    });
+  getStatusText(ativo: boolean | undefined): string {
+    return ativo ? 'Ativo' : 'Inativo';
   }
 
-  onAdicionarNovo(): void {
-    this.resetForm();
+  getStatusBadgeClass(ativo: boolean | undefined): string {
+    return ativo ? 'bg-success' : 'bg-danger';
   }
 
-  onCancelForm(): void {
-    this.resetForm();
-  }
+  getVisiblePages(): number[] {
+    const totalPages = this.page.totalPages;
+    const currentPage = this.currentPage;
+    
+    if (totalPages <= 7) {
+      // Se tiver 7 ou menos páginas, mostrar todas
+      return Array.from({ length: totalPages }, (_, i) => i);
+    }
 
-  resetForm(): void {
-    this.fornecedorSelecionado = null;
-    this.modoEdicao = false;
-  }
-
-  onPageChange(pageIndex: number, pageSize: number): void {
-    this.carregarFornecedores(pageIndex, pageSize, this.filtro);
-  }
-
-  onFilterChange(filtro: string): void {
-    this.filtro = filtro;
-    this.carregarFornecedores(0, this.pageSize, this.filtro); // Reiniciar para a primeira página ao filtrar
+    // Caso contrário, mostrar com abreviação
+    const pages = [];
+    
+    // Primeira página sempre visível
+    pages.push(0);
+    
+    if (currentPage > 3) {
+      pages.push(-1); // Indicador de "..."
+    }
+    
+    // Determinar o intervalo de páginas ao redor da página atual
+    const start = Math.max(1, currentPage - 1);
+    const end = Math.min(totalPages - 2, currentPage + 1);
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    
+    if (currentPage < totalPages - 4) {
+      pages.push(-1); // Indicador de "..."
+    }
+    
+    // Última página sempre visível (se for diferente da anterior)
+    if (totalPages > 1) {
+      pages.push(totalPages - 1);
+    }
+    
+    return pages;
   }
 }

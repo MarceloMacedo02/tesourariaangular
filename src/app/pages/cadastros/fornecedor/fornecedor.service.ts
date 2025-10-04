@@ -1,71 +1,64 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Fornecedor, FornecedorPage } from './fornecedor.model';
+import { Fornecedor, Page } from './fornecedor.model';
+import { environment } from 'src/environments/environment';
 
+/**
+ * Serviço para gerenciamento de Fornecedores
+ * Campos dataRegistro e dataAtualizacao são de uso exclusivo do backend
+ * e não devem ser manipulados no frontend
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class FornecedorService {
-  private apiUrl = '/api/fornecedores';
+
+  private apiUrl = `${environment.apiBaseUrl}/api/fornecedores`;
 
   constructor(private http: HttpClient) { }
 
-  // Listar fornecedores com paginação e filtro
-  listarFornecedores(page: number = 0, size: number = 10, filtro: string = ''): Observable<FornecedorPage> {
+  /**
+   * Obtém a lista paginada de fornecedores
+   * Retorna campos dataRegistro e dataAtualizacao que são de uso exclusivo do backend
+   */
+  getFornecedores(page: number = 0, size: number = 30, filtro: string = ''): Observable<Page<Fornecedor>> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
-
-    if (filtro) {
-      params = params.set('filtro', filtro);
-    }
-
-    return this.http.get<FornecedorPage>(`${this.apiUrl}`, { params });
+      .set('size', size.toString())
+      .set('filtro', filtro);
+    
+    return this.http.get<Page<Fornecedor>>(this.apiUrl, { params });
   }
 
-  // Buscar fornecedor por ID
-  buscarFornecedorPorId(id: number): Observable<Fornecedor> {
-    if (!id || typeof id !== 'number' || id <= 0) {
-      throw new Error('ID do fornecedor é obrigatório e deve ser um número positivo');
-    }
-
+  /**
+   * Obtém um fornecedor específico pelo ID
+   * Retorna campos dataRegistro e dataAtualizacao que são de uso exclusivo do backend
+   */
+  getFornecedorById(id: number): Observable<Fornecedor> {
     return this.http.get<Fornecedor>(`${this.apiUrl}/${id}`);
   }
 
-  // Criar novo fornecedor
-  criarFornecedor(fornecedor: Fornecedor): Observable<Fornecedor> {
-    // Validações frontend
-    if (!fornecedor.nomeFantasia) {
-      throw new Error('Nome fantasia é obrigatório');
-    }
-
-    if (!fornecedor.cpfCnpj) {
-      throw new Error('CPF/CNPJ é obrigatório');
-    }
-
-    return this.http.post<Fornecedor>(`${this.apiUrl}`, fornecedor);
+  /**
+   * Cria um novo fornecedor
+   * Campos dataRegistro e dataAtualizacao são gerenciados exclusivamente pelo backend
+   */
+  createFornecedor(fornecedor: Fornecedor): Observable<Fornecedor> {
+    return this.http.post<Fornecedor>(this.apiUrl, fornecedor);
   }
 
-  // Atualizar fornecedor existente
-  atualizarFornecedor(id: number, fornecedor: Fornecedor): Observable<Fornecedor> {
-    if (!id || typeof id !== 'number' || id <= 0) {
-      throw new Error('ID do fornecedor é obrigatório e deve ser um número positivo');
-    }
-
-    if (!fornecedor.nomeFantasia) {
-      throw new Error('Nome fantasia é obrigatório');
-    }
-
+  /**
+   * Atualiza um fornecedor existente
+   * Campos dataRegistro e dataAtualizacao são gerenciados exclusivamente pelo backend
+   */
+  updateFornecedor(id: number, fornecedor: Fornecedor): Observable<Fornecedor> {
     return this.http.put<Fornecedor>(`${this.apiUrl}/${id}`, fornecedor);
   }
 
-  // Excluir fornecedor
-  excluirFornecedor(id: number): Observable<void> {
-    if (!id || typeof id !== 'number' || id <= 0) {
-      throw new Error('ID do fornecedor é obrigatório e deve ser um número positivo');
-    }
-
+  /**
+   * Exclui um fornecedor
+   */
+  deleteFornecedor(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

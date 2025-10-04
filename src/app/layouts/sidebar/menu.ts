@@ -5,6 +5,7 @@ export const MENU: MenuItem[] = [
     id: 1,
     label: 'MENUITEMS.MENU.TEXT',
     isTitle: true,
+    parentId: 0,
   },
   {
     id: 2,
@@ -85,6 +86,13 @@ export const MENU: MenuItem[] = [
     ],
   },
   {
+    id: 21,
+    label: 'MENUITEMS.CADASTROS.LIST.FORNECEDOR',
+    icon: 'ti ti-truck-delivery',
+    link: '/pages/cadastros/fornecedores/lista',
+    parentId: 12,
+  },
+  {
     id: 24,
     label: 'MENUITEMS.COBRANCAS.TEXT',
     isTitle: true,
@@ -116,6 +124,25 @@ export const MENU: MenuItem[] = [
         parentId: 30,
       }
     ],
+  },
+  {
+    id: 33,
+    label: 'MENUITEMS.FINANCEIRO.TEXT',
+    isTitle: true,
+  },
+  {
+    id: 34,
+    label: 'MENUITEMS.FINANCEIRO.LIST.CONTAS_A_PAGAR',
+    icon: 'ti ti-arrow-down-left',
+    link: '/pages/financeiro/contas-pagar/lista',
+    parentId: 33,
+  },
+  {
+    id: 35,
+    label: 'MENUITEMS.FINANCEIRO.LIST.CONTAS_A_RECEBER',
+    icon: 'ti ti-arrow-up-right',
+    link: '/pages/financeiro/contas-receber/lista',
+    parentId: 33,
   },
   {
     id: 33,
@@ -846,5 +873,45 @@ export const MENU: MenuItem[] = [
         ],
       },
     ],
+  },
+  {
+    id: 159,
+    label: 'MENUITEMS.FINANCEIRO.TEXT',
+    isTitle: true,
+  },
+  {
+    id: 160,
+    label: 'MENUITEMS.FINANCEIRO.LIST.DASHBOARD',
+    icon: 'ti ti-dashboard',
+    link: '/pages/financeiro/dashboard',
+    parentId: 159,
+  },
+  {
+    id: 161,
+    label: 'MENUITEMS.FINANCEIRO.LIST.CONTAS_A_PAGAR',
+    icon: 'ti ti-arrow-down-left',
+    link: '/pages/financeiro/contas-pagar/lista',
+    parentId: 159,
+  },
+  {
+    id: 162,
+    label: 'MENUITEMS.FINANCEIRO.LIST.CONTAS_A_RECEBER',
+    icon: 'ti ti-arrow-up-right',
+    link: '/pages/financeiro/contas-receber/lista',
+    parentId: 159,
+  },
+  {
+    id: 163,
+    label: 'MENUITEMS.FINANCEIRO.LIST.RELATORIOS',
+    icon: 'ti ti-file-report',
+    link: '/pages/financeiro/relatorios',
+    parentId: 159,
+  },
+  {
+    id: 164,
+    label: 'MENUITEMS.FINANCEIRO.LIST.IMPORTAR_CONTAS_PAGAR',
+    icon: 'ti ti-file-upload',
+    link: '/pages/financeiro/contas-pagar/importar',
+    parentId: 159,
   },
 ];

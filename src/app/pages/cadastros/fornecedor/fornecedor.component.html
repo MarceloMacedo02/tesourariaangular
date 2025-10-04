@@ -1,29 +1,146 @@
-<div class="fornecedor-container">
-  <div *ngIf="!fornecedorSelecionado && !modoEdicao; else formView">
-    <app-fornecedor-list 
-      [fornecedores]="fornecedores"
-      [totalElements]="totalElements"
-      [currentPage]="currentPage"
-      [pageSize]="pageSize"
-      (edit)="onEditarFornecedor($event)"
-      (delete)="onExcluirFornecedor($event)"
-      (addNew)="onAdicionarNovo()"
-      *ngIf="!loading; else loadingView">
-    </app-fornecedor-list>
-  </div>
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs title="Fornecedores" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<!-- End Breadcrumbs -->
 
-  <ng-template #formView>
-    <app-fornecedor-form 
-      [fornecedor]="fornecedorSelecionado"
-      (onSave)="onSalvarFornecedor($event)"
-      (onCancel)="onCancelForm()">
-    </app-fornecedor-form>
-  </ng-template>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex gap-2">
+          <h4 class="card-title mb-0 flex-grow-1">Fornecedores</h4>
+          <div class="flex-shrink-0">
+            <button type="button" class="btn btn-light" (click)="carregarFornecedores()">
+              <i class="ri-refresh-line align-bottom"></i>
+            </button>
+          </div>
+        </div>
+      </div>
 
-  <ng-template #loadingView>
-    <div class="loading-container">
-      <mat-spinner></mat-spinner>
-      <p>Carregando fornecedores...</p>
+      <div class="card-body">
+        <!-- Filtro -->
+        <div class="row g-3">
+          <div class="col-xl-6">
+            <div class="search-box">
+              <input type="text" class="form-control" placeholder="Filtrar fornecedores..." [(ngModel)]="filtro"
+                (input)="onFiltroChange()">
+            </div>
+          </div>
+          <div class="col-xl-6 text-xl-end">
+            <a routerLink="/pages/cadastros/fornecedores/novo" class="btn btn-primary">
+              <i class="ri-add-line align-bottom me-1"></i> Adicionar
+            </a>
+          </div>
+        </div>
+
+        <!-- Tabela de resultados -->
+        <div class="table-responsive mt-3">
+          <table class="table table-nowrap table-centered align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nome Fantasia</th>
+                <th scope="col">Razão Social</th>
+                <th scope="col">CPF/CNPJ</th>
+                <th scope="col">Telefone</th>
+                <th scope="col">Email</th>
+                <th scope="col">Status</th>
+                <th scope="col">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let fornecedor of fornecedores">
+                <td>{{ fornecedor.id }}</td>
+                <td>{{ fornecedor.nomeFantasia }}</td>
+                <td>{{ fornecedor.razaoSocial }}</td>
+                <td>{{ fornecedor.cpfCnpj }}</td>
+                <td>{{ fornecedor.telefone || 'N/A' }}</td>
+                <td>{{ fornecedor.email || 'N/A' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(fornecedor.ativo)">
+                    {{ getStatusText(fornecedor.ativo) }}
+                  </span>
+                </td>
+                <td>
+                  <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                      <a [routerLink]="['/pages/cadastros/fornecedores/editar', fornecedor.id]"
+                        class="btn btn-soft-primary btn-sm" title="Editar Fornecedor">
+                        <i class="ri-pencil-fill align-bottom"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr *ngIf="loading">
+                <td colspan="8" class="text-center">
+                  <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Carregando...</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!loading && (!page.content || page.content.length === 0)">
+                <td colspan="8" class="text-center">
+                  Nenhum fornecedor encontrado.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginação -->
+        <div class="row g-0 mt-3 align-items-center" *ngIf="!loading && page.totalElements > 0">
+          <div class="col-sm-6">
+            <div class="text-muted">
+              Mostrando <b>{{ page.number * page.size + 1 }}</b> a
+              <b>{{ page.number * page.size + page.numberOfElements }}</b> de
+              <b>{{ page.totalElements }}</b> resultados
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <ul class="pagination pagination-separated justify-content-end mb-0">
+              <li class="page-item" [class.disabled]="currentPage === 0">
+                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage - 1)">
+                  Anterior
+                </a>
+              </li>
+
+              <li class="page-item" [class.active]="currentPage === 0">
+                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(0)">1</a>
+              </li>
+
+              <!-- Exibir páginas intermediárias se necessário -->
+              <li class="page-item disabled" *ngIf="currentPage > 3">
+                <span class="page-link">...</span>
+              </li>
+
+              <li *ngFor="let pageNr of getVisiblePages(); let i = index" class="page-item"
+                [class.active]="currentPage === pageNr" [class.disabled]="pageNr === -1">
+                <span class="page-link" *ngIf="pageNr === -1">...</span>
+                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pageNr)" *ngIf="pageNr !== -1">{{
+                  pageNr + 1 }}</a>
+              </li>
+
+              <li class="page-item disabled" *ngIf="currentPage < page.totalPages - 4">
+                <span class="page-link">...</span>
+              </li>
+
+              <li class="page-item" [class.active]="currentPage === page.totalPages - 1" *ngIf="page.totalPages > 1">
+                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(page.totalPages - 1)">
+                  {{ page.totalPages }}
+                </a>
+              </li>
+
+              <li class="page-item" [class.disabled]="currentPage === page.totalPages - 1">
+                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)">
+                  Próximo
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-  </ng-template>
+  </div>
 </div>

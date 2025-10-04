@@ -1,83 +1,148 @@
-<div class="fornecedor-form-container">
-  <h2>{{ fornecedor?.id ? 'Editar Fornecedor' : 'Novo Fornecedor' }}</h2>
-  
-  <form [formGroup]="fornecedorForm" (ngSubmit)="onSubmit()" class="fornecedor-form">
-    
-    <div class="form-row">
-      <mat-form-field class="form-field" appearance="outline">
-        <mat-label>Nome Fantasia *</mat-label>
-        <input matInput formControlName="nomeFantasia" placeholder="Nome fantasia">
-        <mat-error *ngIf="hasError('nomeFantasia', 'required')">{{ getErrorMessage('nomeFantasia') }}</mat-error>
-        <mat-error *ngIf="hasError('nomeFantasia', 'maxlength')">Nome fantasia deve ter no máximo 100 caracteres</mat-error>
-      </mat-form-field>
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs [title]="isEditing ? 'Editar Fornecedor' : 'Novo Fornecedor'"
+    [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<!-- End Breadcrumbs -->
 
-      <mat-form-field class="form-field" appearance="outline">
-        <mat-label>Razão Social</mat-label>
-        <input matInput formControlName="razaoSocial" placeholder="Razão social">
-        <mat-error *ngIf="hasError('razaoSocial', 'maxlength')">Razão social deve ter no máximo 150 caracteres</mat-error>
-      </mat-form-field>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">{{ isEditing ? 'Editar Fornecedor' : 'Novo Fornecedor' }}</h4>
+            </div>
+            <div class="card-body">
+                <form (ngSubmit)="onSubmit()" #fornecedorForm="ngForm">
+                    <!-- Erros de validação -->
+                    <div *ngIf="errors.length > 0" class="alert alert-danger">
+                        <ul class="mb-0">
+                            <li *ngFor="let error of errors">{{ error }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="nomeFantasia" class="form-label">
+                                    Nome Fantasia *
+                                </label>
+                                <input type="text" class="form-control" id="nomeFantasia" name="nomeFantasia"
+                                    [(ngModel)]="fornecedor.nomeFantasia" [disabled]="loading" required maxlength="100"
+                                    placeholder="Informe o nome fantasia">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="razaoSocial" class="form-label">
+                                    Razão Social
+                                </label>
+                                <input type="text" class="form-control" id="razaoSocial" name="razaoSocial"
+                                    [(ngModel)]="fornecedor.razaoSocial" [disabled]="loading" maxlength="150"
+                                    placeholder="Informe a razão social">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="cpfCnpj" class="form-label">
+                                    CPF/CNPJ *
+                                </label>
+                                <input type="text" class="form-control" id="cpfCnpj" name="cpfCnpj"
+                                    [(ngModel)]="fornecedor.cpfCnpj" [disabled]="loading" required
+                                    placeholder="000.000.000-00 ou 00.000.000/0001-00" maxlength="18"
+                                    (input)="fornecedor.cpfCnpj = formatarCpfCnpj(fornecedor.cpfCnpj || '')">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="rg" class="form-label">
+                                    RG
+                                </label>
+                                <input type="text" class="form-control" id="rg" name="rg"
+                                    [(ngModel)]="fornecedor.rg" [disabled]="loading" maxlength="20"
+                                    placeholder="00.000.000-0">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="telefone" class="form-label">
+                                    Telefone
+                                </label>
+                                <input type="text" class="form-control" id="telefone" name="telefone"
+                                    [(ngModel)]="fornecedor.telefone" [disabled]="loading"
+                                    placeholder="(00) 00000-0000" maxlength="15"
+                                    (input)="fornecedor.telefone = formatarTelefone(fornecedor.telefone || '')">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    Email
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    [(ngModel)]="fornecedor.email" [disabled]="loading"
+                                    placeholder="email@exemplo.com" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="inscricaoEstadual" class="form-label">
+                                    Inscrição Estadual
+                                </label>
+                                <input type="text" class="form-control" id="inscricaoEstadual" name="inscricaoEstadual"
+                                    [(ngModel)]="fornecedor.inscricaoEstadual" [disabled]="loading" maxlength="20"
+                                    placeholder="Ex: 123.456.789.112"
+                                    (input)="fornecedor.inscricaoEstadual = formatarInscricaoEstadual(fornecedor.inscricaoEstadual || '')">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="endereco" class="form-label">
+                                    Endereço
+                                </label>
+                                <input type="text" class="form-control" id="endereco" name="endereco"
+                                    [(ngModel)]="fornecedor.endereco" [disabled]="loading" maxlength="200"
+                                    placeholder="Rua, número, cidade, estado">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label for="observacoes" class="form-label">
+                                    Observações
+                                </label>
+                                <textarea class="form-control" id="observacoes" name="observacoes" rows="3"
+                                    [(ngModel)]="fornecedor.observacoes" [disabled]="loading" maxlength="500"
+                                    placeholder="Observações adicionais sobre o fornecedor"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="ativo" name="ativo"
+                                        [(ngModel)]="fornecedor.ativo" [disabled]="loading">
+                                    <label class="form-check-label" for="ativo">
+                                        Ativo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary" [disabled]="loading">
+                            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            {{ loading ? 'Salvando...' : (isEditing ? 'Atualizar' : 'Salvar') }}
+                        </button>
+                        <a [routerLink]="['/pages/cadastros/fornecedor']" class="btn btn-light">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-row">
-      <mat-form-field class="form-field" appearance="outline">
-        <mat-label>CPF/CNPJ *</mat-label>
-        <input matInput formControlName="cpfCnpj" placeholder="CPF ou CNPJ">
-        <mat-error *ngIf="hasError('cpfCnpj', 'required')">{{ getErrorMessage('cpfCnpj') }}</mat-error>
-        <mat-error *ngIf="hasError('cpfCnpj', 'maxlength')">CPF/CNPJ deve ter no máximo 18 caracteres</mat-error>
-        <mat-error *ngIf="hasError('cpfCnpj', 'invalidCpfCnpj')">{{ getErrorMessage('cpfCnpj') }}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field class="form-field" appearance="outline">
-        <mat-label>RG</mat-label>
-        <input matInput formControlName="rg" placeholder="RG">
-        <mat-error *ngIf="hasError('rg', 'maxlength')">RG deve ter no máximo 20 caracteres</mat-error>
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <mat-form-field class="form-field" appearance="outline">
-        <mat-label>Endereço</mat-label>
-        <input matInput formControlName="endereco" placeholder="Endereço completo">
-        <mat-error *ngIf="hasError('endereco', 'maxlength')">Endereço deve ter no máximo 200 caracteres</mat-error>
-      </mat-form-field>
-
-      <mat-form-field class="form-field" appearance="outline">
-        <mat-label>Telefone</mat-label>
-        <input matInput formControlName="telefone" placeholder="(00) 00000-0000">
-        <mat-error *ngIf="hasError('telefone', 'maxlength')">Telefone deve ter no máximo 15 caracteres</mat-error>
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <mat-form-field class="form-field" appearance="outline">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email" placeholder="email@exemplo.com">
-        <mat-error *ngIf="hasError('email', 'email')">{{ getErrorMessage('email') }}</mat-error>
-        <mat-error *ngIf="hasError('email', 'maxlength')">Email deve ter no máximo 100 caracteres</mat-error>
-      </mat-form-field>
-
-      <mat-form-field class="form-field" appearance="outline">
-        <mat-label>Inscrição Estadual</mat-label>
-        <input matInput formControlName="inscricaoEstadual" placeholder="Inscrição estadual">
-        <mat-error *ngIf="hasError('inscricaoEstadual', 'maxlength')">Inscrição estadual deve ter no máximo 20 caracteres</mat-error>
-      </mat-form-field>
-    </div>
-
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Observações</mat-label>
-      <textarea matInput formControlName="observacoes" placeholder="Observações adicionais" rows="3"></textarea>
-      <mat-error *ngIf="hasError('observacoes', 'maxlength')">Observações devem ter no máximo 500 caracteres</mat-error>
-    </mat-form-field>
-
-    <mat-checkbox formControlName="ativo" class="ativo-checkbox">
-      Ativo
-    </mat-checkbox>
-
-    <div class="form-actions">
-      <button mat-raised-button type="button" (click)="onCancelForm()" class="cancel-btn">Cancelar</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="fornecedorForm.invalid" class="save-btn">
-        {{ fornecedor?.id ? 'Atualizar' : 'Salvar' }}
-      </button>
-    </div>
-  </form>
 </div>

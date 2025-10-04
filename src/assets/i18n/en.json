@@ -52,7 +52,7 @@
       "TEXT": "More"
     },
     "EXTRAPAGES": {
-      "TEXT": "Pages",
+      "TEXT": "Extra Pages",
       "LIST": {
         "STARTER": "Starter",
         "PROFILE": "Profile",
@@ -63,7 +63,7 @@
         "MAINTENANCE": "Maintenance",
         "COMINGSOON": "Coming Soon",
         "PRIVACYPOLICY": "Privacy Policy",
-        "TERMS&CONDITIONS": "Term & Conditions"
+        "TERMS&CONDITIONS": "Terms & Conditions"
       }
     },
     "COMPONENTS": {
@@ -89,8 +89,8 @@
     "BOOTSTRAPUI2": {
       "TEXT": "Bootstrap UI2",
       "LIST": {
-        "MEDIAOBJECT": "Media object",
-        "EMBEDVIDEO": "Embed Video",
+        "MEDIAOBJECT": "Media Object",
+        "EMBEDVIDEO": "Embedded Video",
         "TYPOGRAPHY": "Typography",
         "LISTS": "Lists",
         "LINKS": "Links",
@@ -111,7 +111,7 @@
         "SWIPERSLIDER": "Swiper Slider",
         "RATTINGS": "Ratings",
         "HIGHLIGHT": "Highlight",
-        "SCROLLSPY": "ScrollSpy"
+        "SCROLLSPY": "Scroll Spy"
       }
     },
     "WIDGETS": {
@@ -122,7 +122,7 @@
       "LIST": {
         "BASICELEMENTS": "Basic Elements",
         "FORMSELECT": "Form Select",
-        "CHECKBOXS&RADIOS": "Checkboxs & Radios",
+        "CHECKBOXS&RADIOS": "Checkboxes & Radios",
         "PICKERS": "Pickers",
         "INPUTMASKS": "Input Masks",
         "ADVANCED": "Advanced",
@@ -140,11 +140,11 @@
         "BASICTABLES": "Basic Tables",
         "GRIDJS": "Grid Js",
         "LISTJS": "List Js",
-        "DATATABLES": "Datatables"
+        "DATATABLES": "Data Tables"
       }
     },
     "CHARTS": {
-      "TEXT": "Apexcharts",
+      "TEXT": "Charts",
       "LIST": {
         "LINE": "Line",
         "AREA": "Area",
@@ -152,14 +152,14 @@
         "BAR": "Bar",
         "MIXED": "Mixed",
         "TIMELINE": "Timeline",
-        "CANDLSTICK": "Candlstick",
+        "CANDLSTICK": "Candlestick",
         "BOXPLOT": "Boxplot",
         "BUBBLE": "Bubble",
         "SCATTER": "Scatter",
         "HEATMAP": "Heatmap",
         "TREEMAP": "Treemap",
         "PIE": "Pie",
-        "RADIALBAR": "Radialbar",
+        "RADIALBAR": "Radial Bar",
         "RADAR": "Radar",
         "POLARAREA": "Polar Area"
       }
@@ -199,13 +199,14 @@
       }
     },
     "CADASTROS": {
-      "TEXT": "Registros",
+      "TEXT": "Registers",
       "LIST": {
         "CENTROCUSTO": "Cost Center",
         "GRUPOFINANCEIRO": "Financial Group",
         "RUBRICAS": "Line Items",
         "GRUPO_MENSALIDADE": "Monthly Fee Group",
         "SOCIO": "Member",
+        "FORNECEDOR": "Suppliers",
         "SOCIO.LISTAR": "List",
         "SOCIO.CADASTRAR": "Register",
         "SOCIO.IMPORTARCSV": "Import CSV",
@@ -221,9 +222,19 @@
         "COBRANCASNAOMENSALIDADE": "Non-Monthly Billings",
         "GERARCOBRANCASNAOMENSALIDADEINDIVIDUAL": "Generate Individual Non-Monthly Billing",
         "GERARCOBRANCASNAOMENSALIDADELOTE": "Generate Batch Non-Monthly Billing",
-        "COBRANCASOUTRASRUBRICAS": "Other Categories Billings",
+        "COBRANCASOUTRASRUBRICAS": "Billings Other Categories",
         "GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL": "Generate Individual Other Categories Billing",
         "GERARCOBRANCASOUTRASRUBRICASLOTE": "Generate Batch Other Categories Billing"
+      }
+    },
+    "FINANCEIRO": {
+      "TEXT": "Financial",
+      "LIST": {
+        "DASHBOARD": "Dashboard",
+        "CONTAS_A_PAGAR": "Accounts Payable",
+        "CONTAS_A_RECEBER": "Accounts Receivable",
+        "RELATORIOS": "Reports",
+        "IMPORTAR_CONTAS_PAGAR": "Import Accounts Payable"
       }
     }
   }

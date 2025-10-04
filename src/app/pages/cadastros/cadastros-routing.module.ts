@@ -1,124 +1,157 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/guards/auth.guard';
-import { CentroCustoComponent } from './centro-custo/centro-custo.component';
 import { CentroCustoFormComponent } from './centro-custo/centro-custo-form/centro-custo-form.component';
-import { GrupoFinanceiroComponent } from './grupo-financeiro/grupo-financeiro.component';
-import { GrupoFinanceiroFormComponent } from './grupo-financeiro/grupo-financeiro-form/grupo-financeiro-form.component';
-import { RubricasComponent } from './rubricas/rubricas.component';
-import { RubricasFormComponent } from './rubricas/rubricas-form/rubricas-form.component';
-import { GrupoMensalidadeComponent } from './grupo-mensalidade/grupo-mensalidade.component';
-import { GrupoMensalidadeFormComponent } from './grupo-mensalidade/grupo-mensalidade-form/grupo-mensalidade-form.component';
-import { SocioComponent } from './socio/socio.component';
-import { SocioFormComponent } from './socio/socio-form/socio-form.component';
-import { SocioListarComponent } from './socio/socio-listar/socio-listar.component';
-import { SocioImportarComponent } from './socio/socio-importar/socio-importar.component';
-import { CobrancaLoteComponent } from './socio/cobranca-lote/cobranca-lote.component';
-import { NonMonthlyBillingIndividualComponent } from './cobrancas/individual/non-monthly-billing-individual.component';
+import { CentroCustoComponent } from './centro-custo/centro-custo.component';
 import { NonMonthlyBillingBatchComponent } from './cobrancas/batch/non-monthly-billing-batch.component';
 import { BillingListComponent } from './cobrancas/billing-list.component';
+import { NonMonthlyBillingIndividualComponent } from './cobrancas/individual/non-monthly-billing-individual.component';
 import { SocioBillingsComponent } from './cobrancas/socio-billings/socio-billings.component';
+import { FornecedorFormComponent } from './fornecedor/fornecedor-form/fornecedor-form.component';
+import { FornecedorListarComponent } from './fornecedor/fornecedor-listar/fornecedor-listar.component';
+import { FornecedorComponent } from './fornecedor/fornecedor.component';
+import { GrupoFinanceiroFormComponent } from './grupo-financeiro/grupo-financeiro-form/grupo-financeiro-form.component';
+import { GrupoFinanceiroComponent } from './grupo-financeiro/grupo-financeiro.component';
+import { GrupoMensalidadeFormComponent } from './grupo-mensalidade/grupo-mensalidade-form/grupo-mensalidade-form.component';
+import { GrupoMensalidadeComponent } from './grupo-mensalidade/grupo-mensalidade.component';
+import { RubricasFormComponent } from './rubricas/rubricas-form/rubricas-form.component';
+import { RubricasComponent } from './rubricas/rubricas.component';
+import { CobrancaLoteComponent } from './socio/cobranca-lote/cobranca-lote.component';
+import { SocioFormComponent } from './socio/socio-form/socio-form.component';
+import { SocioImportarComponent } from './socio/socio-importar/socio-importar.component';
+import { SocioListarComponent } from './socio/socio-listar/socio-listar.component';
+import { SocioComponent } from './socio/socio.component';
 
 const routes: Routes = [
   {
     path: 'centro-custo',
     redirectTo: 'centro-custo/lista',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'centro-custo/lista',
     component: CentroCustoComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'centro-custo/novo',
     component: CentroCustoFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'centro-custo/editar/:id',
     component: CentroCustoFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'grupo-financeiro',
     redirectTo: 'grupo-financeiro/lista',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'grupo-financeiro/lista',
     component: GrupoFinanceiroComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'grupo-financeiro/novo',
     component: GrupoFinanceiroFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'grupo-financeiro/editar/:id',
     component: GrupoFinanceiroFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'rubricas',
     redirectTo: 'rubricas/lista',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'rubricas/lista',
     component: RubricasComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'rubricas/novo',
     component: RubricasFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'rubricas/editar/:id',
     component: RubricasFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'grupo-mensalidade',
     redirectTo: 'grupo-mensalidade/lista',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'grupo-mensalidade/lista',
     component: GrupoMensalidadeComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'grupo-mensalidade/novo',
     component: GrupoMensalidadeFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'grupo-mensalidade/editar/:id',
     component: GrupoMensalidadeFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'socio',
     redirectTo: 'socio/lista',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'socio/lista',
     component: SocioComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'socio/novo',
     component: SocioFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'socio/editar/:id',
     component: SocioFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'fornecedores',
+    children: [
+      {
+        path: '',
+        redirectTo: 'lista',
+        pathMatch: 'full',
+      },
+      {
+        path: 'lista',
+        component: FornecedorComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'novo',
+        component: FornecedorFormComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'editar/:id',
+        component: FornecedorFormComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'listar',
+        component: FornecedorListarComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
   },
   {
     path: 'socio',
@@ -126,19 +159,19 @@ const routes: Routes = [
       {
         path: 'listar',
         component: SocioListarComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
       },
       {
         path: 'importar',
         component: SocioImportarComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
       },
       {
         path: 'gerar-cobrancas',
         component: CobrancaLoteComponent,
-        canActivate: [AuthGuard]
-      }
-    ]
+        canActivate: [AuthGuard],
+      },
+    ],
   },
   {
     path: 'cobrancas',
@@ -146,39 +179,29 @@ const routes: Routes = [
       {
         path: 'lista',
         component: BillingListComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
       },
       {
         path: 'outras-rubricas-individual',
         component: NonMonthlyBillingIndividualComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
       },
       {
         path: 'outras-rubricas-lote',
         component: NonMonthlyBillingBatchComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
       },
       {
         path: 'socio/:id',
         component: SocioBillingsComponent,
-        canActivate: [AuthGuard]
-      }
-    ]
+        canActivate: [AuthGuard],
+      },
+    ],
   },
-  {
-    path: 'fornecedores',
-    redirectTo: 'fornecedores/lista',
-    pathMatch: 'full'
-  },
-  {
-    path: 'fornecedores/lista',
-    loadChildren: () => import('./fornecedor/fornecedor.module').then(m => m.FornecedorModule),
-    canActivate: [AuthGuard]
-  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class CadastrosRoutingModule { }
+export class CadastrosRoutingModule {}

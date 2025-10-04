@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Page, Socio } from '../socio.model';
-import { SocioService } from '../socio.service';
+import { Fornecedor, Page } from '../fornecedor.model';
+import { FornecedorService } from '../fornecedor.service';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-socio-listar',
+  selector: 'app-fornecedor-listar',
   template: `
     <div class="page-content">
       <div class="container-fluid">
@@ -12,7 +12,7 @@ import { SocioService } from '../socio.service';
           <div class="col-12">
             <div class="card">
               <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Listar Sócios</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Listar Fornecedores</h4>
               </div>
               <div class="card-body">
                 <div class="live-preview">
@@ -23,63 +23,55 @@ import { SocioService } from '../socio.service';
                       <thead>
                         <tr>
                           <th scope="col">ID</th>
-                          <th scope="col">Nome</th>
-                          <th scope="col">CPF</th>
-                          <th scope="col">Grau</th>
-                          <th scope="col">Status</th>
+                          <th scope="col">Nome Fantasia</th>
+                          <th scope="col">Razão Social</th>
+                          <th scope="col">CPF/CNPJ</th>
+                          <th scope="col">Telefone</th>
                           <th scope="col">Email</th>
+                          <th scope="col">Status</th>
                           <th scope="col">Ações</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let socio of socios">
-                          <td>{{ socio.id }}</td>
-                          <td>{{ socio.nomeSocio }}</td>
-                          <td>{{ socio.cpf }}</td>
-                          <td>{{ socio.grau }}</td>
+                        <tr *ngFor="let fornecedor of fornecedores">
+                          <td>{{ fornecedor.id }}</td>
+                          <td>{{ fornecedor.nomeFantasia }}</td>
+                          <td>{{ fornecedor.razaoSocial }}</td>
+                          <td>{{ fornecedor.cpfCnpj }}</td>
+                          <td>{{ fornecedor.telefone || 'N/A' }}</td>
+                          <td>{{ fornecedor.email || 'N/A' }}</td>
                           <td>
                             <span
                               class="badge"
                               [ngClass]="
-                                getStatusBadgeClass(socio.status || '')
+                                getStatusBadgeClass(fornecedor.ativo)
                               "
                             >
-                              {{ getStatusText(socio.status || '') }}
+                              {{ getStatusText(fornecedor.ativo) }}
                             </span>
                           </td>
-                          <td>{{ socio.email || 'N/A' }}</td>
                           <td>
                             <div class="hstack gap-3 flex-wrap">
                               <button
                                 type="button"
                                 class="btn btn-sm btn-soft-info edit-item-btn"
-                                (click)="editarSocio(socio.id || 0)"
+                                (click)="editarFornecedor(fornecedor.id || 0)"
                               >
                                 Editar
                               </button>
                               <button
                                 type="button"
                                 class="btn btn-sm btn-soft-danger remove-item-btn"
-                                (click)="excluirSocio(socio.id || 0)"
+                                (click)="excluirFornecedor(fornecedor.id || 0)"
                               >
                                 Excluir
-                              </button>
-                              <button
-                                type="button"
-                                class="btn btn-sm btn-soft-primary"
-                                title="Visualizar Cobranças"
-                                (click)="visualizarCobrancas(socio.id || 0)"
-                                [disabled]="!socio.id"
-                              >
-                                <i class="ri-file-list-fill align-bottom"></i>
-                                Cobranças
                               </button>
                             </div>
                           </td>
                         </tr>
-                        <tr *ngIf="socios.length === 0">
-                          <td colspan="7" class="text-center">
-                            Nenhum sócio encontrado
+                        <tr *ngIf="fornecedores.length === 0">
+                          <td colspan="8" class="text-center">
+                            Nenhum fornecedor encontrado
                           </td>
                         </tr>
                       </tbody>
@@ -117,68 +109,59 @@ import { SocioService } from '../socio.service';
       </div>
     </div>
   `,
-  styles: [],
+  styles: []
 })
-export class SocioListarComponent implements OnInit {
-  socios: Socio[] = [];
-  page: Page<Socio> = {} as Page<Socio>;
+export class FornecedorListarComponent implements OnInit {
+  fornecedores: Fornecedor[] = [];
+  page: Page<Fornecedor> = {} as Page<Fornecedor>;
   currentPage = 0;
   totalPages = 0;
   pageSize = 10;
 
   constructor(
-    private socioService: SocioService,
-    private router: Router,
-    private route: ActivatedRoute
+    private fornecedorService: FornecedorService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.carregarSocios();
+    this.carregarFornecedores();
   }
 
-  carregarSocios(): void {
-    this.socioService.getSocios(this.currentPage, this.pageSize).subscribe({
-      next: (response: Page<Socio>) => {
+  carregarFornecedores(): void {
+    this.fornecedorService.getFornecedores(this.currentPage, this.pageSize).subscribe({
+      next: (response: Page<Fornecedor>) => {
         this.page = response;
-        this.socios = response.content;
+        this.fornecedores = response.content;
         this.totalPages = response.totalPages;
       },
       error: (error) => {
-        console.error('Erro ao carregar sócios:', error);
+        console.error('Erro ao carregar fornecedores:', error);
       },
     });
   }
 
-  getStatusText(status: string): string {
-    return status || 'Desconhecido';
+  getStatusText(ativo: boolean | undefined): string {
+    return ativo ? 'Ativo' : 'Inativo';
   }
 
-  getStatusBadgeClass(status: string): string {
-    const statusLower = status.toLowerCase();
-    switch (statusLower) {
-      case 'ativo':
-        return 'bg-success';
-      case 'inativo':
-        return 'bg-danger';
-      default:
-        return 'bg-warning';
-    }
+  getStatusBadgeClass(ativo: boolean | undefined): string {
+    return ativo ? 'bg-success' : 'bg-danger';
   }
 
-  editarSocio(id: number): void {
-    this.router.navigate(['../editar', id], { relativeTo: this.route });
+  editarFornecedor(id: number): void {
+    this.router.navigate([`/pages/cadastros/fornecedor/editar`, id]);
   }
 
-  excluirSocio(id: number): void {
-    if (confirm('Tem certeza que deseja excluir este sócio?')) {
-      this.socioService.deleteSocio(id).subscribe({
+  excluirFornecedor(id: number): void {
+    if (confirm('Tem certeza que deseja excluir este fornecedor?')) {
+      this.fornecedorService.deleteFornecedor(id).subscribe({
         next: () => {
-          // Recarregar a lista após exclusão
-          this.carregarSocios();
+          this.carregarFornecedores();
         },
         error: (error) => {
-          console.error('Erro ao excluir sócio:', error);
-        },
+          console.error('Erro ao excluir fornecedor:', error);
+          alert('Erro ao excluir fornecedor: ' + error.message);
+        }
       });
     }
   }
@@ -186,24 +169,14 @@ export class SocioListarComponent implements OnInit {
   paginaAnterior(): void {
     if (this.currentPage > 0) {
       this.currentPage--;
-      this.carregarSocios();
+      this.carregarFornecedores();
     }
   }
 
   proximaPagina(): void {
     if (this.currentPage < this.totalPages - 1) {
       this.currentPage++;
-      this.carregarSocios();
-    }
-  }
-
-  visualizarCobrancas(socioId: number): void {
-    console.log('Método visualizarCobrancas chamado com socioId:', socioId);
-    if (socioId) {
-      console.log('Navegando para a página de cobranças do sócio:', socioId);
-      this.router.navigate(['/pages/cobrancas/socio', socioId]);
-    } else {
-      console.error('Erro: socioId é inválido', socioId);
+      this.carregarFornecedores();
     }
   }
 }

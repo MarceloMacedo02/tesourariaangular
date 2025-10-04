@@ -206,6 +206,7 @@
         "RUBRICAS": "Rubricas",
         "GRUPO_MENSALIDADE": "Grupo Mensalidade",
         "SOCIO": "Sócio",
+        "FORNECEDOR": "Fornecedores",
         "SOCIO.LISTAR": "Listar",
         "SOCIO.CADASTRAR": "Cadastrar",
         "SOCIO.IMPORTARCSV": "Importar CSV",
@@ -224,6 +225,13 @@
         "COBRANCASOUTRASRUBRICAS": "Cobranças Outras Rubricas",
         "GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL": "Gerar Cobrança Individual Outras Rubricas",
         "GERARCOBRANCASOUTRASRUBRICASLOTE": "Gerar Cobrança em Lote Outras Rubricas"
+      }
+    },
+    "FINANCEIRO": {
+      "TEXT": "Financeiro",
+      "LIST": {
+        "CONTAS_A_PAGAR": "Contas a Pagar",
+        "CONTAS_A_RECEBER": "Contas a Receber"
       }
     }
   }
