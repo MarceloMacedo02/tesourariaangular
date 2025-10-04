@@ -1,47 +1,48 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { FinanceiroRoutingModule } from './financeiro-routing.module';
+import { ContasPagarListarComponent } from './contas-a-pagar/contas-a-pagar-listar.component';
+import { ContasPagarFormComponent } from './contas-a-pagar/contas-a-pagar-form.component';
+import { ContasPagarDetalhesComponent } from './contas-a-pagar/contas-a-pagar-detalhes.component';
+import { ContasPagarPagamentoComponent } from './contas-a-pagar/contas-a-pagar-pagamento.component';
+import { CobrancasAvulsasListarComponent } from './cobrancas-avulsas/cobrancas-avulsas-listar.component';
+import { CobrancasAvulsasFormComponent } from './cobrancas-avulsas/cobrancas-avulsas-form.component';
+import { CobrancasAvulsasDetalhesComponent } from './cobrancas-avulsas/cobrancas-avulsas-detalhes.component';
+import { CobrancasAvulsasPagamentoComponent } from './cobrancas-avulsas/cobrancas-avulsas-pagamento.component';
+import { ContasAReceberListarComponent } from './contas-a-receber/contas-a-receber-listar.component';
+import { ContasAReceberFormComponent } from './contas-a-receber/contas-a-receber-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FlatpickrModule } from 'angularx-flatpickr';
-import { MatDialogModule } from '@angular/material/dialog';
-
+import { NgxCurrencyDirective } from 'ngx-currency';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { FinanceiroRoutingModule } from './financeiro-routing.module';
-
-import { DashboardFinanceiroComponent } from './dashboard-financeiro/dashboard-financeiro.component';
-import { ContasPagarComponent } from './contas-pagar/contas-pagar.component';
-import { ContasPagarFormComponent } from './contas-pagar/contas-pagar-form/contas-pagar-form.component';
-import { ContasReceberComponent } from './contas-receber/contas-receber.component';
-import { ContasReceberFormComponent } from './contas-receber/contas-receber-form/contas-receber-form.component';
-import { QuitarContaModalComponent } from './quitar-conta-modal/quitar-conta-modal.component';
-import { ContaDetalhesComponent } from './conta-detalhes/conta-detalhes.component';
-import { RelatoriosFinanceirosComponent } from './relatorios-financeiros/relatorios-financeiros.component';
-import { ImportarContasPagarComponent } from './importar-contas-pagar/importar-contas-pagar.component';
 
 @NgModule({
   declarations: [
-    DashboardFinanceiroComponent,
-    ContasPagarComponent,
+    ContasPagarListarComponent,
     ContasPagarFormComponent,
-    ContasReceberComponent,
-    ContasReceberFormComponent,
-    QuitarContaModalComponent,
-    ContaDetalhesComponent,
-    RelatoriosFinanceirosComponent,
-    ImportarContasPagarComponent
+    ContasPagarDetalhesComponent,
+    ContasPagarPagamentoComponent,
+    CobrancasAvulsasListarComponent,
+    CobrancasAvulsasFormComponent,
+    CobrancasAvulsasDetalhesComponent,
+    CobrancasAvulsasPagamentoComponent,
+    ContasAReceberListarComponent,
+    ContasAReceberFormComponent,
   ],
   imports: [
     CommonModule,
+    RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule,
     NgSelectModule,
     FlatpickrModule.forRoot(),
-    MatDialogModule,
+    NgxCurrencyDirective,
     SharedModule,
-    FinanceiroRoutingModule
+    FinanceiroRoutingModule,
   ],
-  providers: []
+  exports: [
+  ]
 })
-export class FinanceiroModule { }
+export class FinanceiroModule {}

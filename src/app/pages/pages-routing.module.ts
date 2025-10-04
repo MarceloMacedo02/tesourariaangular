@@ -59,6 +59,10 @@ const routes: Routes = [
         path: 'cadastros',
         loadChildren: () => import('./cadastros/cadastros.module').then(m => m.CadastrosModule)
       },
+      {
+        path: 'financeiro',
+        loadChildren: () => import('./financeiro/financeiro.module').then(m => m.FinanceiroModule)
+      },
     ]
   }
 ];

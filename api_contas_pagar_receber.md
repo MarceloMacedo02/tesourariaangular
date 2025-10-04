@@ -1,4 +1,4 @@
-# Documentação para Consumo das APIs de Contas a Pagar e Receber
+# Contas a Pagar e Receber
 
 Esta documentação fornece os detalhes necessários para que o frontend consuma as APIs de contas a pagar e receber implementadas no backend.
 

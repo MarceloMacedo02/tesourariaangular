@@ -58,9 +58,8 @@
                                 <label for="rg" class="form-label">
                                     RG
                                 </label>
-                                <input type="text" class="form-control" id="rg" name="rg"
-                                    [(ngModel)]="fornecedor.rg" [disabled]="loading" maxlength="20"
-                                    placeholder="00.000.000-0">
+                                <input type="text" class="form-control" id="rg" name="rg" [(ngModel)]="fornecedor.rg"
+                                    [disabled]="loading" maxlength="20" placeholder="00.000.000-0">
                             </div>
                         </div>
 
@@ -70,8 +69,8 @@
                                     Telefone
                                 </label>
                                 <input type="text" class="form-control" id="telefone" name="telefone"
-                                    [(ngModel)]="fornecedor.telefone" [disabled]="loading"
-                                    placeholder="(00) 00000-0000" maxlength="15"
+                                    [(ngModel)]="fornecedor.telefone" [disabled]="loading" placeholder="(00) 00000-0000"
+                                    maxlength="15"
                                     (input)="fornecedor.telefone = formatarTelefone(fornecedor.telefone || '')">
                             </div>
                         </div>
@@ -82,8 +81,8 @@
                                     Email
                                 </label>
                                 <input type="email" class="form-control" id="email" name="email"
-                                    [(ngModel)]="fornecedor.email" [disabled]="loading"
-                                    placeholder="email@exemplo.com" maxlength="100">
+                                    [(ngModel)]="fornecedor.email" [disabled]="loading" placeholder="email@exemplo.com"
+                                    maxlength="100">
                             </div>
                         </div>
 
@@ -136,10 +135,11 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary" [disabled]="loading">
-                            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"
+                                aria-hidden="true"></span>
                             {{ loading ? 'Salvando...' : (isEditing ? 'Atualizar' : 'Salvar') }}
                         </button>
-                        <a [routerLink]="['/pages/cadastros/fornecedor']" class="btn btn-light">Cancelar</a>
+                        <a [routerLink]="['/pages/cadastros/fornecedores']" class="btn btn-light">Cancelar</a>
                     </div>
                 </form>
             </div>
