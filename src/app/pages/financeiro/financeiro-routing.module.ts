@@ -11,6 +11,7 @@ import { CobrancasAvulsasDetalhesComponent } from './cobrancas-avulsas/cobrancas
 import { CobrancasAvulsasPagamentoComponent } from './cobrancas-avulsas/cobrancas-avulsas-pagamento.component';
 import { ContasAReceberListarComponent } from './contas-a-receber/contas-a-receber-listar.component';
 import { ContasAReceberFormComponent } from './contas-a-receber/contas-a-receber-form.component';
+import { UploadOfxComponent } from 'src/app/components/upload-ofx/upload-ofx.component';
 
 const routes: Routes = [
   {
@@ -107,6 +108,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
     ],
+  },
+  {
+    path: 'upload-ofx',
+    component: UploadOfxComponent,
+    canActivate: [AuthGuard],
   },
   // Outras funcionalidades financeiras serão adicionadas conforme desenvolvimento
 ];

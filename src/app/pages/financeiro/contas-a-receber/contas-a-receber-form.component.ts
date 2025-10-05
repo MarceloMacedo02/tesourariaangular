@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Fornecedor, Rubrica, Socio } from '../../../services/referencias-financeiras.service';
-import { ReferenciasFinanceirasService } from '../../../services/referencias-financeiras.service';
+import {
+  Fornecedor,
+  ReferenciasFinanceirasService,
+  Rubrica,
+  Socio,
+} from '../../../services/referencias-financeiras.service';
 import {
   ContaPagar,
   ContasPagarService,
@@ -36,9 +40,7 @@ import {
                   <div class="row">
                     <div class="col-md-6">
                       <div class="mb-3">
-                        <label for="socioId" class="form-label"
-                          >Sócio</label
-                        >
+                        <label for="socioId" class="form-label">Sócio</label>
                         <ng-select
                           [(ngModel)]="selectedSocioId"
                           [disabled]="loading"
@@ -49,7 +51,8 @@ import {
                           [items]="socios"
                           bindValue="id"
                           bindLabel="nome"
-                          (change)="onSocioChange($event)">
+                          (change)="onSocioChange($event)"
+                        >
                         </ng-select>
                       </div>
                     </div>
@@ -69,7 +72,8 @@ import {
                           [items]="fornecedores"
                           bindValue="id"
                           bindLabel="nome"
-                          (change)="onFornecedorChange($event)">
+                          (change)="onFornecedorChange($event)"
+                        >
                         </ng-select>
                       </div>
                     </div>
@@ -165,8 +169,7 @@ import {
                         </div>
                       </div>
                     </div>
-
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                       <div class="mb-3">
                         <label for="dataVencimento" class="form-label"
                           >Data de Vencimento *</label
@@ -196,7 +199,39 @@ import {
                           Data de vencimento é obrigatória
                         </div>
                       </div>
-                    </div>
+                    </div> -->
+
+                    <!-- <div class="col-md-6">
+                      <div class="mb-3">
+                        <label for="dataVencimento" class="form-label"
+                          >Data de Vencimento *</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="dataVencimento"
+                          name="dataVencimento"
+                          [(ngModel)]="dataVencimento"
+                          [disabled]="loading"
+                          placeholder="dd/mm/aaaa"
+                          mwlFlatpickr
+                          [altInput]="true"
+                          [convertModelValue]="true"
+                          [dateFormat]="'Y-m-d'"
+                          altFormat="d/m/Y"
+                          formControlName="dataVencimento"
+                        />
+                        <div
+                          *ngIf="
+                            form.get('dataVencimento')?.invalid &&
+                            form.get('dataVencimento')?.touched
+                          "
+                          class="text-danger"
+                        >
+                          Data de vencimento é obrigatória
+                        </div>
+                      </div>
+                    </div> -->
                   </div>
 
                   <div class="mb-3" *ngIf="isEdicao && conta">
@@ -309,26 +344,42 @@ export class ContasAReceberFormComponent implements OnInit {
   async loadData(): Promise<void> {
     try {
       // Carregar fornecedores
-      this.fornecedores = await this.referenciasFinanceirasService.getFornecedores().toPromise() || [];
+      this.fornecedores =
+        (await this.referenciasFinanceirasService
+          .getFornecedores()
+          .toPromise()) || [];
     } catch (error: any) {
       console.error('Erro ao carregar fornecedores:', error);
-      this.errors.push('Erro ao carregar fornecedores: ' + (error.error?.message || 'Erro desconhecido'));
+      this.errors.push(
+        'Erro ao carregar fornecedores: ' +
+          (error.error?.message || 'Erro desconhecido')
+      );
     }
 
     try {
       // Carregar rubricas
-      this.rubricas = await this.referenciasFinanceirasService.getRubricas().toPromise() || [];
+      this.rubricas =
+        (await this.referenciasFinanceirasService.getRubricas().toPromise()) ||
+        [];
     } catch (error: any) {
       console.error('Erro ao carregar rubricas:', error);
-      this.errors.push('Erro ao carregar rubricas: ' + (error.error?.message || 'Erro desconhecido'));
+      this.errors.push(
+        'Erro ao carregar rubricas: ' +
+          (error.error?.message || 'Erro desconhecido')
+      );
     }
 
     try {
       // Carregar sócios
-      this.socios = await this.referenciasFinanceirasService.getSocios().toPromise() || [];
+      this.socios =
+        (await this.referenciasFinanceirasService.getSocios().toPromise()) ||
+        [];
     } catch (error: any) {
       console.error('Erro ao carregar sócios:', error);
-      this.errors.push('Erro ao carregar sócios: ' + (error.error?.message || 'Erro desconhecido'));
+      this.errors.push(
+        'Erro ao carregar sócios: ' +
+          (error.error?.message || 'Erro desconhecido')
+      );
     }
   }
 
@@ -379,7 +430,7 @@ export class ContasAReceberFormComponent implements OnInit {
   cancelar(): void {
     this.router.navigate(['/pages/financeiro/contas-a-receber/lista']);
   }
-  
+
   // Validação para garantir que pelo menos sócio ou fornecedor esteja selecionado
   validarPeloMenosUm(): boolean {
     return !!(this.selectedSocioId || this.selectedFornecedorId);
@@ -396,7 +447,9 @@ export class ContasAReceberFormComponent implements OnInit {
 
     // Validação adicional para garantir que pelo menos sócio ou fornecedor esteja selecionado
     if (!this.validarPeloMenosUm()) {
-      this.errors = ['É obrigatório selecionar pelo menos um entre sócio ou fornecedor.'];
+      this.errors = [
+        'É obrigatório selecionar pelo menos um entre sócio ou fornecedor.',
+      ];
       return;
     }
 

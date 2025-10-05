@@ -138,21 +138,12 @@ import {
                       <div class="mb-3">
                         <label for="valor" class="form-label">Valor *</label>
                         <input
-                          type="text"
+                          type="number"
                           class="form-control"
                           id="valor"
-                          name="valor"
-                          required
-                          placeholder="R$ 0,00"
-                          [currencyMask]="{
-                            prefix: 'R$ ',
-                            thousands: '.',
-                            decimal: ',',
-                            allowNegative: false,
-                            nullable: true,
-                            precision: 2
-                          }"
                           formControlName="valor"
+                          step="0.01"
+                          placeholder="0,00"
                         />
                         <div
                           *ngIf="
@@ -175,6 +166,8 @@ import {
                           class="form-control"
                           id="dataVencimento"
                           name="dataVencimento"
+                          [(ngModel)]="dataVencimento"
+                          [disabled]="loading"
                           placeholder="dd/mm/aaaa"
                           mwlFlatpickr
                           [altInput]="true"

@@ -113,7 +113,8 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         id: 31,
-        label: 'MENUITEMS.COBRANCAS.LIST.GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL',
+        label:
+          'MENUITEMS.COBRANCAS.LIST.GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL',
         link: '/pages/cadastros/cobrancas/outras-rubricas-individual',
         parentId: 30,
       },
@@ -122,16 +123,16 @@ export const MENU: MenuItem[] = [
         label: 'MENUITEMS.COBRANCAS.LIST.GERARCOBRANCASOUTRASRUBRICASLOTE',
         link: '/pages/cadastros/cobrancas/outras-rubricas-lote',
         parentId: 30,
-      }
+      },
     ],
   },
-  {
-    id: 37,
-    label: 'MENUITEMS.COBRANCAS.LIST.COBRANCAS_AVULSAS',
-    icon: 'ti ti-file-dollar',
-    link: '/pages/financeiro/cobrancas-avulsas/lista',
-    parentId: 24,
-  },
+  // {
+  //   id: 37,
+  //   label: 'MENUITEMS.COBRANCAS.LIST.COBRANCAS_AVULSAS',
+  //   icon: 'ti ti-file-dollar',
+  //   link: '/pages/financeiro/cobrancas-avulsas/lista',
+  //   parentId: 24,
+  // },
   {
     id: 33,
     label: 'MENUITEMS.FINANCEIRO.TEXT',
@@ -148,16 +149,16 @@ export const MENU: MenuItem[] = [
     id: 35,
     label: 'MENUITEMS.FINANCEIRO.LIST.CONTAS_A_RECEBER',
     icon: 'ti ti-arrow-up-right',
-    link: '/pages/financeiro/contas-receber/lista',
-    parentId: 33,
-  },
-  {
-    id: 36,
-    label: 'MENUITEMS.FINANCEIRO.LIST.COBRANCAS_AVULSAS',
-    icon: 'ti ti-file-dollar',
     link: '/pages/financeiro/cobrancas-avulsas/lista',
     parentId: 33,
   },
+  // {
+  //   id: 36,
+  //   label: 'MENUITEMS.FINANCEIRO.LIST.COBRANCAS_AVULSAS',
+  //   icon: 'ti ti-file-dollar',
+  //   link: '/pages/financeiro/cobrancas-avulsas/lista',
+  //   parentId: 33,
+  // },
   {
     id: 170,
     label: 'MENUITEMS.APPS.TEXT',

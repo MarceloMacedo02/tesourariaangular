@@ -1,0 +1,198 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Upload de Arquivo OFX</h4>
+          
+          <!-- Formulário de upload -->
+          <form [formGroup]="uploadForm" (ngSubmit)="uploadOFX()">
+            <div class="mb-3">
+              <label for="arquivo" class="form-label">Selecione o arquivo OFX</label>
+              <input 
+                type="file" 
+                class="form-control" 
+                id="arquivo" 
+                accept=".ofx"
+                (change)="onFileSelected($event)"
+              >
+              <div class="form-text" *ngIf="mensagem">
+                {{ mensagem }}
+              </div>
+            </div>
+            
+            <button 
+              type="submit" 
+              class="btn btn-primary me-2"
+              [disabled]="!arquivoSelecionado || carregando"
+            >
+              <span *ngIf="carregando" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              Processar OFX
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Exibição de resultados -->
+  <div class="row mt-4" *ngIf="creditTransacoes.length > 0 || debitTransacoes.length > 0 || transacoesPendentes.length > 0">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Créditos ({{ creditTransacoes.length }})</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let transacao of creditTransacoes">
+                  <td>{{ transacao.data | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ transacao.valor | currency:'BRL' }}</td>
+                  <td>{{ transacao.descricao }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Débitos ({{ debitTransacoes.length }})</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let transacao of debitTransacoes">
+                  <td>{{ transacao.data | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ transacao.valor | currency:'BRL' }}</td>
+                  <td>{{ transacao.descricao }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Pendentes ({{ transacoesPendentes.length }})</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let pendente of transacoesPendentes">
+                  <td>{{ pendente.data | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ pendente.valor | currency:'BRL' }}</td>
+                  <td>{{ pendente.descricao }}</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownAcoes{{pendente.id}}" data-bs-toggle="dropdown" aria-expanded="false">
+                        Ações
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownAcoes{{pendente.id}}">
+                        <li>
+                          <a class="dropdown-item" href="#" (click)="transacaoPendenteAtual = pendente; $event.preventDefault()">
+                            Associar manualmente
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item text-danger" href="#" (click)="descartarTransacaoPendente(pendente.id); $event.preventDefault()">
+                            Descartar
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Formulário para associação manual -->
+          <div class="mt-3" *ngIf="transacoesPendentes.length > 0 && transacaoPendenteAtual">
+            <h6>Associar Transação Pendente</h6>
+            <div class="row g-2">
+              <div class="col-md-5">
+                <select class="form-select" [(ngModel)]="tipoRelacionamento" (ngModelChange)="relacionadoId = null">
+                  <option value="">Tipo de Relacionamento</option>
+                  <option value="SOCIO">Sócio</option>
+                  <option value="FORNECEDOR">Fornecedor</option>
+                </select>
+              </div>
+              <div class="col-md-5" *ngIf="tipoRelacionamento === 'SOCIO'">
+                <select class="form-select" [(ngModel)]="relacionadoId">
+                  <option value="">Selecione um Sócio</option>
+                  <option *ngFor="let socio of referencias.socios" [value]="socio.id">
+                    {{ socio.nome }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-5" *ngIf="tipoRelacionamento === 'FORNECEDOR'">
+                <select class="form-select" [(ngModel)]="relacionadoId">
+                  <option value="">Selecione um Fornecedor</option>
+                  <option *ngFor="let fornecedor of referencias.fornecedores" [value]="fornecedor.id">
+                    {{ fornecedor.nome }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <button 
+                  class="btn btn-sm btn-success w-100" 
+                  (click)="associarTransacaoPendente(transacaoPendenteAtual)"
+                  [disabled]="!relacionadoId || !tipoRelacionamento"
+                >
+                  Associar
+                </button>
+              </div>
+            </div>
+            <div class="text-muted small mt-1">
+              Transação: {{ transacaoPendenteAtual.descricao }} - {{ transacaoPendenteAtual.valor | currency:'BRL' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Botão para remover transações por arquivo -->
+  <div class="row mt-4" *ngIf="arquivoSelecionado">
+    <div class="col-12">
+      <button 
+        class="btn btn-outline-danger" 
+        (click)="removerTransacoesPorArquivo(arquivoSelecionado.name)"
+      >
+        Remover transações deste arquivo
+      </button>
+    </div>
+  </div>
+</div>
