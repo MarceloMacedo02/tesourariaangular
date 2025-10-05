@@ -18,6 +18,18 @@ export interface Socio {
   nome: string;
 }
 
+export interface CentroCusto {
+  id: number;
+  descricao: string;
+}
+
+export interface ReferenciasFinanceiras {
+  socios: Socio[];
+  fornecedores: Fornecedor[];
+  rubricas: Rubrica[];
+  centrosCusto: CentroCusto[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -41,5 +53,10 @@ export class ReferenciasFinanceirasService {
   // Buscar todos os sócios
   getSocios(): Observable<Socio[]> {
     return this.http.get<Socio[]>(`${this.baseUrl}/api/simples/socios`);
+  }
+
+  // Buscar todos os centros de custo
+  getCentrosCusto(): Observable<CentroCusto[]> {
+    return this.http.get<CentroCusto[]>(`${this.baseUrl}/api/centro-custo`);
   }
 }

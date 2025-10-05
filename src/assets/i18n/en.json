@@ -234,7 +234,8 @@
         "CONTAS_A_PAGAR": "Accounts Payable",
         "CONTAS_A_RECEBER": "Accounts Receivable",
         "RELATORIOS": "Reports",
-        "IMPORTAR_CONTAS_PAGAR": "Import Accounts Payable"
+        "IMPORTAR_CONTAS_PAGAR": "Import Accounts Payable",
+        "UPLOAD_OFX": "Upload OFX"
       }
     }
   }

@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { 
   TransacaoProcessingResult, 
   TransacaoPendente, 
   TransacaoDto,
-  ReferenciasFinanceiras
+  ReferenciasFinanceiras,
+  OfxUploadRequest,
+  OfxUploadResponse,
+  OfxTransaction,
+  ApiErrorResponse
 } from '../models/transacao-ofx.model';
 import { Fornecedor, Rubrica, Socio, ReferenciasFinanceirasService } from '../services/referencias-financeiras.service';
 
@@ -22,13 +27,80 @@ export class TransacoesOfxService {
   ) {}
 
   /**
-   * Importa um arquivo OFX e processa as transações
+   * Importa um arquivo OFX e processa as transações (nova implementação conforme especificação)
    */
-  importarOFX(formData: FormData): Observable<TransacaoProcessingResult> {
-    return this.http.post<TransacaoProcessingResult>(
-      `${this.baseUrl}/api/transacoes/importar-ofx`,
-      formData
+  importarOFX(formData: FormData, accountId?: number): Observable<TransacaoProcessingResult> {
+    // Criar novo FormData com o arquivo e o accountId se fornecido
+    const requestFormData = new FormData();
+    const file = formData.get('file') as File;
+    requestFormData.append('file', file);
+    
+    if (accountId !== undefined) {
+      requestFormData.append('accountId', accountId.toString());
+    }
+
+    return this.http.post<OfxUploadResponse>(
+      `${this.baseUrl}/api/contas/upload-ofx`,
+      requestFormData
+    ).pipe(
+      // Converter nova estrutura para estrutura antiga para manter compatibilidade
+      map(response => this.transformOfxResponseToLegacy(response))
     );
+  }
+
+  /**
+   * Método auxiliar para converter a nova resposta para o formato antigo
+   */
+  private transformOfxResponseToLegacy(response: OfxUploadResponse): TransacaoProcessingResult {
+    const creditTransacoes: TransacaoDto[] = [];
+    const debitTransacoes: TransacaoDto[] = [];
+    const transacoesPendentes: TransacaoPendente[] = [];
+
+    // Converter transações da nova estrutura para a antiga
+    response.data.transactions.forEach((ofxTransacao, index) => {
+      // Criar objeto compatível com TransacaoDto
+      const transacaoDto: TransacaoDto = {
+        id: index + 1, // Gerar ID baseado no índice (será substituído pelo backend)
+        data: ofxTransacao.date,
+        tipo: ofxTransacao.type === 'credit' ? 'CREDITO' : 'DEBITO',
+        valor: Math.abs(ofxTransacao.amount),
+        fornecedorOuSocio: 'N/A',
+        documento: 'N/A',
+        descricao: ofxTransacao.description,
+        lancado: 'NAOLANCADO',
+        tipoRelacionamento: null,
+        relacionadoId: null,
+        manualSelectionNeeded: true
+      };
+
+      // Adicionar à lista apropriada
+      if (ofxTransacao.type === 'credit') {
+        creditTransacoes.push(transacaoDto);
+      } else {
+        debitTransacoes.push(transacaoDto);
+      }
+
+      // Criar também uma transação pendente como fallback
+      const pendente: TransacaoPendente = {
+        id: index + 1,
+        data: ofxTransacao.date,
+        tipo: ofxTransacao.type === 'credit' ? 'CREDITO' : 'DEBITO',
+        valor: Math.abs(ofxTransacao.amount),
+        descricao: ofxTransacao.description,
+        documento: 'N/A',
+        fornecedorOuSocio: 'N/A',
+        dataImportacao: new Date().toISOString().split('T')[0],
+        arquivoOrigem: 'desconhecido',
+        processado: false
+      };
+      transacoesPendentes.push(pendente);
+    });
+
+    return {
+      creditTransacoes,
+      debitTransacoes,
+      transacoesPendentes
+    };
   }
 
   /**

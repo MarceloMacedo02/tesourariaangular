@@ -1,7 +1,7 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -12,6 +12,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Material modules
 import { MatChipsModule } from '@angular/material/chips';
+
+// NgSelect
+import { NgSelectModule } from '@ng-select/ng-select';
 
 // Locale
 import { registerLocaleData } from '@angular/common';
@@ -30,6 +33,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { rootReducer } from './store/reducers';
 import { environment } from '../environments/environment';
 import { AuthGuard } from './guards/auth.guard';
+import { DetalheTransacaoComponent } from './components/detalhe-transacao/detalhe-transacao.component';
 
 // Required for AOT compilation
 export function HttpLoaderFactory(http: HttpClient) {
@@ -64,10 +68,12 @@ export function appInitializerFactory(translate: TranslateService) {
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule, // Adicionando para suportar ngModel
     RouterModule,      // Needed for router-outlet
     AppRoutingModule,   // Routing module
     BrowserAnimationsModule, // Required for animations
     MatChipsModule, // Required for mat-chip and mat-chip-list
+    NgSelectModule, // Required for ng-select component
     StoreModule.forRoot(rootReducer, {}),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),

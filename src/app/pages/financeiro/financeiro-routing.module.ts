@@ -11,7 +11,9 @@ import { CobrancasAvulsasDetalhesComponent } from './cobrancas-avulsas/cobrancas
 import { CobrancasAvulsasPagamentoComponent } from './cobrancas-avulsas/cobrancas-avulsas-pagamento.component';
 import { ContasAReceberListarComponent } from './contas-a-receber/contas-a-receber-listar.component';
 import { ContasAReceberFormComponent } from './contas-a-receber/contas-a-receber-form.component';
-import { UploadOfxComponent } from 'src/app/components/upload-ofx/upload-ofx.component';
+import { UploadOfxComponent } from './upload-ofx/upload-ofx.component';
+import { QuitacaoCreditoComponent } from './quitacao-credito/quitacao-credito.component';
+import { QuitarTransacoesComponent } from './quitar-transacoes/quitar-transacoes.component';
 
 const routes: Routes = [
   {
@@ -112,6 +114,16 @@ const routes: Routes = [
   {
     path: 'upload-ofx',
     component: UploadOfxComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'quitacao-credito',
+    component: QuitacaoCreditoComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'quitar-transacoes',
+    component: QuitarTransacoesComponent,
     canActivate: [AuthGuard],
   },
   // Outras funcionalidades financeiras serão adicionadas conforme desenvolvimento

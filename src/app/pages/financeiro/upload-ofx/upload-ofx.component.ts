@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TransacoesOfxService } from '../../services/transacoes-ofx.service';
+import { TransacoesOfxService } from '../../../services/transacoes-ofx.service';
 import { 
   TransacaoDto, 
   TransacaoPendente, 
   TransacaoProcessingResult,
   ReferenciasFinanceiras 
-} from '../../models/transacao-ofx.model';
-import { Fornecedor, Rubrica, Socio } from '../../services/referencias-financeiras.service';
+} from '../../../models/transacao-ofx.model';
+import { Fornecedor, Rubrica, Socio } from '../../../services/referencias-financeiras.service';
 
 @Component({
   selector: 'app-upload-ofx',
@@ -84,6 +84,7 @@ export class UploadOfxComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', this.arquivoSelecionado);
 
+    // Chamar o serviço sem o parâmetro accountId
     this.transacoesOfxService.importarOFX(formData).subscribe({
       next: (response: TransacaoProcessingResult) => {
         this.creditTransacoes = response.creditTransacoes;
@@ -95,7 +96,7 @@ export class UploadOfxComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao importar OFX:', error);
-        this.mensagem = `Erro ao processar arquivo: ${error.error?.message || 'Erro desconhecido'}`;
+        this.mensagem = `Erro ao processar arquivo: ${error.error?.message || error.message || 'Erro desconhecido'}`;
         this.carregando = false;
       }
     });
@@ -137,7 +138,7 @@ export class UploadOfxComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao associar transação:', error);
-        this.mensagem = 'Erro ao associar transação: ' + (error.error?.message || 'Erro desconhecido');
+        this.mensagem = 'Erro ao associar transação: ' + (error.error?.message || error.message || 'Erro desconhecido');
       }
     });
   }
@@ -151,7 +152,7 @@ export class UploadOfxComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao descartar transação:', error);
-        this.mensagem = 'Erro ao descartar transação: ' + (error.error?.message || 'Erro desconhecido');
+        this.mensagem = 'Erro ao descartar transação: ' + (error.error?.message || error.message || 'Erro desconhecido');
       }
     });
   }
@@ -168,7 +169,7 @@ export class UploadOfxComponent implements OnInit {
         },
         error: (error) => {
           console.error('Erro ao remover transações:', error);
-          this.mensagem = 'Erro ao remover transações: ' + (error.error?.message || 'Erro desconhecido');
+          this.mensagem = 'Erro ao remover transações: ' + (error.error?.message || error.message || 'Erro desconhecido');
         }
       });
     }

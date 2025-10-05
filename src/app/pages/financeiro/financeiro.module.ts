@@ -12,7 +12,9 @@ import { CobrancasAvulsasDetalhesComponent } from './cobrancas-avulsas/cobrancas
 import { CobrancasAvulsasPagamentoComponent } from './cobrancas-avulsas/cobrancas-avulsas-pagamento.component';
 import { ContasAReceberListarComponent } from './contas-a-receber/contas-a-receber-listar.component';
 import { ContasAReceberFormComponent } from './contas-a-receber/contas-a-receber-form.component';
-import { UploadOfxComponent } from 'src/app/components/upload-ofx/upload-ofx.component';
+import { UploadOfxComponent } from './upload-ofx/upload-ofx.component';
+import { QuitacaoCreditoComponent } from './quitacao-credito/quitacao-credito.component';
+import { QuitarTransacoesComponent } from './quitar-transacoes/quitar-transacoes.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FlatpickrModule } from 'angularx-flatpickr';
@@ -32,6 +34,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     ContasAReceberListarComponent,
     ContasAReceberFormComponent,
     UploadOfxComponent,
+    QuitacaoCreditoComponent,
+    QuitarTransacoesComponent,
   ],
   imports: [
     CommonModule,

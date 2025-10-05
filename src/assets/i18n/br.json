@@ -231,7 +231,10 @@
       "TEXT": "Financeiro",
       "LIST": {
         "CONTAS_A_PAGAR": "Contas a Pagar",
-        "CONTAS_A_RECEBER": "Contas a Receber"
+        "CONTAS_A_RECEBER": "Contas a Receber",
+        "QUITAR_TRANSACOES": "Quitar Transações",
+        "QUITACAO_CREDITO": "Quitação de Crédito",
+        "UPLOAD_OFX": "Upload OFX"
       }
     }
   }

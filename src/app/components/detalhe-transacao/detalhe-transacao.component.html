@@ -1,0 +1,77 @@
+<div class="page-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1">Detalhes da Transação</h4>
+          </div>
+          <div class="card-body">
+            <div *ngIf="carregando" class="mt-4">
+              <div class="d-flex align-items-center">
+                <div class="spinner-border text-primary me-2" role="status"></div>
+                <span>Carregando detalhes da transação, por favor aguarde...</span>
+              </div>
+            </div>
+
+            <div *ngIf="!carregando && transacao">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label">Data</label>
+                    <input type="text" class="form-control" [value]="transacao.data | date:'dd/MM/yyyy'" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" class="form-control" [value]="transacao.descricao" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Fornecedor/Sócio</label>
+                    <input type="text" class="form-control" [value]="transacao.fornecedorOuSocio" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Documento</label>
+                    <input type="text" class="form-control" [value]="transacao.documento" readonly>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label">Valor</label>
+                    <input type="text" class="form-control" [value]="transacao.valor | currency:'BRL'" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Tipo</label>
+                    <input type="text" class="form-control" [value]="transacao.tipo === 'CREDITO' ? 'Crédito' : 'Débito'" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <input type="text" class="form-control" [value]="getStatusDisplayText(transacao.lancado)" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Tipo de Relacionamento</label>
+                    <input type="text" class="form-control" [value]="getRelacionamentoDisplayText(transacao.tipoRelacionamento)" readonly>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-secondary" (click)="voltarLista()">Voltar</button>
+                <button 
+                  *ngIf="transacao.lancado === 'NAOLANCADO'" 
+                  type="button" 
+                  class="btn btn-success" 
+                  (click)="quitarTransacao()">
+                  Quitar Transação
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="!carregando && !transacao" class="alert alert-warning">
+              Transação não encontrada.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

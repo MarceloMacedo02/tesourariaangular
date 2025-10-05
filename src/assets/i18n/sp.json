@@ -234,7 +234,8 @@
         "CONTAS_A_PAGAR": "Cuentas por Pagar",
         "CONTAS_A_RECEBER": "Cuentas por Cobrar",
         "RELATORIOS": "Reportes",
-        "IMPORTAR_CONTAS_PAGAR": "Importar Cuentas por Pagar"
+        "IMPORTAR_CONTAS_PAGAR": "Importar Cuentas por Pagar",
+        "UPLOAD_OFX": "Subir OFX"
       }
     }
   }

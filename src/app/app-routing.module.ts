@@ -9,6 +9,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule),
     canActivate: [AuthGuard]  // Protect the pages route
   },
+  { 
+    path: 'detalhe-transacao/:id', 
+    loadChildren: () => import('./components/detalhe-transacao/detalhe-transacao.module').then(m => m.DetalheTransacaoModule),
+    canActivate: [AuthGuard] 
+  },
   { path: '', redirectTo: '/pages', pathMatch: 'full' }, // Default to pages which loads dashboard
   { path: '**', redirectTo: '/account/auth/signin' }  // Redirect unknown routes to login
 ];
