@@ -11,6 +11,7 @@ export interface Fornecedor {
 export interface Rubrica {
   id: number;
   nome: string;
+  tipo: string;
 }
 
 export interface Socio {
@@ -58,5 +59,18 @@ export class ReferenciasFinanceirasService {
   // Buscar todos os centros de custo
   getCentrosCusto(): Observable<CentroCusto[]> {
     return this.http.get<CentroCusto[]>(`${this.baseUrl}/api/centro-custo`);
+  }
+
+  // Métodos alternativos com nome diferente para compatibilidade
+  getAllSocios(): Observable<Socio[]> {
+    return this.getSocios();
+  }
+
+  getAllFornecedores(): Observable<Fornecedor[]> {
+    return this.getFornecedores();
+  }
+
+  getAllRubricas(): Observable<Rubrica[]> {
+    return this.getRubricas();
   }
 }

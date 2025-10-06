@@ -42,13 +42,13 @@ import { ContasPagarService, ContaPagar } from '../contas-a-pagar/contas-a-pagar
                         <td>{{ conta.fornecedorNome || '-' }}</td>
                         <td>{{ conta.rubricaNome || '-' }}</td>
                         <td>{{ conta.descricao }}</td>
-                        <td>{{ conta.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+                        <td>{{ conta?.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
                         <td>
-                          {{ conta.dataPagamento ? (conta.valor | currency:'BRL':'symbol':'1.2-2') : '-' }}
+                          {{ conta?.dataPagamento ? (conta.valor | currency:'BRL':'symbol':'1.2-2') : '-' }}
                         </td>
-                        <td>{{ conta.dataVencimento | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ conta?.dataVencimento | date:'dd/MM/yyyy' }}</td>
                         <td>
-                          {{ conta.dataPagamento ? (conta.dataPagamento | date:'dd/MM/yyyy') : '-' }}
+                          {{ conta?.dataPagamento ? (conta.dataPagamento | date:'dd/MM/yyyy') : '-' }}
                         </td>
                         <td>
                           <span class="badge" [ngClass]="getStatusClass(conta.status)">
@@ -118,7 +118,7 @@ export class ContasAReceberListarComponent implements OnInit {
     return item.id!;
   }
 
-  getStatusClass(status: string): string {
+  getStatusClass(status: string | undefined | null): string {
     switch(status) {
       case 'ABERTA': return 'bg-warning';
       case 'PAGA': return 'bg-success';

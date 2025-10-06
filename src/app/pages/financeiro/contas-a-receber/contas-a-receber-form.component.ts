@@ -238,10 +238,10 @@ import {
                     <label class="form-label">Status</label>
                     <div
                       class="form-control"
-                      [ngClass]="'status-' + conta.status.toLowerCase()"
+                      [ngClass]="'status-' + (conta?.status || '').toLowerCase()"
                       readonly
                     >
-                      {{ conta.status | titlecase }}
+                      {{ conta?.status | titlecase }}
                     </div>
                   </div>
 

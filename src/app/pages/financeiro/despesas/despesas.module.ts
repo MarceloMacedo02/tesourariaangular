@@ -1,22 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { QuitarTransacoesComponent } from './quitar-transacoes.component';
-import { FormsModule } from '@angular/forms';
+import { DespesasComponent } from './despesas.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: QuitarTransacoesComponent
+    component: DespesasComponent
   }
 ];
 
 @NgModule({
-  declarations: [QuitarTransacoesComponent],
+  declarations: [DespesasComponent],
   imports: [
     CommonModule,
-    FormsModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ]
 })
-export class QuitarTransacoesModule { }
+export class DespesasModule { }

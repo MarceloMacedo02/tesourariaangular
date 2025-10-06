@@ -1,22 +1,25 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { 
-  TransacaoProcessingResult, 
-  TransacaoPendente, 
-  TransacaoDto,
-  ReferenciasFinanceiras,
-  OfxUploadRequest,
+import {
   OfxUploadResponse,
-  OfxTransaction,
-  ApiErrorResponse
+  ReferenciasFinanceiras,
+  TransacaoDto,
+  TransacaoPendente,
+  TransacaoProcessingResult,
 } from '../models/transacao-ofx.model';
-import { Fornecedor, Rubrica, Socio, ReferenciasFinanceirasService } from '../services/referencias-financeiras.service';
+import { TransacaoResponse } from '../models/transacao-response.model';
+import {
+  Fornecedor,
+  ReferenciasFinanceirasService,
+  Rubrica,
+  Socio,
+} from '../services/referencias-financeiras.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TransacoesOfxService {
   private baseUrl = `${environment.apiBaseUrl}`;
@@ -29,29 +32,36 @@ export class TransacoesOfxService {
   /**
    * Importa um arquivo OFX e processa as transações (nova implementação conforme especificação)
    */
-  importarOFX(formData: FormData, accountId?: number): Observable<TransacaoProcessingResult> {
+  importarOFX(
+    formData: FormData,
+    accountId?: number
+  ): Observable<TransacaoProcessingResult> {
     // Criar novo FormData com o arquivo e o accountId se fornecido
     const requestFormData = new FormData();
     const file = formData.get('file') as File;
     requestFormData.append('file', file);
-    
+
     if (accountId !== undefined) {
       requestFormData.append('accountId', accountId.toString());
     }
 
-    return this.http.post<OfxUploadResponse>(
-      `${this.baseUrl}/api/contas/upload-ofx`,
-      requestFormData
-    ).pipe(
-      // Converter nova estrutura para estrutura antiga para manter compatibilidade
-      map(response => this.transformOfxResponseToLegacy(response))
-    );
+    return this.http
+      .post<OfxUploadResponse>(
+        `${this.baseUrl}/api/transacoes/importar-ofx`,
+        requestFormData
+      )
+      .pipe(
+        // Converter nova estrutura para estrutura antiga para manter compatibilidade
+        map((response) => this.transformOfxResponseToLegacy(response))
+      );
   }
 
   /**
    * Método auxiliar para converter a nova resposta para o formato antigo
    */
-  private transformOfxResponseToLegacy(response: OfxUploadResponse): TransacaoProcessingResult {
+  private transformOfxResponseToLegacy(
+    response: OfxUploadResponse
+  ): TransacaoProcessingResult {
     const creditTransacoes: TransacaoDto[] = [];
     const debitTransacoes: TransacaoDto[] = [];
     const transacoesPendentes: TransacaoPendente[] = [];
@@ -70,7 +80,7 @@ export class TransacoesOfxService {
         lancado: 'NAOLANCADO',
         tipoRelacionamento: null,
         relacionadoId: null,
-        manualSelectionNeeded: true
+        manualSelectionNeeded: true,
       };
 
       // Adicionar à lista apropriada
@@ -91,7 +101,8 @@ export class TransacoesOfxService {
         fornecedorOuSocio: 'N/A',
         dataImportacao: new Date().toISOString().split('T')[0],
         arquivoOrigem: 'desconhecido',
-        processado: false
+        processado: false,
+        lancado: 'NAOLANCADO',
       };
       transacoesPendentes.push(pendente);
     });
@@ -99,7 +110,7 @@ export class TransacoesOfxService {
     return {
       creditTransacoes,
       debitTransacoes,
-      transacoesPendentes
+      transacoesPendentes,
     };
   }
 
@@ -107,8 +118,8 @@ export class TransacoesOfxService {
    * Associa uma transação pendente a um sócio ou fornecedor
    */
   associarPendente(
-    transacaoPendenteId: number, 
-    relacionadoId: number, 
+    transacaoPendenteId: number,
+    relacionadoId: number,
     tipoRelacionamento: 'SOCIO' | 'FORNECEDOR'
   ): Observable<TransacaoDto> {
     const url = `${this.baseUrl}/api/transacoes/associar-pendente/${transacaoPendenteId}`;
@@ -128,7 +139,9 @@ export class TransacoesOfxService {
    * Lista transações pendentes
    */
   listarPendentes(): Observable<TransacaoPendente[]> {
-    return this.http.get<TransacaoPendente[]>(`${this.baseUrl}/api/transacoes/pendentes`);
+    return this.http.get<TransacaoPendente[]>(
+      `${this.baseUrl}/api/transacoes/pendentes`
+    );
   }
 
   /**
@@ -144,7 +157,7 @@ export class TransacoesOfxService {
    * Obtém referências financeiras (sócios, fornecedores, rubricas)
    */
   getReferenciasFinanceiras(): Observable<ReferenciasFinanceiras> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       // Faz as três chamadas simultaneamente
       let socios: Socio[] = [];
       let fornecedores: Fornecedor[] = [];
@@ -160,14 +173,14 @@ export class TransacoesOfxService {
             observer.next({
               socios,
               fornecedores,
-              rubricas
+              rubricas,
             });
             observer.complete();
           }
         },
         error: (error) => {
           observer.error(error);
-        }
+        },
       });
 
       // Obtém fornecedores
@@ -179,14 +192,14 @@ export class TransacoesOfxService {
             observer.next({
               socios,
               fornecedores,
-              rubricas
+              rubricas,
             });
             observer.complete();
           }
         },
         error: (error) => {
           observer.error(error);
-        }
+        },
       });
 
       // Obtém rubricas
@@ -198,15 +211,113 @@ export class TransacoesOfxService {
             observer.next({
               socios,
               fornecedores,
-              rubricas
+              rubricas,
             });
             observer.complete();
           }
         },
         error: (error) => {
           observer.error(error);
-        }
+        },
       });
     });
+  }
+
+  /**
+   * Obter transações de débito (despesas)
+   */
+  getTransacoesDebito(): Observable<TransacaoDto[]> {
+    // Simulando retorno de despesas - substituir pela chamada real ao backend
+    return this.getTodasTransacoes().pipe(
+      map(
+        (transacoes) =>
+          transacoes.filter((t) => t.tipo === 'DEBITO') as TransacaoDto[]
+      )
+    );
+  }
+
+  /**
+   * Obter transações de crédito (receitas)
+   */
+  getTransacoesCredito(): Observable<TransacaoDto[]> {
+    // Simulando retorno de receitas - substituir pela chamada real ao backend
+    return this.getTodasTransacoes().pipe(
+      map(
+        (transacoes) =>
+          transacoes.filter((t) => t.tipo === 'CREDITO') as TransacaoDto[]
+      )
+    );
+  }
+
+  /**
+   * Obter todas as transações (método que parece faltar também)
+   */
+  getTodasTransacoes(): Observable<(TransacaoDto | TransacaoPendente)[]> {
+    // Simulação temporária - substituir pela chamada real ao backend
+    return of([]);
+  }
+
+  /**
+   * Método para ignorar/destacar uma transação
+   */
+  ignorarTransacao(id: number): Observable<any> {
+    // Simulação - substituir pela chamada real ao backend
+    return of({});
+  }
+
+  /**
+   * Método para obter transação pendente por ID
+   */
+  getTransacaoPendenteById(id: number): Observable<TransacaoPendente> {
+    // Simulação - substituir pela chamada real ao backend
+    return of({
+      id: id,
+      data: '',
+      tipo: 'CREDITO',
+      valor: 0,
+      descricao: '',
+      documento: '',
+      fornecedorOuSocio: '',
+      dataImportacao: '',
+      arquivoOrigem: '',
+      processado: false,
+      lancado: 'NAOLANCADO',
+    } as TransacaoPendente);
+  }
+
+  /**
+   * Método para associar transação
+   */
+  associarTransacao(transacaoId: number, dados: any): Observable<any> {
+    // Simulação - substituir pela chamada real ao backend
+    return of({});
+  }
+
+  /**
+   * Método para obter transações pendentes
+   */
+  getTransacoesPendentes(): Observable<TransacaoPendente[]> {
+    // Simulação - substituir pela chamada real ao backend
+    return of([]);
+  }
+
+  /**
+   * Obtém transações por mês e ano com paginação
+   */
+  getTransacoesPorMesAno(
+    ano: number,
+    mes: number,
+    page: number = 0,
+    size: number = 30
+  ): Observable<TransacaoResponse> {
+    const params = new URLSearchParams({
+      ano: ano.toString(),
+      mes: mes.toString(),
+      page: page.toString(),
+      size: size.toString(),
+    });
+    return this.http.get<TransacaoResponse>(
+      `${this.baseUrl}/api/transacoes/por-mes-ano?${params}`
+    );
   }
 }

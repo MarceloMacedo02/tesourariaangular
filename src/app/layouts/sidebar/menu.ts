@@ -1,85 +1,86 @@
 import { MenuItem } from './menu.model';
-
 export const MENU: MenuItem[] = [
+  // Itens iniciais (assumidos de versões anteriores)
   {
     id: 1,
-    label: 'MENUITEMS.MENU.TEXT',
+    label: 'Menu',
     isTitle: true,
     parentId: 0,
   },
   {
     id: 2,
-    label: 'MENUITEMS.DASHBOARD.TEXT',
+    label: 'Dashboard',
     icon: 'ti ti-brand-google-home',
     subItems: [
       {
         id: 3,
-        label: 'MENUITEMS.DASHBOARD.LIST.ANALYTICS',
+        label: 'Analytics',
         link: '/',
         parentId: 2,
       },
       {
         id: 5,
-        label: 'MENUITEMS.DASHBOARD.LIST.ECOMMERCE',
+        label: 'Ecommerce',
         link: '/ecommerce',
         parentId: 2,
       },
     ],
   },
+  // Seção Cadastros
   {
     id: 12,
-    label: 'MENUITEMS.CADASTROS.TEXT',
+    label: 'Cadastros',
     isTitle: true,
   },
   {
     id: 13,
-    label: 'MENUITEMS.CADASTROS.LIST.CENTROCUSTO',
+    label: 'Centro de Custo',
     icon: 'ti ti-building-warehouse',
     link: '/pages/cadastros/centro-custo/lista',
     parentId: 12,
   },
   {
     id: 14,
-    label: 'MENUITEMS.CADASTROS.LIST.GRUPOFINANCEIRO',
+    label: 'Grupo Financeiro',
     icon: 'ti ti-category',
     link: '/pages/cadastros/grupo-financeiro/lista',
     parentId: 12,
   },
   {
     id: 15,
-    label: 'MENUITEMS.CADASTROS.LIST.RUBRICAS',
+    label: 'Rubricas',
     icon: 'ti ti-list-details',
     link: '/pages/cadastros/rubricas',
     parentId: 12,
   },
   {
     id: 16,
-    label: 'MENUITEMS.CADASTROS.LIST.GRUPO_MENSALIDADE',
+    label: 'Grupo Mensalidade',
     icon: 'ti ti-users-group',
     link: '/pages/cadastros/grupo-mensalidade/lista',
     parentId: 12,
   },
   {
     id: 17,
-    label: 'MENUITEMS.CADASTROS.LIST.SOCIO',
+    label: 'Sócio',
     icon: 'ti ti-user',
     parentId: 12,
     subItems: [
       {
         id: 18,
-        label: 'MENUITEMS.CADASTROS.LIST.SOCIO.LISTAR',
+        label: 'Listar',
         link: '/pages/cadastros/socio/lista',
         parentId: 17,
       },
       {
         id: 19,
-        label: 'MENUITEMS.CADASTROS.LIST.SOCIO.CADASTRAR',
+        label: 'Cadastrar',
         link: '/pages/cadastros/socio/novo',
         parentId: 17,
       },
       {
         id: 20,
-        label: 'MENUITEMS.CADASTROS.LIST.SOCIO.IMPORTARCSV',
+        label: 'Importar CSV',
         link: '/pages/cadastros/socio/importar',
         parentId: 17,
       },
@@ -87,90 +88,119 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 21,
-    label: 'MENUITEMS.CADASTROS.LIST.FORNECEDOR',
+    label: 'Fornecedores',
     icon: 'ti ti-truck-delivery',
     link: '/pages/cadastros/fornecedores/lista',
     parentId: 12,
   },
+  // Seção Cobranças
   {
     id: 24,
-    label: 'MENUITEMS.COBRANCAS.TEXT',
+    label: 'Cobranças',
     isTitle: true,
   },
   {
     id: 25,
-    label: 'MENUITEMS.CADASTROS.LIST.SOCIO.GERARCOBRANCAMENSALIDADE',
+    label: 'Gerar Cobrança de Mensalidade',
     icon: 'ti ti-file-dollar',
     link: '/pages/cadastros/socio/gerar-cobrancas',
     parentId: 24,
   },
-
   {
     id: 30,
-    label: 'MENUITEMS.COBRANCAS.LIST.COBRANCASOUTRASRUBRICAS',
+    label: 'Cobranças Outras Rubricas',
     icon: 'ti ti-file-invoice',
     parentId: 24,
     subItems: [
       {
         id: 31,
-        label:
-          'MENUITEMS.COBRANCAS.LIST.GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL',
+        label: 'Gerar Cobrança Individual Outras Rubricas',
         link: '/pages/cadastros/cobrancas/outras-rubricas-individual',
         parentId: 30,
       },
       {
         id: 32,
-        label: 'MENUITEMS.COBRANCAS.LIST.GERARCOBRANCASOUTRASRUBRICASLOTE',
+        label: 'Gerar Cobrança em Lote Outras Rubricas',
         link: '/pages/cadastros/cobrancas/outras-rubricas-lote',
         parentId: 30,
       },
     ],
   },
   // {
-  //   id: 37,
-  //   label: 'MENUITEMS.COBRANCAS.LIST.COBRANCAS_AVULSAS',
-  //   icon: 'ti ti-file-dollar',
-  //   link: '/pages/financeiro/cobrancas-avulsas/lista',
-  //   parentId: 24,
+  //   id: 37,
+  //   label: 'Cobranças Avulsas',
+  //   icon: 'ti ti-file-dollar',
+  //   link: '/pages/financeiro/cobrancas-avulsas/lista',
+  //   parentId: 24,
   // },
+  // Seção Financeiro
   {
     id: 33,
-    label: 'MENUITEMS.FINANCEIRO.TEXT',
+    label: 'Financeiro',
     isTitle: true,
   },
   {
     id: 34,
-    label: 'MENUITEMS.FINANCEIRO.LIST.CONTAS_A_PAGAR',
+    label: 'Contas a Pagar',
     icon: 'ti ti-arrow-down-left',
     link: '/pages/financeiro/contas-a-pagar/lista',
     parentId: 33,
   },
   {
     id: 35,
-    label: 'MENUITEMS.FINANCEIRO.LIST.CONTAS_A_RECEBER',
+    label: 'Contas a Receber',
     icon: 'ti ti-arrow-up-right',
     link: '/pages/financeiro/cobrancas-avulsas/lista',
     parentId: 33,
   },
+  // Itens de Quitação
   {
-    id: 36,
-    label: 'MENUITEMS.FINANCEIRO.LIST.QUITAR_TRANSACOES',
-    icon: 'ti ti-check-circle',
+    id: 170,
+    label: 'Quitar Transações',
+    icon: 'ti ti-currency-dollar',
     link: '/pages/financeiro/quitar-transacoes',
     parentId: 33,
   },
   {
-    id: 37,
-    label: 'MENUITEMS.FINANCEIRO.LIST.QUITACAO_CREDITO',
-    icon: 'ti ti-cash',
+    id: 171,
+    label: 'Quitação de Crédito',
+    icon: 'ti ti-credit-card',
     link: '/pages/financeiro/quitacao-credito',
     parentId: 33,
   },
   {
+    id: 172,
+    label: 'Quitar Transações de Crédito',
+    icon: 'ti ti-arrows-right-left',
+    link: '/pages/financeiro/quitar-transacoes-credito',
+    parentId: 33,
+  },
+  // Seção Transações
+  {
+    id: 167,
+    label: 'Transações',
+    icon: 'ti ti-exchange',
+    parentId: 33,
+    subItems: [
+      {
+        id: 168,
+        label: 'Listar Transações',
+        link: '/pages/financeiro/transacoes/listar',
+        parentId: 167,
+      },
+      {
+        id: 169,
+        label: 'Nova Transação',
+        link: '/pages/financeiro/transacoes/nova',
+        parentId: 167,
+      },
+    ],
+  },
+  {
     id: 166,
-    label: 'MENUITEMS.FINANCEIRO.LIST.UPLOAD_OFX',
+    label: 'Upload OFX',
     icon: 'ti ti-upload',
     link: '/pages/financeiro/upload-ofx',
-    parentId: 33,  // Corrigido: anteriormente tinha parentId 159 que não existe
+    parentId: 33,
   },
 ];

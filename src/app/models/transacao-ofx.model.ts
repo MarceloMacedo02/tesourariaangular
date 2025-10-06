@@ -51,6 +51,7 @@ export interface TransacaoPendente {
   dataImportacao: string; // formato YYYY-MM-DD
   arquivoOrigem: string;
   processado: boolean;
+  lancado: 'LANCADO' | 'NAOLANCADO';
 }
 
 export interface TransacaoProcessingResult {

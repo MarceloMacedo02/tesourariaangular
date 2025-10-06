@@ -1,240 +1,245 @@
 {
-  "MENUITEMS": {
-    "MENU": {
-      "TEXT": "MENU"
+  \"MENUITEMS\": {
+    \"MENU\": {
+      \"TEXT\": \"MENU\"
     },
-    "DASHBOARD": {
-      "TEXT": "Dashboards",
-      "LIST": {
-        "ANALYTICS": "Analytics",
-        "ECOMMERCE": "Ecommerce"
+    \"DASHBOARD\": {
+      \"TEXT\": \"Dashboards\",
+      \"LIST\": {
+        \"ANALYTICS\": \"Analytics\",
+        \"ECOMMERCE\": \"Ecommerce\"
       }
     },
-    "APPS": {
-      "TEXT": "Apps",
-      "LIST": {
-        "CALENDAR": "Calendário",
-        "CHAT": "Chat",
-        "EMAIL": "Email",
-        "FILEMANAGER": "Gerenciador de Arquivos",
-        "TODO": "Tarefas",
-        "CONTACTS": "Contatos",
-        "LEARNING": "Aprendizado",
-        "COURSES": "Cursos",
-        "KANBANBOARD": "Quadro Kanban",
-        "INVOICES": "Faturas",
-        "LISTVIEW": "Lista",
-        "OVERVIEW": "Visão Geral",
-        "CREATEINVOICE": "Criar Fatura"
+    \"APPS\": {
+      \"TEXT\": \"Apps\",
+      \"LIST\": {
+        \"CALENDAR\": \"Calendário\",
+        \"CHAT\": \"Chat\",
+        \"EMAIL\": \"Email\",
+        \"FILEMANAGER\": \"Gerenciador de Arquivos\",
+        \"TODO\": \"Tarefas\",
+        \"CONTACTS\": \"Contatos\",
+        \"LEARNING\": \"Aprendizado\",
+        \"COURSES\": \"Cursos\",
+        \"KANBANBOARD\": \"Quadro Kanban\",
+        \"INVOICES\": \"Faturas\",
+        \"LISTVIEW\": \"Lista\",
+        \"OVERVIEW\": \"Visão Geral\",
+        \"CREATEINVOICE\": \"Criar Fatura\"
       }
     },
-    "PAGES": {
-      "TEXT": "Páginas"
+    \"PAGES\": {
+      \"TEXT\": \"Páginas\"
     },
-    "AUTHENTICATION": {
-      "TEXT": "Autenticação",
-      "LIST": {
-        "SIGNIN": "Entrar",
-        "SIGNUP": "Cadastrar",
-        "PASSWORDRESET": "Redefinir Senha",
-        "PASSWORDCREATE": "Criar Senha",
-        "LOCKSCREEN": "Tela de Bloqueio",
-        "LOGOUT": "Sair",
-        "SUCCESSMESSAGE": "Mensagem de Sucesso",
-        "TWOSTEPVERIFICATION": "Verificação em Duas Etapas",
-        "ERRORS": "Erros",
-        "404ERROR": "Erro 404",
-        "500": "Erro 500",
-        "OFFLINE": "Página Offline"
+    \"AUTHENTICATION\": {
+      \"TEXT\": \"Autenticação\",
+      \"LIST\": {
+        \"SIGNIN\": \"Entrar\",
+        \"SIGNUP\": \"Cadastrar\",
+        \"PASSWORDRESET\": \"Redefinir Senha\",
+        \"PASSWORDCREATE\": \"Criar Senha\",
+        \"LOCKSCREEN\": \"Tela de Bloqueio\",
+        \"LOGOUT\": \"Sair\",
+        \"SUCCESSMESSAGE\": \"Mensagem de Sucesso\",
+        \"TWOSTEPVERIFICATION\": \"Verificação em Duas Etapas\",
+        \"ERRORS\": \"Erros\",
+        \"404ERROR\": \"Erro 404\",
+        \"500\": \"Erro 500\",
+        \"OFFLINE\": \"Página Offline\"
       }
     },
-    "MORE": {
-      "TEXT": "Mais"
+    \"MORE\": {
+      \"TEXT\": \"Mais\"
     },
-    "EXTRAPAGES": {
-      "TEXT": "Páginas Extras",
-      "LIST": {
-        "STARTER": "Inicial",
-        "PROFILE": "Perfil",
-        "PROFILESETTINGS": "Configurações do Perfil",
-        "TIMELINE": "Linha do Tempo",
-        "FAQS": "Perguntas Frequentes",
-        "PRICING": "Preços",
-        "MAINTENANCE": "Manutenção",
-        "COMINGSOON": "Em Breve",
-        "PRIVACYPOLICY": "Política de Privacidade",
-        "TERMS&CONDITIONS": "Termos e Condições"
+    \"EXTRAPAGES\": {
+      \"TEXT\": \"Páginas Extras\",
+      \"LIST\": {
+        \"STARTER\": \"Inicial\",
+        \"PROFILE\": \"Perfil\",
+        \"PROFILESETTINGS\": \"Configurações do Perfil\",
+        \"TIMELINE\": \"Linha do Tempo\",
+        \"FAQS\": \"Perguntas Frequentes\",
+        \"PRICING\": \"Preços\",
+        \"MAINTENANCE\": \"Manutenção\",
+        \"COMINGSOON\": \"Em Breve\",
+        \"PRIVACYPOLICY\": \"Política de Privacidade\",
+        \"TERMS&CONDITIONS\": \"Termos e Condições\"
       }
     },
-    "COMPONENTS": {
-      "TEXT": "Componentes"
+    \"COMPONENTS\": {
+      \"TEXT\": \"Componentes\"
     },
-    "BOOTSTRAPUI1": {
-      "TEXT": "Bootstrap UI1",
-      "LIST": {
-        "ALERTS": "Alertas",
-        "BADGES": "Distintivos",
-        "BUTTONS": "Botões",
-        "COLORS": "Cores",
-        "CARDS": "Cartões",
-        "CAROUSEL": "Carrossel",
-        "DROPDOWNS": "Menus Suspensos",
-        "GRID": "Grade",
-        "IMAGES": "Imagens",
-        "TABS": "Abas",
-        "ACCORDION&COLLAPSE": "Acordeão e Colapso",
-        "MODALS": "Modais"
+    \"BOOTSTRAPUI1\": {
+      \"TEXT\": \"Bootstrap UI1\",
+      \"LIST\": {
+        \"ALERTS\": \"Alertas\",
+        \"BADGES\": \"Distintivos\",
+        \"BUTTONS\": \"Botões\",
+        \"COLORS\": \"Cores\",
+        \"CARDS\": \"Cartões\",
+        \"CARDS\": \"Cartões\",
+        \"CAROUSEL\": \"Carrossel\",
+        \"DROPDOWNS\": \"Menus Suspensos\",
+        \"GRID\": \"Grade\",
+        \"IMAGES\": \"Imagens\",
+        \"TABS\": \"Abas\",
+        \"ACCORDION&COLLAPSE\": \"Acordeão e Colapso\",
+        \"MODALS\": \"Modais\"
       }
     },
-    "BOOTSTRAPUI2": {
-      "TEXT": "Bootstrap UI2",
-      "LIST": {
-        "MEDIAOBJECT": "Objeto de Mídia",
-        "EMBEDVIDEO": "Vídeo Incorporado",
-        "TYPOGRAPHY": "Tipografia",
-        "LISTS": "Listas",
-        "LINKS": "Links",
-        "GENERAL": "Geral",
-        "UTILITIES": "Utilitários",
-        "OFFCANVAS": "Fora da Tela",
-        "PLACEHOLDERS": "Espaços Reservados",
-        "PROGRESS": "Progresso",
-        "NOTIFICATIONS": "Notificações"
+    \"BOOTSTRAPUI2\": {
+      \"TEXT\": \"Bootstrap UI2\",
+      \"LIST\": {
+        \"MEDIAOBJECT\": \"Objeto de Mídia\",
+        \"EMBEDVIDEO\": \"Vídeo Incorporado\",
+        \"TYPOGRAPHY\": \"Tipografia\",
+        \"LISTS\": \"Listas\",
+        \"LINKS\": \"Links\",
+        \"GENERAL\": \"Geral\",
+        \"UTILITIES\": \"Utilitários\",
+        \"OFFCANVAS\": \"Fora da Tela\",
+        \"PLACEHOLDERS\": \"Espaços Reservados\",
+        \"PROGRESS\": \"Progresso\",
+        \"NOTIFICATIONS\": \"Notificações\"
       }
     },
-    "ADVANCEUI": {
-      "TEXT": "UI Avançada",
-      "LIST": {
-        "SWEETALERTS": "Alertas Personalizados",
-        "NESTABLELIST": "Listas Aninháveis",
-        "SCROLLBAR": "Barra de Rolagem",
-        "SWIPERSLIDER": "Controle Deslizante",
-        "RATTINGS": "Avaliações",
-        "HIGHLIGHT": "Destaque",
-        "SCROLLSPY": "Rolagem Espião"
+    \"ADVANCEUI\": {
+      \"TEXT\": \"UI Avançada\",
+      \"LIST\": {
+        \"SWEETALERTS\": \"Alertas Personalizados\",
+        \"NESTABLELIST\": \"Listas Aninháveis\",
+        \"SCROLLBAR\": \"Barra de Rolagem\",
+        \"SWIPERSLIDER\": \"Controle Deslizante\",
+        \"RATTINGS\": \"Avaliações\",
+        \"HIGHLIGHT\": \"Destaque\",
+        \"SCROLLSPY\": \"Rolagem Espião\"
       }
     },
-    "WIDGETS": {
-      "TEXT": "Widgets"
+    \"WIDGETS\": {
+      \"TEXT\": \"Widgets\"
     },
-    "FORMS": {
-      "TEXT": "Formulários",
-      "LIST": {
-        "BASICELEMENTS": "Elementos Básicos",
-        "FORMSELECT": "Seleção de Formulário",
-        "CHECKBOXS&RADIOS": "Caixas de Seleção e Rádios",
-        "PICKERS": "Seletores",
-        "INPUTMASKS": "Máscaras de Entrada",
-        "ADVANCED": "Avançado",
-        "RANGESLIDER": "Controle Deslizante de Intervalo",
-        "VALIDATION": "Validação",
-        "WIZARD": "Assistente",
-        "EDITORS": "Editores",
-        "FILEUPLOADS": "Uploads de Arquivo",
-        "FORMLAYOUTS": "Layouts de Formulário"
+    \"FORMS\": {
+      \"TEXT\": \"Formulários\",
+      \"LIST\": {
+        \"BASICELEMENTS\": \"Elementos Básicos\",
+        \"FORMSELECT\": \"Seleção de Formulário\",
+        \"CHECKBOXS&RADIOS\": \"Caixas de Seleção e Rádios\",
+        \"PICKERS\": \"Seletores\",
+        \"INPUTMASKS\": \"Máscaras de Entrada\",
+        \"ADVANCED\": \"Avançado\",
+        \"RANGESLIDER\": \"Controle Deslizante de Intervalo\",
+        \"VALIDATION\": \"Validação\",
+        \"WIZARD\": \"Assistente\",
+        \"EDITORS\": \"Editores\",
+        \"FILEUPLOADS\": \"Uploads de Arquivo\",
+        \"FORMLAYOUTS\": \"Layouts de Formulário\"
       }
     },
-    "TABLES": {
-      "TEXT": "Tabelas",
-      "LIST": {
-        "BASICTABLES": "Tabelas Básicas",
-        "GRIDJS": "Grid Js",
-        "LISTJS": "List Js",
-        "DATATABLES": "Tabelas de Dados"
+    \"TABLES\": {
+      \"TEXT\": \"Tabelas\",
+      \"LIST\": {
+        \"BASICTABLES\": \"Tabelas Básicas\",
+        \"GRIDJS\": \"Grid Js\",
+        \"LISTJS\": \"List Js\",
+        \"DATATABLES\": \"Tabelas de Dados\"
       }
     },
-    "CHARTS": {
-      "TEXT": "Gráficos",
-      "LIST": {
-        "LINE": "Linha",
-        "AREA": "Área",
-        "COLUMN": "Coluna",
-        "BAR": "Barra",
-        "MIXED": "Misto",
-        "TIMELINE": "Linha do Tempo",
-        "CANDLSTICK": "Candlestick",
-        "BOXPLOT": "Boxplot",
-        "BUBBLE": "Bolha",
-        "SCATTER": "Dispersão",
-        "HEATMAP": "Mapa de Calor",
-        "TREEMAP": "Treemap",
-        "PIE": "Pizza",
-        "RADIALBAR": "Barra Radial",
-        "RADAR": "Radar",
-        "POLARAREA": "Área Polar"
+    \"CHARTS\": {
+      \"TEXT\": \"Gráficos\",
+      \"LIST\": {
+        \"LINE\": \"Linha\",
+        \"AREA\": \"Área\",
+        \"COLUMN\": \"Coluna\",
+        \"BAR\": \"Barra\",
+        \"MIXED\": \"Misto\",
+        \"TIMELINE\": \"Linha do Tempo\",
+        \"CANDLSTICK\": \"Candlestick\",
+        \"BOXPLOT\": \"Boxplot\",
+        \"BUBBLE\": \"Bolha\",
+        \"SCATTER\": \"Dispersão\",
+        \"HEATMAP\": \"Mapa de Calor\",
+        \"TREEMAP\": \"Treemap\",
+        \"PIE\": \"Pizza\",
+        \"RADIALBAR\": \"Barra Radial\",
+        \"RADAR\": \"Radar\",
+        \"POLARAREA\": \"Área Polar\"
       }
     },
-    "ICONS": {
-      "TEXT": "Ícones",
-      "LIST": {
-        "REMIX": "Remix",
-        "BOOTSTRAP": "Bootstrap",
-        "PHOSPHOR": "Phosphor",
-        "TABLER": "Tabler"
+    \"ICONS\": {
+      \"TEXT\": \"Ícones\",
+      \"LIST\": {
+        \"REMIX\": \"Remix\",
+        \"BOOTSTRAP\": \"Bootstrap\",
+        \"PHOSPHOR\": \"Phosphor\",
+        \"TABLER\": \"Tabler\"
       }
     },
-    "MAPS": {
-      "TEXT": "Mapas",
-      "LIST": {
-        "GOOGLE": "Google",
-        "VECTOR": "Vetor",
-        "LEAFLET": "Folheto"
+    \"MAPS\": {
+      \"TEXT\": \"Mapas\",
+      \"LIST\": {
+        \"GOOGLE\": \"Google\",
+        \"VECTOR\": \"Vetor\",
+        \"LEAFLET\": \"Leaflet\"
       }
     },
-    "MULTILEVEL": {
-      "TEXT": "Multi Nível",
-      "LIST": {
-        "LEVEL1": {
-          "1": "Nível 1.1",
-          "2": "Nível 1.2",
-          "LEVEL2": {
-            "1": "Nível 2.1",
-            "2": "Nível 2.2",
-            "LEVEL3": {
-              "1": "Nível 3.1",
-              "2": "Nível 3.2"
+    \"MULTILEVEL\": {
+      \"TEXT\": \"Multi Nível\",
+      \"LIST\": {
+        \"LEVEL1\": {
+          \"1\": \"Nível 1.1\",
+          \"2\": \"Nível 1.2\",
+          \"LEVEL2\": {
+            \"1\": \"Nível 2.1\",
+            \"2\": \"Nível 2.2\",
+            \"LEVEL3\": {
+              \"1\": \"Nível 3.1\",
+              \"2\": \"Nível 3.2\"
             }
           }
         }
       }
     },
-    "CADASTROS": {
-      "TEXT": "Cadastros",
-      "LIST": {
-        "CENTROCUSTO": "Centro de Custo",
-        "GRUPOFINANCEIRO": "Grupo Financeiro",
-        "RUBRICAS": "Rubricas",
-        "GRUPO_MENSALIDADE": "Grupo Mensalidade",
-        "SOCIO": "Sócio",
-        "FORNECEDOR": "Fornecedores",
-        "SOCIO.LISTAR": "Listar",
-        "SOCIO.CADASTRAR": "Cadastrar",
-        "SOCIO.IMPORTARCSV": "Importar CSV",
-        "SOCIO.GERARCOBRANCAS": "Gerar Cobranças",
-        "SOCIO.GERARCOBRANCAMENSALIDADE": "Gerar Cobrança de Mensalidade"
+    \"CADASTROS\": {
+      \"TEXT\": \"Cadastros\",
+      \"LIST\": {
+        \"CENTROCUSTO\": \"Centro de Custo\",
+        \"GRUPOFINANCEIRO\": \"Grupo Financeiro\",
+        \"RUBRICAS\": \"Rubricas\",
+        \"GRUPO_MENSALIDADE\": \"Grupo Mensalidade\",
+        \"SOCIO\": \"Sócio\",
+        \"FORNECEDOR\": \"Fornecedores\",
+        \"SOCIO.LISTAR\": \"Listar\",
+        \"SOCIO.CADASTRAR\": \"Cadastrar\",
+        \"SOCIO.IMPORTARCSV\": \"Importar CSV\",
+        \"SOCIO.GERARCOBRANCAS\": \"Gerar Cobranças\",
+        \"SOCIO.GERARCOBRANCAMENSALIDADE\": \"Gerar Cobrança de Mensalidade\"
       }
     },
-    "COBRANCAS": {
-      "TEXT": "Cobranças",
-      "LIST": {
-        "GERARCOBRANCAS": "Gerar Cobranças",
-        "LISTARCOBRANCAS": "Listar Cobranças",
-        "COBRANCASNAOMENSALIDADE": "Cobranças Não Mensalidade",
-        "GERARCOBRANCASNAOMENSALIDADEINDIVIDUAL": "Gerar Cobrança Não Mensalidade Individual",
-        "GERARCOBRANCASNAOMENSALIDADELOTE": "Gerar Cobrança Não Mensalidade em Lote",
-        "COBRANCASOUTRASRUBRICAS": "Cobranças Outras Rubricas",
-        "GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL": "Gerar Cobrança Individual Outras Rubricas",
-        "GERARCOBRANCASOUTRASRUBRICASLOTE": "Gerar Cobrança em Lote Outras Rubricas"
+    \"COBRANCAS\": {
+      \"TEXT\": \"Cobranças\",
+      \"LIST\": {
+        \"GERARCOBRANCAS\": \"Gerar Cobranças\",
+        \"LISTARCOBRANCAS\": \"Listar Cobranças\",
+        \"COBRANCASNAOMENSALIDADE\": \"Cobranças Não Mensalidade\",
+        \"GERARCOBRANCASNAOMENSALIDADEINDIVIDUAL\": \"Gerar Cobrança Não Mensalidade Individual\",
+        \"GERARCOBRANCASNAOMENSALIDADELOTE\": \"Gerar Cobrança Não Mensalidade em Lote\",
+        \"COBRANCASOUTRASRUBRICAS\": \"Cobranças Outras Rubricas\",
+        \"GERARCOBRANCASOUTRASRUBRICASINDIVIDUAL\": \"Gerar Cobrança Individual Outras Rubricas\",
+        \"GERARCOBRANCASOUTRASRUBRICASLOTE\": \"Gerar Cobrança em Lote Outras Rubricas\"
       }
     },
-    "FINANCEIRO": {
-      "TEXT": "Financeiro",
-      "LIST": {
-        "CONTAS_A_PAGAR": "Contas a Pagar",
-        "CONTAS_A_RECEBER": "Contas a Receber",
-        "QUITAR_TRANSACOES": "Quitar Transações",
-        "QUITACAO_CREDITO": "Quitação de Crédito",
-        "UPLOAD_OFX": "Upload OFX"
+    \"FINANCEIRO\": {
+      \"TEXT\": \"Financeiro\",
+      \"LIST\": {
+        \"CONTAS_A_PAGAR\": \"Contas a Pagar\",
+        \"CONTAS_A_RECEBER\": \"Contas a Receber\",
+        \"TRANSACAO\": \"Transações\",
+        \"TRANSACAO_LISTAR\": \"Listar Transações\",
+        \"TRANSACAO_NOVA\": \"Nova Transação\",
+        \"QUITAR_TRANSACOES\": \"Quitar Transações\",
+        \"QUITACAO_CREDITO\": \"Quitação de Crédito\",
+        \"QUITAR_TRANSACOES_CREDITO\": \"Quitar Transações de Crédito\",
+        \"UPLOAD_OFX\": \"Upload OFX\"
       }
     }
   }

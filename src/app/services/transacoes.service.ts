@@ -55,6 +55,15 @@ export class TransacoesService {
   /**
    * Atualiza os dados de uma transação
    */
+  /**
+   * Busca transações de crédito por mês e ano específicos
+   */
+  getTransacoesCreditoPorMesAno(params: TransacaoFilterParams): Observable<Transacao[]> {
+    const url = `${this.baseUrl}/api/transacoes/por-mes-ano-credito`;
+    const queryParams = `?ano=${params.ano}&mes=${params.mes}`;
+    return this.http.get<Transacao[]>(`${url}${queryParams}`);
+  }
+
   updateTransacao(id: number, transacao: Partial<Transacao>): Observable<Transacao> {
     const url = `${this.baseUrl}/api/transacoes/${id}`;
     return this.http.put<Transacao>(url, transacao);
