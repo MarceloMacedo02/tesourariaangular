@@ -21,6 +21,9 @@ import { ReceitasComponent } from './receitas/receitas.component';
 import { ReviewTransacoesComponent } from './review-transacoes/review-transacoes.component';
 import { TransacoesPendentesDetalhesComponent } from './transacoes-pendentes/transacoes-pendentes-detalhes.component';
 import { TransacoesPendentesComponent } from './transacoes-pendentes/transacoes-pendentes.component';
+import { TransacoesCreditoComponent } from './transacoes-credito/transacoes-credito.component';
+import { TransacoesDebitoComponent } from './transacoes-debito/transacoes-debito.component';
+import { BaixaTransacaoComponent } from './baixa-transacao/baixa-transacao.component';
 
 const routes: Routes = [
   {
@@ -180,6 +183,21 @@ const routes: Routes = [
       {
         path: 'listar',
         component: ReviewTransacoesComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'credito',
+        component: TransacoesCreditoComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'debito',
+        component: TransacoesDebitoComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'baixa/:id',
+        component: BaixaTransacaoComponent,
         canActivate: [AuthGuard],
       },
     ],

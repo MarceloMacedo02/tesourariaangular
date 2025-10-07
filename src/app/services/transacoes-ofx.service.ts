@@ -4,12 +4,14 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import {
+  ApiResponseStructure,
   OfxUploadResponse,
   ReferenciasFinanceiras,
   TransacaoDto,
   TransacaoPendente,
   TransacaoProcessingResult,
 } from '../models/transacao-ofx.model';
+import { TransacaoDetalhadaPage, TransacaoDetalhada } from '../models/transacao-detalhada.model';
 import { TransacaoResponse } from '../models/transacao-response.model';
 import {
   Fornecedor,
@@ -45,14 +47,43 @@ export class TransacoesOfxService {
       requestFormData.append('accountId', accountId.toString());
     }
 
+    // Faz a requisição com tipagem para a nova estrutura de resposta
     return this.http
-      .post<OfxUploadResponse>(
+      .post<ApiResponseStructure | OfxUploadResponse>(
         `${this.baseUrl}/api/transacoes/importar-ofx`,
         requestFormData
       )
       .pipe(
-        // Converter nova estrutura para estrutura antiga para manter compatibilidade
-        map((response) => this.transformOfxResponseToLegacy(response))
+        // Mapear a resposta conforme a estrutura recebida
+        map((response) => {
+          // Verificar se a resposta tem a estrutura esperada com 'resultado' (nova estrutura)
+          if ('resultado' in response) {
+            const apiResponse = response as ApiResponseStructure;
+            // A resposta tem a estrutura: { resultado: { ... }, message: '...' }
+            // O resultado contém as listas de transações
+            return {
+              creditTransacoes: apiResponse.resultado.creditTransacoes || [],
+              debitTransacoes: apiResponse.resultado.debitTransacoes || [],
+              transacoesPendentes: apiResponse.resultado.transacoesPendentes || [],
+            };
+          } else {
+            // É a estrutura antiga, converter normalmente
+            return this.transformOfxResponseToLegacy(response as OfxUploadResponse);
+          }
+        }),
+        // Adicionar tratamento de erro caso a resposta não seja do tipo esperado
+        map((result) => {
+          // Verificar se o resultado é válido
+          if (!result || !Array.isArray(result.creditTransacoes) || !Array.isArray(result.debitTransacoes) || !Array.isArray(result.transacoesPendentes)) {
+            console.error('Resposta inválida do método de transformação:', result);
+            return {
+              creditTransacoes: [],
+              debitTransacoes: [],
+              transacoesPendentes: []
+            };
+          }
+          return result;
+        })
       );
   }
 
@@ -65,6 +96,16 @@ export class TransacoesOfxService {
     const creditTransacoes: TransacaoDto[] = [];
     const debitTransacoes: TransacaoDto[] = [];
     const transacoesPendentes: TransacaoPendente[] = [];
+
+    // Verificar se a resposta contém a estrutura esperada
+    if (!response || !response.data || !response.data.transactions) {
+      console.error('Estrutura de resposta inválida:', response);
+      return {
+        creditTransacoes,
+        debitTransacoes,
+        transacoesPendentes,
+      };
+    }
 
     // Converter transações da nova estrutura para a antiga
     response.data.transactions.forEach((ofxTransacao, index) => {
@@ -299,6 +340,31 @@ export class TransacoesOfxService {
   getTransacoesPendentes(): Observable<TransacaoPendente[]> {
     // Simulação - substituir pela chamada real ao backend
     return of([]);
+  }
+
+  /**
+   * Obtém transações detalhadas com paginação e filtros por mês/ano e tipo
+   */
+  getTransacoesDetalhadasPorMesAno(
+    ano: number,
+    mes: number,
+    tipo: 'CREDITO' | 'DEBITO' | null = null,
+    page: number = 0,
+    size: number = 30
+  ): Observable<any> { // Usando any temporariamente para lidar com a estrutura real da API
+    let url = `${this.baseUrl}/api/transacoes-detalhadas?mes=${mes}&ano=${ano}&page=${page}&size=${size}`;
+    if (tipo) {
+      url += `&tipo=${tipo}`;
+    }
+    return this.http.get<any>(url); // A resposta real da API não segue o modelo TransacaoDetalhadaPage
+  }
+  
+  /**
+   * Obtém uma transação detalhada específica por ID
+   */
+  getTransacaoDetalhadaPorId(id: number): Observable<any> {
+    const url = `${this.baseUrl}/api/transacoes-detalhadas/${id}`;
+    return this.http.get<any>(url);
   }
 
   /**

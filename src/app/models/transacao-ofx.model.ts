@@ -1,5 +1,22 @@
 // Modelos para transações OFX
 
+// Interface para a nova estrutura de resposta da API
+export interface ApiResponseStructure {
+  resultado: {
+    creditTransacoes: TransacaoDto[];
+    debitTransacoes: TransacaoDto[];
+    transacoesPendentes: TransacaoPendente[];
+    totalTransacoesProcessadas?: number;
+    totalCreditos?: number;
+    totalDebitos?: number;
+    totalPendentes?: number;
+    totalDuplicadosIgnorados?: number;
+    mensagemResumo?: string;
+    nomeArquivo?: string;
+  };
+  message: string;
+}
+
 // Novos modelos conforme especificação modernizada
 export interface OfxUploadRequest {
   file: File;

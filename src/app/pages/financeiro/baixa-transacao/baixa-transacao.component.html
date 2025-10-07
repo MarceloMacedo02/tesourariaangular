@@ -1,0 +1,160 @@
+<div class="page-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1">Dar Baixa na Transação</h4>
+          </div>
+          <div class="card-body">
+            <!-- Indicador de carregamento -->
+            <div *ngIf="carregando" class="d-flex justify-content-center my-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+              </div>
+            </div>
+
+            <!-- Mensagem de erro ou informação -->
+            <div *ngIf="mensagem && !carregando" class="alert" [class.alert-danger]="erro"
+              [class.alert-success]="!erro && mensagem.includes('sucesso')"
+              [class.alert-info]="!erro && !mensagem.includes('sucesso')" role="alert">
+              {{ mensagem }}
+            </div>
+
+            <!-- Dados da transação -->
+            <div *ngIf="!carregando && transacao" class="row mb-4">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">ID da Transação</label>
+                  <input type="text" class="form-control" [value]="transacao.id" readonly>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Data de Vencimento</label>
+                  <input type="text" class="form-control"
+                    [value]="transacao.dataVencimento | date:'dd/MM/yyyy'" readonly>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Data de Pagamento</label>
+                  <input type="text" class="form-control"
+                    [value]="transacao.dataPagamento | date:'dd/MM/yyyy'" readonly>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Descrição</label>
+                  <input type="text" class="form-control" [value]="transacao.descricao" readonly>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Status</label>
+                  <input type="text" class="form-control" [value]="transacao.status" readonly>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Valor Total</label>
+                  <input type="text" class="form-control" [value]="transacao.valor | currency:'BRL'" readonly>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Sócio</label>
+                  <input type="text" class="form-control" [value]="transacao.socio ? transacao.socio.nomeSocio : 'N/A'"
+                    readonly>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabelas de cobranças -->
+            <div *ngIf="!carregando && transacao" class="row">
+              <!-- Mensalidades -->
+              <div class="col-md-4 mb-4" *ngIf="transacao.listaDeCobrancaMensalidade && transacao.listaDeCobrancaMensalidade.length > 0">
+                <h5>Mensalidades</h5>
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox" [(ngModel)]="selectAllMensalidade" (ngModelChange)="toggleAllMensalidade($event)"> Selecionar Tudo</th>
+                        <th>Rubrica</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let cobranca of transacao.listaDeCobrancaMensalidade">
+                        <td><input type="checkbox" [(ngModel)]="cobranca.selecionado" (ngModelChange)="updateMensalidadeSelection()"></td>
+                        <td>{{ cobranca.rubricaNome }}</td>
+                        <td>{{ cobranca.valor | currency:'BRL' }}</td>
+                        <td>{{ cobranca.status }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Outras Rubricas -->
+              <div class="col-md-4 mb-4" *ngIf="transacao.listaDeCobrancaOutrasRubricas && transacao.listaDeCobrancaOutrasRubricas.length > 0">
+                <h5>Outras Rubricas</h5>
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox" [(ngModel)]="selectAllOutrasRubricas" (ngModelChange)="toggleAllOutrasRubricas($event)"> Selecionar Tudo</th>
+                        <th>Rubrica</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let cobranca of transacao.listaDeCobrancaOutrasRubricas">
+                        <td><input type="checkbox" [(ngModel)]="cobranca.selecionado" (ngModelChange)="updateOutrasRubricasSelection()"></td>
+                        <td>{{ cobranca.rubricaNome }}</td>
+                        <td>{{ cobranca.valor | currency:'BRL' }}</td>
+                        <td>{{ cobranca.status }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Cobranças Avulsas -->
+              <div class="col-md-4 mb-4" *ngIf="transacao.listaDeCobrancaAvulsa && transacao.listaDeCobrancaAvulsa.length > 0">
+                <h5>Cobranças Avulsas</h5>
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox" [(ngModel)]="selectAllAvulsa" (ngModelChange)="toggleAllAvulsa($event)"> Selecionar Tudo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let cobranca of transacao.listaDeCobrancaAvulsa">
+                        <td><input type="checkbox" [(ngModel)]="cobranca.selecionado" (ngModelChange)="updateAvulsaSelection()"></td>
+                        <td>{{ cobranca.descricao }}</td>
+                        <td>{{ cobranca.valor | currency:'BRL' }}</td>
+                        <td>{{ cobranca.status }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Alerta quando não há transação -->
+            <div *ngIf="!carregando && !transacao" class="alert alert-warning" role="alert">
+              <i class="fas fa-exclamation-triangle me-2"></i> Nenhuma transação encontrada com o ID fornecido.
+            </div>
+
+            <!-- Botões de ação -->
+            <div class="d-flex justify-content-between mt-4">
+              <button class="btn btn-secondary" (click)="voltar()">
+                <i class="fas fa-arrow-left me-1"></i> Voltar
+              </button>
+              <button class="btn btn-success" (click)="darBaixa()" [disabled]="carregando || !transacao">
+                <i class="fas fa-check me-1"></i> Confirmar Baixa
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

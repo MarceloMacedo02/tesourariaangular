@@ -91,12 +91,24 @@ export class UploadOfxComponent implements OnInit {
         this.debitTransacoes = response.debitTransacoes;
         this.transacoesPendentes = response.transacoesPendentes;
         
+        // Atualizar mensagem para usar a estrutura da nova resposta
         this.mensagem = `Processamento concluído: ${this.creditTransacoes.length} créditos, ${this.debitTransacoes.length} débitos, ${this.transacoesPendentes.length} pendentes.`;
         this.carregando = false;
       },
       error: (error) => {
         console.error('Erro ao importar OFX:', error);
-        this.mensagem = `Erro ao processar arquivo: ${error.error?.message || error.message || 'Erro desconhecido'}`;
+        
+        // Verificar se é um erro de autorização (403)
+        if (error.status === 403) {
+          this.mensagem = 'Acesso negado: você não tem permissão para importar arquivos OFX. Verifique suas credenciais.';
+        } else if (error.status === 401) {
+          this.mensagem = 'Sessão expirada: faça login novamente para continuar.';
+        } else if (error.status === 0) {
+          this.mensagem = 'Erro de conexão: não foi possível se conectar ao servidor. Verifique se o backend está rodando.';
+        } else {
+          this.mensagem = `Erro ao processar arquivo: ${error.error?.message || error.message || 'Erro desconhecido'}`;
+        }
+        
         this.carregando = false;
       }
     });

@@ -194,6 +194,18 @@ export const MENU: MenuItem[] = [
         link: '/pages/financeiro/transacoes/nova',
         parentId: 167,
       },
+      {
+        id: 173,
+        label: 'Transações de Crédito',
+        link: '/pages/financeiro/transacoes/credito',
+        parentId: 167,
+      },
+      {
+        id: 174,
+        label: 'Transações de Débito',
+        link: '/pages/financeiro/transacoes/debito',
+        parentId: 167,
+      },
     ],
   },
   {

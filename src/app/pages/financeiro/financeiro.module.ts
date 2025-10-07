@@ -15,6 +15,9 @@ import { ContasAReceberListarComponent } from './contas-a-receber/contas-a-receb
 import { ContasAReceberPagamentoComponent } from './contas-a-receber/contas-a-receber-pagamento.component';
 import { FinanceiroRoutingModule } from './financeiro-routing.module';
 import { UploadOfxComponent } from './upload-ofx/upload-ofx.component';
+import { TransacoesCreditoComponent } from './transacoes-credito/transacoes-credito.component';
+import { TransacoesDebitoComponent } from './transacoes-debito/transacoes-debito.component';
+import { BaixaTransacaoComponent } from './baixa-transacao/baixa-transacao.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
