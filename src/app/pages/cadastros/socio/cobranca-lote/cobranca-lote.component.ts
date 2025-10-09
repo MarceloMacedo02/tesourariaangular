@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GrupoMensalidade } from '../../grupo-mensalidade/grupo-mensalidade.model';
 import { GrupoMensalidadeService } from '../../grupo-mensalidade/grupo-mensalidade.service';
@@ -7,345 +7,7 @@ import { SocioService } from '../socio.service';
 
 @Component({
   selector: 'app-cobranca-lote',
-  template: `
-    <div class="page-content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">
-                  Geração em Lote de Cobranças de Mensalidade
-                </h4>
-              </div>
-              <div class="card-body">
-                <form [formGroup]="cobrancaForm" (ngSubmit)="gerarCobrancas()">
-                  <div class="row g-3">
-                    <div class="col-lg-4">
-                      <label for="mes" class="form-label">Mês</label>
-                      <select
-                        class="form-control"
-                        id="mes"
-                        formControlName="mes"
-                        required
-                      >
-                        <option value="1">Janeiro</option>
-                        <option value="2">Fevereiro</option>
-                        <option value="3">Março</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Maio</option>
-                        <option value="6">Junho</option>
-                        <option value="7">Julho</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Setembro</option>
-                        <option value="10">Outubro</option>
-                        <option value="11">Novembro</option>
-                        <option value="12">Dezembro</option>
-                      </select>
-                    </div>
-
-                    <div class="col-lg-4">
-                      <label for="ano" class="form-label">Ano</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="ano"
-                        formControlName="ano"
-                        placeholder="Ex: 2025"
-                        min="2000"
-                        max="3000"
-                        required
-                      />
-                    </div>
-
-                    <div class="col-lg-4 d-flex align-items-end">
-                      <button
-                        type="submit"
-                        class="btn btn-primary w-100"
-                        [disabled]="
-                          cobrancaForm.invalid ||
-                          !sociosSelecionados.length ||
-                          loading
-                        "
-                      >
-                        <span
-                          *ngIf="loading"
-                          class="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        {{
-                          loading ? 'Gerando Cobranças...' : 'Gerar Cobranças'
-                        }}
-                      </button>
-                    </div>
-                  </div>
-                </form>
-
-                <!-- Filtro de sócios -->
-                <div class="row g-3 mt-3">
-                  <div class="col-xl-6">
-                    <div class="search-box">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Filtrar sócios..."
-                        [(ngModel)]="filtro"
-                        (input)="onFiltroChange()"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Tabela de sócios -->
-                <div class="table-responsive mt-3">
-                  <table
-                    class="table table-nowrap table-centered align-middle mb-0"
-                  >
-                    <thead class="table-light">
-                      <tr>
-                        <th>
-                          <input
-                            type="checkbox"
-                            class="form-check-input"
-                            (change)="selecionarTodos($event)"
-                            [checked]="
-                              socios.length > 0 &&
-                              sociosSelecionados.length === socios.length
-                            "
-                          />
-                        </th>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>CPF</th>
-                        <th>Grau</th>
-                        <th>Status</th>
-                        <th>Data Adesão</th>
-                        <th>Grupo Mensalidade</th>
-                        <th>Valor Mensalidade</th>
-                        <th>Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let socio of socios">
-                        <td>
-                          <input
-                            type="checkbox"
-                            class="form-check-input"
-                            [value]="socio.id"
-                            [checked]="isSocioSelecionado(socio.id)"
-                            (change)="alternarSelecao(socio.id)"
-                          />
-                        </td>
-                        <td>{{ socio.id }}</td>
-                        <td>{{ socio.nomeSocio }}</td>
-                        <td>{{ socio.cpf }}</td>
-                        <td>
-                          <span class="badge bg-primary">
-                            {{ getGrauSocioText(socio.grau) }}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            class="badge"
-                            [ngClass]="getStatusBadgeClass(socio.status || '')"
-                          >
-                            {{ getStatusText(socio.status || '') }}
-                          </span>
-                        </td>
-                        <td>
-                          {{
-                            socio.dataAdesao
-                              ? (socio.dataAdesao | date : 'shortDate')
-                              : '-'
-                          }}
-                        </td>
-                        <td>
-                          {{
-                            getGrupoMensalidadeNome(socio.grupoMensalidadeId)
-                          }}
-                        </td>
-                        <td>
-                          {{
-                            getValorMensalidade(socio.grupoMensalidadeId) > 0
-                              ? (getValorMensalidade(socio.grupoMensalidadeId)
-                                | currency : 'BRL' : 'symbol' : '1.2-2')
-                              : '-'
-                          }}
-                        </td>
-                        <td>
-                          <a
-                            [routerLink]="[
-                              '/pages/cadastros/cobrancas/socio',
-                              socio.id
-                            ]"
-                            class="btn btn-soft-info btn-sm"
-                            title="Visualizar Cobranças"
-                          >
-                            <i class="ri-file-list-fill align-bottom"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr *ngIf="loading">
-                        <td colspan="10" class="text-center">
-                          <div class="d-flex justify-content-center">
-                            <div
-                              class="spinner-border text-primary"
-                              role="status"
-                            >
-                              <span class="visually-hidden">Carregando...</span>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr
-                        *ngIf="
-                          !loading &&
-                          (!page.content || page.content.length === 0)
-                        "
-                      >
-                        <td colspan="10" class="text-center">
-                          Nenhum sócio encontrado.
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <!-- Paginação -->
-                <div
-                  class="row g-0 mt-3 align-items-center"
-                  *ngIf="!loading && page.totalElements > 0"
-                >
-                  <div class="col-sm-6">
-                    <div class="text-muted">
-                      Mostrando <b>{{ page.number * page.size + 1 }}</b> a
-                      <b>{{
-                        page.number * page.size + page.numberOfElements
-                      }}</b>
-                      de <b>{{ page.totalElements }}</b> resultados
-                    </div>
-                  </div>
-                  <div class="col-sm-6">
-                    <ul
-                      class="pagination pagination-separated justify-content-end mb-0"
-                    >
-                      <li
-                        class="page-item"
-                        [class.disabled]="currentPage === 0"
-                      >
-                        <a
-                          class="page-link"
-                          href="javascript:void(0)"
-                          (click)="onPageChange(currentPage - 1)"
-                        >
-                          Anterior
-                        </a>
-                      </li>
-
-                      <li class="page-item" [class.active]="currentPage === 0">
-                        <a
-                          class="page-link"
-                          href="javascript:void(0)"
-                          (click)="onPageChange(0)"
-                          >1</a
-                        >
-                      </li>
-
-                      <!-- Exibir páginas intermediárias se necessário -->
-                      <li class="page-item disabled" *ngIf="currentPage > 3">
-                        <span class="page-link">...</span>
-                      </li>
-
-                      <li
-                        *ngFor="let pageNr of getVisiblePages(); let i = index"
-                        class="page-item"
-                        [class.active]="currentPage === pageNr"
-                        [class.disabled]="pageNr === -1"
-                      >
-                        <span class="page-link" *ngIf="pageNr === -1">...</span>
-                        <a
-                          class="page-link"
-                          href="javascript:void(0)"
-                          (click)="onPageChange(pageNr)"
-                          *ngIf="pageNr !== -1"
-                          >{{ pageNr + 1 }}</a
-                        >
-                      </li>
-
-                      <li
-                        class="page-item disabled"
-                        *ngIf="currentPage < page.totalPages - 4"
-                      >
-                        <span class="page-link">...</span>
-                      </li>
-
-                      <li
-                        class="page-item"
-                        [class.active]="currentPage === page.totalPages - 1"
-                        *ngIf="page.totalPages > 1"
-                      >
-                        <a
-                          class="page-link"
-                          href="javascript:void(0)"
-                          (click)="onPageChange(page.totalPages - 1)"
-                        >
-                          {{ page.totalPages }}
-                        </a>
-                      </li>
-
-                      <li
-                        class="page-item"
-                        [class.disabled]="currentPage === page.totalPages - 1"
-                      >
-                        <a
-                          class="page-link"
-                          href="javascript:void(0)"
-                          (click)="onPageChange(currentPage + 1)"
-                        >
-                          Próximo
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <!-- Resultado da geração -->
-                <div *ngIf="resultadoGeracao" class="mt-4">
-                  <div
-                    class="alert"
-                    [ngClass]="
-                      resultadoGeracao.mensagem &&
-                      resultadoGeracao.mensagem.includes('Erro')
-                        ? 'alert-danger'
-                        : 'alert-success'
-                    "
-                  >
-                    <h5 class="alert-heading">Resultado da Geração em Lote</h5>
-                    <p>{{ resultadoGeracao.mensagem }}</p>
-                    <p class="mb-0">
-                      <strong>Cobranças Geradas:</strong>
-                      {{ resultadoGeracao.cobrancasGeradas }} |
-                      <strong>Cobranças Atualizadas:</strong>
-                      {{ resultadoGeracao.cobrancasAtualizadas }} |
-                      <strong>Sócios Ignorados:</strong>
-                      {{ resultadoGeracao.sociosIgnorados }}
-                    </p>
-                    <div *ngIf="resultadoGeracao.detalhes" class="mt-2">
-                      <h6>Detalhes:</h6>
-                      <pre class="text-muted" style="white-space: pre-wrap;">{{
-                        resultadoGeracao.detalhes
-                      }}</pre>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './cobranca-lote.component.html',
   styles: [],
 })
 export class CobrancaLoteComponent implements OnInit {
@@ -355,11 +17,16 @@ export class CobrancaLoteComponent implements OnInit {
   page: Page<Socio> = {} as Page<Socio>;
   currentPage = 0;
   pageSize = 30;
+  pageSizeOptions = [20, 30, 50, 100];
   filtro = '';
   loading = false;
   loadingGrupos = false;
   sociosSelecionados: number[] = [];
   resultadoGeracao: any = null;
+
+  // Toast
+  toastMessage: WritableSignal<string | null> = signal(null);
+  toastType: WritableSignal<'success' | 'error' | 'warning' | 'info'> = signal('info');
 
   constructor(
     private formBuilder: FormBuilder,
@@ -425,6 +92,14 @@ export class CobrancaLoteComponent implements OnInit {
   onFiltroChange(): void {
     this.currentPage = 0; // Resetar para a primeira página ao alterar o filtro
     this.loadSocios();
+  }
+
+  onPageSizeChange(newSize: number): void {
+    if (this.pageSize !== newSize) {
+      this.pageSize = newSize;
+      this.currentPage = 0; // Voltar para a primeira página ao mudar o tamanho da página
+      this.loadSocios();
+    }
   }
 
   getStatusText(status: string): string {
@@ -541,7 +216,7 @@ export class CobrancaLoteComponent implements OnInit {
   }
 
   gerarCobrancas(): void {
-    if (this.cobrancaForm.invalid || this.sociosSelecionados.length === 0) {
+    if (this.cobrancaForm.invalid) {
       return;
     }
 
@@ -550,39 +225,80 @@ export class CobrancaLoteComponent implements OnInit {
 
     const { mes, ano } = this.cobrancaForm.value;
 
-    this.socioService
-      .gerarCobrancasMensalidade(this.sociosSelecionados, mes, ano)
-      .subscribe({
-        next: (response) => {
-          this.resultadoGeracao = response;
-          this.loading = false; // Esconder o indicador de carregamento
-          console.log('Cobranças geradas com sucesso:', response);
-
-          // Mostrar mensagem de sucesso se não houver detalhes no response
-          if (!response.mensagem) {
-            // Criar mensagem padrão se o backend não retornar uma
-            this.resultadoGeracao = {
-              mensagem: 'Cobranças geradas com sucesso!',
-              cobrancasGeradas: this.sociosSelecionados.length,
-              cobrancasAtualizadas: 0,
-              sociosIgnorados: 0,
-            };
+    // Se nenhum sócio estiver selecionado, gera para todos os membros ativos
+    if (this.sociosSelecionados.length === 0) {
+      // Opção 3: Generate for all active members (specific month/year)
+      this.socioService
+        .gerarCobrancasMensalidade(mes, ano)
+        .subscribe({
+          next: (response) => {
+            this.tratarRespostaCobranca(response);
+          },
+          error: (error) => {
+            this.tratarErroCobranca(error);
           }
-        },
-        error: (error) => {
-          console.error('Erro ao gerar cobranças:', error);
-          this.loading = false; // Esconder o indicador de carregamento
+        });
+    } else {
+      // Opção 2: Generate for specific members (specific month/year)
+      this.socioService
+        .gerarCobrancasMensalidade(mes, ano, this.sociosSelecionados)
+        .subscribe({
+          next: (response) => {
+            this.tratarRespostaCobranca(response);
+          },
+          error: (error) => {
+            this.tratarErroCobranca(error);
+          }
+        });
+    }
+  }
 
-          // Exibir mensagem de erro
-          this.resultadoGeracao = {
-            mensagem:
-              'Erro ao gerar cobranças: ' +
-              (error.error?.message || 'Erro desconhecido'),
-            cobrancasGeradas: 0,
-            cobrancasAtualizadas: 0,
-            sociosIgnorados: 0,
-          };
-        },
-      });
+  private tratarRespostaCobranca(response: any): void {
+    this.resultadoGeracao = response;
+    this.loading = false; // Esconder o indicador de carregamento
+    console.log('Cobranças geradas com sucesso:', response);
+
+    // Mostrar mensagem de sucesso se não houver detalhes no response
+    if (!response.mensagem) {
+      // Criar mensagem padrão se o backend não retornar uma
+      const mensagem = `Cobranças geradas com sucesso para ${this.sociosSelecionados.length > 0 ? this.sociosSelecionados.length : (response.length || 0)} sócios!`;
+      this.showCustomToast(mensagem, 'success');
+    } else {
+      this.showCustomToast(response.mensagem, 'success');
+    }
+  }
+
+  private tratarErroCobranca(error: any): void {
+    console.error('Erro ao gerar cobranças:', error);
+    this.loading = false; // Esconder o indicador de carregamento
+
+    // Exibir mensagem de erro
+    const mensagemErro = error.error?.message || error.message || 'Erro desconhecido ao gerar cobranças';
+    this.showCustomToast(mensagemErro, 'error');
+  }
+
+  // Função de Toast
+  showCustomToast(
+    message: string,
+    type: 'success' | 'error' | 'warning' | 'info'
+  ) {
+    this.toastMessage.set(message);
+    this.toastType.set(type);
+    setTimeout(() => this.toastMessage.set(null), 5000);
+  }
+
+  getToastClasses(type: 'success' | 'error' | 'warning' | 'info') {
+    switch (type) {
+      case 'success':
+        return 'bg-success text-white';
+      case 'error':
+        return 'bg-danger text-white';
+      case 'warning':
+        return 'bg-warning text-white';
+      case 'info':
+        return 'bg-info text-white';
+      default:
+        return 'bg-secondary text-white';
+    }
   }
 }

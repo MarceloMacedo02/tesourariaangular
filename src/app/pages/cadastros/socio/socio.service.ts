@@ -194,15 +194,31 @@ export class SocioService {
   /**
    * Gera cobranças de mensalidade em lote para os sócios selecionados
    */
-  gerarCobrancasMensalidade(sociosIds: number[], mes: number, ano: number): Observable<any> {
+  gerarCobrancasMensalidade(mes?: number, ano?: number, socioIds?: number[]): Observable<any> {
+    const url = `${environment.apiBaseUrl}/api/cobrancas/salvar-mensalidade`;
+
+    // Create request body with at least an empty object to ensure proper format
     const requestBody = {
-      sociosIds: sociosIds,
-      mes: mes,
-      ano: ano
+      ...(mes !== undefined && { mes }),
+      ...(ano !== undefined && { ano }),
+      ...(socioIds && socioIds.length > 0 && { socioIds })
     };
-    
-    const cobrancasUrl = `${environment.apiBaseUrl}/api/cobrancas/salvar-mensalidade`;
-    return this.http.post(cobrancasUrl, requestBody);
+
+    // If no properties exist in requestBody, ensure we send at least an empty object
+    const bodyToSend = Object.keys(requestBody).length > 0 ? requestBody : {};
+
+    return this.http.post(url, bodyToSend, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  /**
+   * Gera cobranças de mensalidade em lote para sócios selecionados
+   */
+  gerarCobrancasMensalidadeParaSociosSelecionados(sociosIds: number[], mes: number, ano: number): Observable<any> {
+    return this.gerarCobrancasMensalidade(mes, ano, sociosIds);
   }
 
 
