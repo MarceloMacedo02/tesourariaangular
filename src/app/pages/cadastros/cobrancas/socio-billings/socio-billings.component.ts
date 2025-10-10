@@ -1,13 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Cobranca } from '../non-monthly-billing.model';
 import { NonMonthlyBillingService } from '../non-monthly-billing.service';
 import { SocioService } from '../../socio/socio.service';
 import { Socio } from '../../socio/socio.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-socio-billings',
   template: `
+    <!-- Toast Notification -->
+    <div *ngIf="toastMessage()" class="toast show position-fixed top-0 end-0 m-3" role="alert" aria-live="assertive"
+        aria-atomic="true" style="z-index: 9999;">
+        <div class="toast-header" [ngClass]="getToastClasses(toastType())">
+            <strong class="me-auto" *ngIf="toastType() === 'success'">Sucesso</strong>
+            <strong class="me-auto" *ngIf="toastType() === 'error'">Erro</strong>
+            <strong class="me-auto" *ngIf="toastType() === 'warning'">Aviso</strong>
+            <strong class="me-auto" *ngIf="toastType() === 'info'">Informação</strong>
+            <button type="button" class="btn-close btn-close-white" (click)="toastMessage.set(null)"
+                aria-label="Close"></button>
+        </div>
+        <div class="toast-body" [ngClass]="getToastClasses(toastType())">
+            {{ toastMessage() }}
+        </div>
+    </div>
+
     <div class="page-content">
       <div class="container-fluid">
         <div class="row">
@@ -56,6 +73,7 @@ import { Socio } from '../../socio/socio.model';
                             <th scope="col">Data Vencimento</th>
                             <th scope="col">Tipo Cobrança</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Ações</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -69,9 +87,14 @@ import { Socio } from '../../socio/socio.model';
                             <td>
                               <span class="badge bg-warning">{{ cobranca.status }}</span>
                             </td>
+                            <td>
+                              <button class="btn btn-sm btn-outline-danger" (click)="excluirCobranca(cobranca)">
+                                <i class="fas fa-trash"></i> Excluir
+                              </button>
+                            </td>
                           </tr>
                           <tr *ngIf="cobrancasAbertas.length === 0">
-                            <td colspan="7" class="text-center">Nenhuma cobrança em aberto encontrada</td>
+                            <td colspan="8" class="text-center">Nenhuma cobrança em aberto encontrada</td>
                           </tr>
                         </tbody>
                       </table>
@@ -95,6 +118,7 @@ import { Socio } from '../../socio/socio.model';
                             <th scope="col">Data Pagamento</th>
                             <th scope="col">Tipo Cobrança</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Ações</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -109,9 +133,14 @@ import { Socio } from '../../socio/socio.model';
                             <td>
                               <span class="badge bg-success">{{ cobranca.status }}</span>
                             </td>
+                            <td>
+                              <button class="btn btn-sm btn-outline-danger" (click)="excluirCobranca(cobranca)">
+                                <i class="fas fa-trash"></i> Excluir
+                              </button>
+                            </td>
                           </tr>
                           <tr *ngIf="cobrancasQuitadas.length === 0">
-                            <td colspan="8" class="text-center">Nenhuma cobrança quitada encontrada</td>
+                            <td colspan="9" class="text-center">Nenhuma cobrança quitada encontrada</td>
                           </tr>
                         </tbody>
                       </table>
@@ -133,9 +162,14 @@ export class SocioBillingsComponent implements OnInit {
   cobrancasAbertas: Cobranca[] = [];
   cobrancasQuitadas: Cobranca[] = [];
   loading = true;
+  
+  // Toast
+  toastMessage: WritableSignal<string | null> = signal(null);
+  toastType: WritableSignal<'success' | 'error' | 'warning' | 'info'> = signal('info');
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private billingService: NonMonthlyBillingService,
     private socioService: SocioService
   ) { }
@@ -214,6 +248,58 @@ export class SocioBillingsComponent implements OnInit {
         return 'bg-danger';
       default:
         return 'bg-warning';
+    }
+  }
+
+  excluirCobranca(cobranca: Cobranca): void {
+    Swal.fire({
+      title: 'Tem certeza?',
+      text: `Você está prestes a excluir a cobrança "${cobranca.descricao}" (ID: ${cobranca.id}). Esta ação não pode ser desfeita.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.billingService.deleteCobranca(cobranca.id!).subscribe({
+          next: () => {
+            this.showCustomToast('Cobrança excluída com sucesso!', 'success');
+            // Recarregar os dados após exclusão
+            this.carregarDados();
+          },
+          error: (error) => {
+            console.error('Erro ao excluir cobrança:', error);
+            this.showCustomToast('Erro ao excluir cobrança: ' + (error.error?.message || 'Ocorreu um erro desconhecido'), 'error');
+          }
+        });
+      }
+    });
+  }
+
+  // Função de Toast
+  showCustomToast(
+    message: string,
+    type: 'success' | 'error' | 'warning' | 'info'
+  ) {
+    this.toastMessage.set(message);
+    this.toastType.set(type);
+    setTimeout(() => this.toastMessage.set(null), 5000);
+  }
+
+  getToastClasses(type: 'success' | 'error' | 'warning' | 'info') {
+    switch (type) {
+      case 'success':
+        return 'bg-success text-white';
+      case 'error':
+        return 'bg-danger text-white';
+      case 'warning':
+        return 'bg-warning text-white';
+      case 'info':
+        return 'bg-info text-white';
+      default:
+        return 'bg-secondary text-white';
     }
   }
 }

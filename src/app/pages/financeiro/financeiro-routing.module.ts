@@ -12,8 +12,8 @@ import { ContasAReceberPagamentoComponent } from './constapagarreceber/contas-a-
 import { UploadOfxComponent } from './upload-ofx/upload-ofx.component';
 
 import { ReviewTransacoesComponent } from './transasoes/review-transacoes/review-transacoes.component';
-import { TransacoesCreditoEditarComponent } from './transasoes/transacoes-credito/transacoes-credito-editar/transacoes-credito-editar.component';
 import { TransacoesCreditoComponent } from './transasoes/transacoes-credito/transacoes-credito.component';
+import { TransacoesCreditoEditarComponent } from './transasoes/transacoes-credito/transacoes-credito-editar/transacoes-credito-editar.component';
 import { TransacoesDebitoComponent } from './transasoes/transacoes-debito/transacoes-debito.component';
 
 const routes: Routes = [

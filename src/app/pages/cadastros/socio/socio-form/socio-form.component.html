@@ -4,29 +4,19 @@
 <!-- End Breadcrumbs -->
 
 <!-- Toast Notification -->
-<div 
-  *ngIf="toastMessage()" 
-  class="toast show position-fixed top-0 end-0 m-3" 
-  role="alert" 
-  aria-live="assertive" 
-  aria-atomic="true"
-  style="z-index: 9999;">
-  <div 
-    class="toast-header" 
-    [ngClass]="getToastClasses(toastType())">
-    <strong class="me-auto" *ngIf="toastType() === 'success'">Sucesso</strong>
-    <strong class="me-auto" *ngIf="toastType() === 'error'">Erro</strong>
-    <strong class="me-auto" *ngIf="toastType() === 'warning'">Aviso</strong>
-    <strong class="me-auto" *ngIf="toastType() === 'info'">Informação</strong>
-    <button 
-      type="button" 
-      class="btn-close btn-close-white" 
-      (click)="toastMessage.set(null)"
-      aria-label="Close"></button>
-  </div>
-  <div class="toast-body" [ngClass]="getToastClasses(toastType())">
-    {{ toastMessage() }}
-  </div>
+<div *ngIf="toastMessage()" class="toast show position-fixed top-0 end-0 m-3" role="alert" aria-live="assertive"
+    aria-atomic="true" style="z-index: 9999;">
+    <div class="toast-header" [ngClass]="getToastClasses(toastType())">
+        <strong class="me-auto" *ngIf="toastType() === 'success'">Sucesso</strong>
+        <strong class="me-auto" *ngIf="toastType() === 'error'">Erro</strong>
+        <strong class="me-auto" *ngIf="toastType() === 'warning'">Aviso</strong>
+        <strong class="me-auto" *ngIf="toastType() === 'info'">Informação</strong>
+        <button type="button" class="btn-close btn-close-white" (click)="toastMessage.set(null)"
+            aria-label="Close"></button>
+    </div>
+    <div class="toast-body" [ngClass]="getToastClasses(toastType())">
+        {{ toastMessage() }}
+    </div>
 </div>
 
 <div class="row">
@@ -92,9 +82,8 @@
                                             CPF *
                                         </label>
                                         <input type="text" class="form-control" id="cpf" name="cpf"
-                                            [(ngModel)]="socio.cpf" [disabled]="loading" required
-                                            placeholder="000.000.000-00" maxlength="14"
-                                            (input)="socio.cpf = formatCpf(socio.cpf || '')">
+                                            [(ngModel)]="socio.cpf" [disabled]="loading" placeholder="000.000.000-00"
+                                            maxlength="14" (input)="socio.cpf = formatCpf(socio.cpf || '')">
                                     </div>
                                 </div>
 
@@ -381,8 +370,7 @@
                         <button type="button" class="btn btn-light" (click)="onCancel()" [disabled]="loading">
                             <i class="ri-close-line align-bottom me-1"></i> Cancelar
                         </button>
-                        <button type="submit" class="btn btn-primary"
-                            [disabled]="loading || loadingImage">
+                        <button type="submit" class="btn btn-primary" [disabled]="loading || loadingImage">
                             <i class="ri-save-line align-bottom me-1"></i> Salvar
                         </button>
                     </div>

@@ -249,4 +249,28 @@ export class TransacaoCreditoService {
     // Este endpoint pode não existir na API real - ajustar conforme necessário
     return this.http.delete<any>(`${this.apiUrl}/contas-receber/${contaId}`);
   }
+
+  /**
+   * Criar nova cobrança
+   * Endpoint: POST /api/cobrancas
+   */
+  criarCobranca(dadosCobranca: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/cobrancas`, dadosCobranca);
+  }
+
+  /**
+   * Atualizar cobrança existente
+   * Endpoint: PUT /api/cobrancas/{id}
+   */
+  atualizarCobranca(id: number, dadosCobranca: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/cobrancas/${id}`, dadosCobranca);
+  }
+
+  /**
+   * Obter lista de rubricas (simples - apenas id e nome)
+   * Endpoint: GET /api/simples/rubricas
+   */
+  getRubricasSimples(): Observable<Rubrica[]> {
+    return this.http.get<Rubrica[]>(`${this.apiUrl}/simples/rubricas`);
+  }
 }

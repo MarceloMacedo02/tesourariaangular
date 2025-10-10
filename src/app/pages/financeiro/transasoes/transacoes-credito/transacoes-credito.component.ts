@@ -115,9 +115,10 @@ import { TransacoesOfxService } from '../../../../services/transacoes-ofx.servic
                         </td>
                         <td>{{ transacao.descricao }}</td>
                         <td>
-                          {{
-                            transacao.socio ? transacao.socio.nomeSocio : 'N/A'
-                          }}
+                          <a href="#" (click)="darBaixa(transacao.id); $event.preventDefault();" class="text-primary text-decoration-underline" style="cursor: pointer;" *ngIf="transacao.socio">
+                            {{ transacao.socio.nomeSocio }}
+                          </a>
+                          <span *ngIf="!transacao.socio">N/A</span>
                         </td>
                         <td>Crédito</td>
                         <td class="text-success">

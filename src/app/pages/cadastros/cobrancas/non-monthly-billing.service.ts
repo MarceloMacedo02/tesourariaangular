@@ -47,7 +47,12 @@ export class NonMonthlyBillingService {
     return this.http.put<Cobranca>(`${this.apiUrl}/nao-mensalidade/${id}`, billing);
   }
 
-  // Delete non-monthly billing
+  // Delete billing by ID (general endpoint)
+  deleteCobranca(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  // Delete non-monthly billing (legacy method)
   deleteNonMonthlyBilling(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/nao-mensalidade/${id}`);
   }

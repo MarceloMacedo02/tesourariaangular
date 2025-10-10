@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TransacoesCreditoComponent } from './transacoes-credito.component';
+import { TransacoesCreditoComponent } from './fazer o mesmo aqui transacoes-credito.component';
 
 describe('TransacoesCreditoComponent', () => {
   let component: TransacoesCreditoComponent;
@@ -8,10 +8,9 @@ describe('TransacoesCreditoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TransacoesCreditoComponent]
-    })
-    .compileComponents();
-    
+      imports: [TransacoesCreditoComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TransacoesCreditoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

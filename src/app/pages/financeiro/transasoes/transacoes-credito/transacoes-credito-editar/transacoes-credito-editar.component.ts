@@ -1,20 +1,22 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   computed,
   OnInit,
   signal,
   WritableSignal,
-  inject,
-  ChangeDetectorRef
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TransacaoCreditoService, TransacaoDetalhada } from '../../../../../services/transacao-credito.service';
-import { DecimalPipe } from '@angular/common';
+import {
+  TransacaoCreditoService,
+  TransacaoDetalhada,
+} from '../../../../../services/transacao-credito.service';
 
 @Component({
   selector: 'app-transacoes-credito-editar',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
   templateUrl: './transacoes-credito-editar.component.html',
   styleUrl: './transacoes-credito-editar.component.scss',
 })
@@ -22,8 +24,7 @@ export class TransacoesCreditoEditarComponent implements OnInit {
   // --- DADOS CARREGADOS VIA SERVIÇO ---
 
   // Signals para armazenar os dados carregados
-  readonly transacao: WritableSignal<TransacaoDetalhada | null> =
-    signal(null);
+  readonly transacao: WritableSignal<TransacaoDetalhada | null> = signal(null);
   readonly contasMensalidade: WritableSignal<any[]> = signal([]);
   readonly contasOutrasRubricas: WritableSignal<any[]> = signal([]);
   readonly socios: WritableSignal<any[]> = signal([]);
@@ -49,14 +50,26 @@ export class TransacoesCreditoEditarComponent implements OnInit {
   isNovaContaReceberModalOpen: WritableSignal<boolean> = signal(false);
   isEditContaReceberModalOpen: WritableSignal<boolean> = signal(false);
   isExcluirContaReceberModalOpen: WritableSignal<boolean> = signal(false);
+  isOutrasRubricasModalOpen: WritableSignal<boolean> = signal(false);
 
-  // Dados do Modal
+  // Dados do Modal - compartilhados com o componente ModaisTransacoes
   modalSocioId: number | null = null;
   novaConta = {
     rubricaId: null as number | null,
     descricao: '',
     dataVencimento: '',
-    valor: 0.0,
+    valor: .0,
+  };
+  novaCobrancaOutrasRubricas: {
+    id: number | null;
+    descricao: string;
+    valor: number;
+    rubricaId: number | null;
+  } = {
+    id: null,
+    descricao: '',
+    valor: .0,
+    rubricaId: null,
   };
   editConta: any = {}; // Objeto para armazenar dados da conta sendo editada
   contaParaExcluir: WritableSignal<any | null> = signal(null);
@@ -70,11 +83,11 @@ export class TransacoesCreditoEditarComponent implements OnInit {
   toggleAllSelection(tab: string) {
     const allIds = this.getAllIdsForTab(tab);
     const selectedIds = this.selectedCobrancaIds();
-    
+
     if (selectedIds.length === allIds.length) {
       // Deselecionar todos (remover todos os IDs do tab do array selecionado)
-      this.selectedCobrancaIds.update(ids => 
-        ids.filter(id => !allIds.includes(id))
+      this.selectedCobrancaIds.update((ids) =>
+        ids.filter((id) => !allIds.includes(id))
       );
     } else {
       // Selecionar todos (adicionar todos os IDs do tab ao array selecionado)
@@ -88,24 +101,22 @@ export class TransacoesCreditoEditarComponent implements OnInit {
   isAllSelected(tab: string): boolean {
     const allIds = this.getAllIdsForTab(tab);
     const selectedIds = this.selectedCobrancaIds();
-    
-    return allIds.length > 0 && allIds.every(id => selectedIds.includes(id));
+
+    return allIds.length > 0 && allIds.every((id) => selectedIds.includes(id));
   }
 
   private getAllIdsForTab(tab: string): number[] {
     switch (tab) {
       case 'contas-mensalidade':
-        return this.contasMensalidade().map(c => c.id);
+        return this.contasMensalidade().map((c) => c.id);
       case 'outras-rubricas':
-        return this.contasOutrasRubricas().map(c => c.id);
+        return this.contasOutrasRubricas().map((c) => c.id);
       default:
         return [];
     }
   }
 
   // --- LÓGICA DE CÁLCULO (COMPUTED SIGNALS) ---
-
-
 
   // NOVO: Calcula o total das Cobranças de Mensalidades selecionadas
   totalMensalidadeSelecionado = computed(() => {
@@ -124,8 +135,7 @@ export class TransacoesCreditoEditarComponent implements OnInit {
   // Calcula o total geral de TUDO selecionado
   grandTotalReceber = computed(() => {
     return (
-      this.totalMensalidadeSelecionado() +
-      this.totalOutrasRubricasSelecionado()
+      this.totalMensalidadeSelecionado() + this.totalOutrasRubricasSelecionado()
     );
   });
 
@@ -174,7 +184,7 @@ export class TransacoesCreditoEditarComponent implements OnInit {
      */
     this.breadCrumbItems = [
       { label: 'Financeiro' },
-      { label: 'Transações', active: true }
+      { label: 'Transações', active: true },
     ];
 
     // Carregar os dados iniciais com base no ID da rota
@@ -220,7 +230,7 @@ export class TransacoesCreditoEditarComponent implements OnInit {
       },
     });
 
-    this.transacaoCreditoService.getRubricas().subscribe({
+    this.transacaoCreditoService.getRubricasSimples().subscribe({
       next: (data) => this.rubricas.set(data),
       error: (err) => {
         console.error('Erro ao carregar rubricas:', err);
@@ -367,7 +377,7 @@ export class TransacoesCreditoEditarComponent implements OnInit {
       'A funcionalidade de adicionar contas avulsas não está disponível com o novo modelo de dados.',
       'warning'
     );
-    
+
     // Fechar o modal
     this.isNovaContaReceberModalOpen.set(false);
     this.novaConta = {
@@ -394,7 +404,7 @@ export class TransacoesCreditoEditarComponent implements OnInit {
       'A edição de contas não está disponível com o novo modelo de dados.',
       'warning'
     );
-    
+
     this.isEditContaReceberModalOpen.set(false);
   }
 
@@ -414,9 +424,112 @@ export class TransacoesCreditoEditarComponent implements OnInit {
       'A exclusão de contas não está disponível com o novo modelo de dados.',
       'warning'
     );
-    
+
     this.isExcluirContaReceberModalOpen.set(false);
     this.contaParaExcluir.set(null);
+  }
+
+  // Abrir edição de cobrança - Outras Rubricas
+  openEditarCobrancaOutrasRubricas(cobranca: any) {
+    this.novaCobrancaOutrasRubricas = {
+      id: cobranca.id,
+      descricao: cobranca.descricao,
+      valor: cobranca.valor,
+      rubricaId: cobranca.rubricaId,
+    };
+    this.isOutrasRubricasModalOpen.set(true);
+  }
+
+  // Salvar Nova Cobrança - Outras Rubricas
+  salvarNovaCobrancaOutrasRubricas() {
+    if (
+      !this.novaCobrancaOutrasRubricas.descricao ||
+      !this.novaCobrancaOutrasRubricas.rubricaId ||
+      this.novaCobrancaOutrasRubricas.valor <= 0
+    ) {
+      this.showCustomToast(
+        'Por favor, preencha todos os campos da cobrança.',
+        'warning'
+      );
+      return;
+    }
+
+    // Obter o socioId e dataVencimento da transação atual
+    const transacao = this.transacao();
+    if (!transacao || !transacao.socio?.id) {
+      this.showCustomToast('A transação não tem um sócio associado.', 'error');
+      return;
+    }
+
+    // Montar o objeto para envio (usando o modelo do novo endpoint)
+    const cobrancaData = {
+      id: this.novaCobrancaOutrasRubricas.id || undefined, // Incluir id se for edição
+      socioId: transacao.socio.id,
+      tipoCobranca: 'OUTRAS_RUBRICAS',
+      rubricaId: this.novaCobrancaOutrasRubricas.rubricaId,
+      valor: this.novaCobrancaOutrasRubricas.valor,
+      dataVencimento: transacao.dataVencimento, // Usar a data de vencimento da transação
+      descricao: this.novaCobrancaOutrasRubricas.descricao,
+      tipoMovimento: 'ENTRADA',
+      status: 'PENDENTE',
+    };
+
+    // Determinar se é criação ou edição
+    const isEdicao = this.novaCobrancaOutrasRubricas.id !== null;
+    
+    if (isEdicao) {
+      // Chamar o serviço para atualizar a cobrança existente
+      this.transacaoCreditoService.atualizarCobranca(this.novaCobrancaOutrasRubricas.id!, cobrancaData).subscribe({
+        next: (response) => {
+          this.showCustomToast('Cobrança atualizada com sucesso!', 'success');
+          this.finalizarOperacaoCobranca();
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar cobrança:', error);
+          this.showCustomToast(
+            'Erro ao atualizar cobrança: ' +
+              (error.error?.message || 'Ocorreu um erro desconhecido'),
+            'error'
+          );
+        },
+      });
+    } else {
+      // Chamar o serviço para criar a nova cobrança
+      this.transacaoCreditoService.criarCobranca(cobrancaData).subscribe({
+        next: (response) => {
+          this.showCustomToast('Cobrança criada com sucesso!', 'success');
+          this.finalizarOperacaoCobranca();
+        },
+        error: (error) => {
+          console.error('Erro ao criar cobrança:', error);
+          this.showCustomToast(
+            'Erro ao criar cobrança: ' +
+              (error.error?.message || 'Ocorreu um erro desconhecido'),
+            'error'
+          );
+        },
+      });
+    }
+  }
+
+  // Função auxiliar para finalizar operações de cobrança
+  private finalizarOperacaoCobranca() {
+    // Fechar o modal
+    this.isOutrasRubricasModalOpen.set(false);
+
+    // Resetar o formulário
+    this.novaCobrancaOutrasRubricas = {
+      id: null,
+      descricao: '',
+      valor: 0.0,
+      rubricaId: null,
+    };
+
+    // Recarregar os dados para mostrar a cobrança
+    const transacaoId = this.transacao()?.id;
+    if (transacaoId) {
+      this.carregarDados(transacaoId);
+    }
   }
 
   // Função de Toast
@@ -427,6 +540,31 @@ export class TransacoesCreditoEditarComponent implements OnInit {
     this.toastMessage.set(message);
     this.toastType.set(type);
     setTimeout(() => this.toastMessage.set(null), 5000);
+  }
+
+  // Event handlers para o componente de modais
+  onAssociarSocio(socioId: number) {
+    this.modalSocioId = socioId;
+    this.associarSocio();
+  }
+
+  onSalvarNovaConta(dados: any) {
+    this.novaConta = { ...dados };
+    this.salvarNovaContaReceber();
+  }
+
+  onSalvarEdicaoConta(dados: any) {
+    this.editConta = { ...dados };
+    this.salvarEdicaoContaReceber();
+  }
+
+  onConfirmarExclusao() {
+    this.confirmarExclusao();
+  }
+
+  onSalvarNovaCobrancaOutrasRubricas(dados: any) {
+    this.novaCobrancaOutrasRubricas = { ...dados };
+    this.salvarNovaCobrancaOutrasRubricas();
   }
 
   getToastClasses(type: 'success' | 'error' | 'warning' | 'info') {
