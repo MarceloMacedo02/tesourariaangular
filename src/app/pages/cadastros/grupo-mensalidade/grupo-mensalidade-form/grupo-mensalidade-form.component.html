@@ -87,7 +87,7 @@
                                     class="form-control" 
                                     id="dataRegistro"
                                     name="dataRegistro"
-                                    [value]="(grupoMensalidade.dataRegistro | date:'short') || ''"
+                                    [value]="grupoMensalidade.dataRegistro ? (grupoMensalidade.dataRegistro | date:'short') : ''"
                                     readonly
                                     placeholder="Data de registro">
                                 <small class="text-muted">Campo de uso exclusivo do backend</small>

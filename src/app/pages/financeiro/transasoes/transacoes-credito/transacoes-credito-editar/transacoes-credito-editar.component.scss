@@ -1,0 +1,9 @@
+/* Adicionando alguns estilos básicos para garantir a aparência do Modal */
+:host {
+  display: block;
+}
+/* Estilos para o toast */
+.toast-success { background-color: #10B981; color: white; }
+.toast-error { background-color: #EF4444; color: white; }
+.toast-warning { background-color: #F59E0B; color: white; }
+.toast-info { background-color: #3B82F6; color: white; }

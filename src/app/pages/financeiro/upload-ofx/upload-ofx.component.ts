@@ -25,6 +25,15 @@ export class UploadOfxComponent implements OnInit {
   debitTransacoes: TransacaoDto[] = [];
   transacoesPendentes: TransacaoPendente[] = [];
   
+  // Estatísticas da importação
+  nomeArquivo?: string;
+  totalTransacoesProcessadas?: number;
+  totalCreditos?: number;
+  totalDebitos?: number;
+  totalPendentes?: number;
+  totalDuplicadosIgnorados?: number;
+  mensagemResumo?: string;
+  
   // Para associação manual
   referencias: ReferenciasFinanceiras = { socios: [], fornecedores: [], rubricas: [] };
   tipoRelacionamento: 'SOCIO' | 'FORNECEDOR' | '' = '';
@@ -84,15 +93,32 @@ export class UploadOfxComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', this.arquivoSelecionado);
 
-    // Chamar o serviço sem o parâmetro accountId
+    // Chamar o serviço no endpoint correto
     this.transacoesOfxService.importarOFX(formData).subscribe({
       next: (response: TransacaoProcessingResult) => {
-        this.creditTransacoes = response.creditTransacoes;
-        this.debitTransacoes = response.debitTransacoes;
-        this.transacoesPendentes = response.transacoesPendentes;
+        this.creditTransacoes = response.creditTransacoes || [];
+        this.debitTransacoes = response.debitTransacoes || [];
+        this.transacoesPendentes = response.transacoesPendentes || [];
         
-        // Atualizar mensagem para usar a estrutura da nova resposta
-        this.mensagem = `Processamento concluído: ${this.creditTransacoes.length} créditos, ${this.debitTransacoes.length} débitos, ${this.transacoesPendentes.length} pendentes.`;
+        // Armazenar os dados estatísticos da resposta
+        this.nomeArquivo = response.nomeArquivo;
+        this.totalTransacoesProcessadas = response.totalTransacoesProcessadas;
+        this.totalCreditos = response.totalCreditos;
+        this.totalDebitos = response.totalDebitos;
+        this.totalPendentes = response.totalPendentes;
+        this.totalDuplicadosIgnorados = response.totalDuplicadosIgnorados;
+        this.mensagemResumo = response.mensagemResumo;
+        
+        // Atualizar mensagem para usar a estrutura completa da nova resposta
+        const totalCreditos = response.totalCreditos ?? this.creditTransacoes.length;
+        const totalDebitos = response.totalDebitos ?? this.debitTransacoes.length;
+        const totalPendentes = response.totalPendentes ?? this.transacoesPendentes.length;
+        const totalProcessadas = response.totalTransacoesProcessadas ?? (totalCreditos + totalDebitos + totalPendentes);
+        const totalDuplicados = response.totalDuplicadosIgnorados ?? 0;
+        
+        this.mensagem = response.mensagemResumo || 
+          `Processamento concluído: ${totalProcessadas} transações analisadas, ${totalCreditos} créditos, ${totalDebitos} débitos, ${totalPendentes} pendentes, ${totalDuplicados} duplicados ignorados.`;
+        
         this.carregando = false;
       },
       error: (error) => {
@@ -105,6 +131,8 @@ export class UploadOfxComponent implements OnInit {
           this.mensagem = 'Sessão expirada: faça login novamente para continuar.';
         } else if (error.status === 0) {
           this.mensagem = 'Erro de conexão: não foi possível se conectar ao servidor. Verifique se o backend está rodando.';
+        } else if (error.status === 404) {
+          this.mensagem = 'Endpoint não encontrado: verifique se o backend está configurado corretamente e o serviço de importação OFX está ativo.';
         } else {
           this.mensagem = `Erro ao processar arquivo: ${error.error?.message || error.message || 'Erro desconhecido'}`;
         }
@@ -150,7 +178,19 @@ export class UploadOfxComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao associar transação:', error);
-        this.mensagem = 'Erro ao associar transação: ' + (error.error?.message || error.message || 'Erro desconhecido');
+        
+        // Verificar se é um erro de autorização (403)
+        if (error.status === 403) {
+          this.mensagem = 'Acesso negado: você não tem permissão para associar transações. Verifique suas credenciais.';
+        } else if (error.status === 401) {
+          this.mensagem = 'Sessão expirada: faça login novamente para continuar.';
+        } else if (error.status === 0) {
+          this.mensagem = 'Erro de conexão: não foi possível se conectar ao servidor. Verifique se o backend está rodando.';
+        } else if (error.status === 404) {
+          this.mensagem = 'Endpoint não encontrado: verifique se o backend está configurado corretamente.';
+        } else {
+          this.mensagem = 'Erro ao associar transação: ' + (error.error?.message || error.message || 'Erro desconhecido');
+        }
       }
     });
   }
@@ -164,7 +204,19 @@ export class UploadOfxComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao descartar transação:', error);
-        this.mensagem = 'Erro ao descartar transação: ' + (error.error?.message || error.message || 'Erro desconhecido');
+        
+        // Verificar se é um erro de autorização (403)
+        if (error.status === 403) {
+          this.mensagem = 'Acesso negado: você não tem permissão para descartar transações. Verifique suas credenciais.';
+        } else if (error.status === 401) {
+          this.mensagem = 'Sessão expirada: faça login novamente para continuar.';
+        } else if (error.status === 0) {
+          this.mensagem = 'Erro de conexão: não foi possível se conectar ao servidor. Verifique se o backend está rodando.';
+        } else if (error.status === 404) {
+          this.mensagem = 'Endpoint não encontrado: verifique se o backend está configurado corretamente.';
+        } else {
+          this.mensagem = 'Erro ao descartar transação: ' + (error.error?.message || error.message || 'Erro desconhecido');
+        }
       }
     });
   }
@@ -181,7 +233,19 @@ export class UploadOfxComponent implements OnInit {
         },
         error: (error) => {
           console.error('Erro ao remover transações:', error);
-          this.mensagem = 'Erro ao remover transações: ' + (error.error?.message || error.message || 'Erro desconhecido');
+          
+          // Verificar se é um erro de autorização (403)
+          if (error.status === 403) {
+            this.mensagem = 'Acesso negado: você não tem permissão para remover transações. Verifique suas credenciais.';
+          } else if (error.status === 401) {
+            this.mensagem = 'Sessão expirada: faça login novamente para continuar.';
+          } else if (error.status === 0) {
+            this.mensagem = 'Erro de conexão: não foi possível se conectar ao servidor. Verifique se o backend está rodando.';
+          } else if (error.status === 404) {
+            this.mensagem = 'Endpoint não encontrado: verifique se o backend está configurado corretamente.';
+          } else {
+            this.mensagem = 'Erro ao remover transações: ' + (error.error?.message || error.message || 'Erro desconhecido');
+          }
         }
       });
     }

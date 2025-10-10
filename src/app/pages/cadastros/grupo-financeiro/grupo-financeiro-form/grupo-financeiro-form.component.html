@@ -108,7 +108,7 @@
                                     class="form-control" 
                                     id="dataRegistro"
                                     name="dataRegistro"
-                                    [value]="(grupoFinanceiro.dataRegistro | date:'short') || ''"
+                                    [value]="grupoFinanceiro.dataRegistro ? (grupoFinanceiro.dataRegistro | date:'short') : ''"
                                     readonly
                                     placeholder="Data de registro">
                                 <small class="text-muted">Campo de uso exclusivo do backend</small>
@@ -126,7 +126,7 @@
                                     class="form-control" 
                                     id="dataAtualizacao"
                                     name="dataAtualizacao"
-                                    [value]="(grupoFinanceiro.dataAtualizacao | date:'short') || ''"
+                                    [value]="grupoFinanceiro.dataAtualizacao ? (grupoFinanceiro.dataAtualizacao | date:'short') : ''"
                                     readonly
                                     placeholder="Data de atualização">
                                 <small class="text-muted">Campo de uso exclusivo do backend</small>

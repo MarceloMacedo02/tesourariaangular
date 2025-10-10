@@ -1,0 +1,452 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs [title]="transacao() ? 'Editar Transação de Crédito' : 'Nova Transação de Crédito'"
+    [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<!-- Card com detalhes da transação -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Detalhes da Transação</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <!-- Descrição da transação no início do card -->
+                    <div class="col-lg-12">
+                        <div class="mb-3">
+                            <label for="descricaoTransacao" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="descricaoTransacao" 
+                                [value]="transacao()?.descricao" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="idTransacao" class="form-label">ID</label>
+                            <input type="text" class="form-control" id="idTransacao" 
+                                [value]="transacao()?.id" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="statusTransacao" class="form-label">Status</label>
+                            <input type="text" class="form-control" id="statusTransacao" 
+                                [value]="transacao()?.status" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <label for="pagador" class="form-label">Fornecedor ou Sócio</label>
+                            <input type="text" class="form-control" id="pagador" 
+                                [value]="transacao()?.socio?.nomeSocio || transacao()?.fornecedor?.nomeFornecedor || 'N/A'" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="valor" class="form-label">Valor</label>
+                            <input type="text" class="form-control" id="valor" 
+                                [value]="transacao()?.valor ? (transacao()?.valor | currency:'BRL':'symbol':'1.2-2':'pt') : ''" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="dataVencimento" class="form-label">Data Vencimento</label>
+                            <input type="text" class="form-control" id="dataVencimento" 
+                                [value]="transacao()?.dataVencimento | date:'dd/MM/yyyy'" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <label for="dataPagamento" class="form-label">Data Pagamento</label>
+                            <input type="text" class="form-control" id="dataPagamento" 
+                                [value]="transacao()?.dataPagamento ? (transacao()?.dataPagamento | date:'dd/MM/yyyy') : 'N/A'" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="mb-3" *ngIf="!transacao()?.socio">
+                            <button (click)="isAssociarSocioModalOpen.set(true)"
+                                    class="btn btn-primary">
+                                Associar Sócio à Transação
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">{{ transacao() ? 'Editar Transação de Crédito' : 'Nova Transação de Crédito' }}</h4>
+            </div>
+            <div class="card-body">
+                <!-- Erros de validação -->
+                <div *ngIf="errors.length > 0" class="alert alert-danger">
+                    <ul class="mb-0">
+                        <li *ngFor="let error of errors">{{ error }}</li>
+                    </ul>
+                </div>
+
+                <!-- Abas para organizar os dados -->
+                <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" [class.active]="activeTab === 'contas-mensalidade'"
+                            (click)="activeTab = 'contas-mensalidade'" role="tab" style="cursor: pointer;">
+                            <span class="d-block d-sm-none">Mensalidade</span>
+                            <span class="d-none d-sm-block">Mensalidades</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [class.active]="activeTab === 'outras-rubricas'"
+                            (click)="activeTab = 'outras-rubricas'" role="tab" style="cursor: pointer;">
+                            <span class="d-block d-sm-none">Rubricas</span>
+                            <span class="d-none d-sm-block">Outras Rubricas</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content p-4">
+
+                    <!-- Cobranças em Aberto (Outras Rubricas) -->
+                    <div class="tab-pane" [class.active]="activeTab === 'outras-rubricas'"
+                        [class.show]="activeTab === 'outras-rubricas'">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Cobranças em Aberto (Outras Rubricas)</h5>
+                            <span class="text-lg font-bold text-blue-600">
+                                Total Selecionado: {{ totalOutrasRubricasSelecionado() | currency:'BRL':'symbol':'1.2-2':'pt' }}
+                            </span>
+                        </div>
+
+                        <div class="table-responsive mt-3">
+                            <table class="table table-nowrap table-centered align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox"
+                                                class="form-check-input"
+                                                (change)="toggleAllSelection('outras-rubricas')"
+                                                [checked]="isAllSelected('outras-rubricas')">
+                                        </th>
+                                        <th>Sócio/Dependente</th>
+                                        <th>Descrição</th>
+                                        <th>Vencimento</th>
+                                        <th>Valor Original</th>
+                                        <th>Tipo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let cobranca of contasOutrasRubricas()">
+                                        <td>
+                                            <input type="checkbox"
+                                                [checked]="selectedCobrancaIds().includes(cobranca.id)"
+                                                (change)="toggleSelection(cobranca.id, cobranca.valor)"
+                                                class="form-check-input">
+                                        </td>
+                                        <td>{{ cobranca.socioNome || 'N/A' }}</td>
+                                        <td>{{ cobranca.descricao }}</td>
+                                        <td>{{ cobranca.dataVencimento | date:'dd/MM/yyyy' }}</td>
+                                        <td class="text-green-600 font-medium">{{ cobranca.valor | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
+                                        <td>{{ cobranca.tipoCobranca }}</td>
+                                    </tr>
+                                    <tr *ngIf="contasOutrasRubricas().length === 0">
+                                        <td colspan="6" class="text-center text-muted">
+                                            Nenhuma cobrança de Outras Rubricas em aberto encontrada.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Cobranças em Aberto (Mensalidade) -->
+                    <div class="tab-pane" [class.active]="activeTab === 'contas-mensalidade'"
+                        [class.show]="activeTab === 'contas-mensalidade'">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Cobranças em Aberto (Mensalidade)</h5>
+                            <span class="text-lg font-bold text-blue-600">
+                                Total Selecionado: {{ totalMensalidadeSelecionado() | currency:'BRL':'symbol':'1.2-2':'pt' }}
+                            </span>
+                        </div>
+
+                        <div class="table-responsive mt-3">
+                            <table class="table table-nowrap table-centered align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox"
+                                                class="form-check-input"
+                                                (change)="toggleAllSelection('contas-mensalidade')"
+                                                [checked]="isAllSelected('contas-mensalidade')">
+                                        </th>
+                                        <th>Sócio/Dependente</th>
+                                        <th>Descrição</th>
+                                        <th>Vencimento</th>
+                                        <th>Valor Original</th>
+                                        <th>Tipo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let cobranca of contasMensalidade()">
+                                        <td>
+                                            <input type="checkbox"
+                                                [checked]="selectedCobrancaIds().includes(cobranca.id)"
+                                                (change)="toggleSelection(cobranca.id, cobranca.valor)"
+                                                class="form-check-input">
+                                        </td>
+                                        <td>{{ cobranca.socioNome || 'N/A' }}</td>
+                                        <td>{{ cobranca.descricao }}</td>
+                                        <td>{{ cobranca.dataVencimento | date:'dd/MM/yyyy' }}</td>
+                                        <td class="text-green-600 font-medium">{{ cobranca.valor | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
+                                        <td>{{ cobranca.tipoCobranca }}</td>
+                                    </tr>
+                                    <tr *ngIf="contasMensalidade().length === 0">
+                                        <td colspan="6" class="text-center text-muted">
+                                            Nenhuma cobrança de Mensalidade em aberto encontrada.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Card de Baixa da Transação na parte inferior -->
+<div class="row mt-4">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Baixa da Transação</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card border border-dashed border-primary">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total de Contas a Receber Selecionadas</h5>
+                                <div class="display-4 text-primary font-weight-bold py-3">
+                                    {{ grandTotalReceber() | currency:'BRL':'symbol':'1.2-2':'pt' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <form (ngSubmit)="quitarCobrancas()" class="row g-3">
+                                    <div class="col-12">
+                                        <label for="contaFinanceiraSelect" class="form-label">Conta Financeira</label>
+                                        <select id="contaFinanceiraSelect" [(ngModel)]="selectedContaFinanceiraId" name="contaFinanceiraId" required
+                                                class="form-control">
+                                            <option [ngValue]="null">Selecione a Conta Financeira</option>
+                                            <option *ngFor="let conta of contasFinanceiras()" [ngValue]="conta.id">{{ conta.nome }}</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <div [ngClass]="isTotalMatching() ? 'bg-success text-white' : 'bg-danger text-white'"
+                                             class="p-3 rounded-lg text-center">
+                                            <div *ngIf="isTotalMatching()">
+                                                Valor da Transação ({{ transacao()?.valor | currency:'BRL':'symbol':'1.2-2':'pt' }})
+                                                <strong>IGUALA</strong>
+                                                o Total Selecionado!
+                                            </div>
+                                            <div *ngIf="!isTotalMatching()">
+                                                Valor da Transação ({{ transacao()?.valor | currency:'BRL':'symbol':'1.2-2':'pt' }})
+                                                <strong>NÃO IGUALA</strong>
+                                                o Total Selecionado. Diferença: {{ totalDiferenca() | currency:'BRL':'symbol':'1.2-2':'pt' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <button type="submit" [disabled]="!isQuitarButtonEnabled()"
+                                                [ngClass]="isQuitarButtonEnabled() ? 'btn btn-primary' : 'btn btn-secondary disabled'"
+                                                class="btn w-100">
+                                            Quitar Cobranças Selecionadas
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Associar Sócio à Transação -->
+<div class="modal fade" [class.show]="isAssociarSocioModalOpen()" 
+     *ngIf="isAssociarSocioModalOpen()" 
+     (click)="isAssociarSocioModalOpen.set(false)" 
+     style="display: block; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Associar Sócio à Transação</h5>
+                <button type="button" class="btn-close" (click)="isAssociarSocioModalOpen.set(false)"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="associarSocio()">
+                    <div class="mb-3">
+                        <label for="socioSelect" class="form-label">Selecione o Sócio</label>
+                        <select id="socioSelect" [(ngModel)]="modalSocioId" name="modalSocioId" required
+                                class="form-control">
+                            <option [ngValue]="null">Selecione um sócio</option>
+                            <option *ngFor="let socio of socios()" [ngValue]="socio.id">{{ socio.nomeSocio }}</option>
+                        </select>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary me-2" (click)="isAssociarSocioModalOpen.set(false)">Cancelar</button>
+                        <button type="submit" [disabled]="!modalSocioId" class="btn btn-primary">
+                            Associar Sócio
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Adicionar Nova Conta a Receber -->
+<div class="modal fade" [class.show]="isNovaContaReceberModalOpen()" 
+     *ngIf="isNovaContaReceberModalOpen()" 
+     (click)="isNovaContaReceberModalOpen.set(false)" 
+     style="display: block; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adicionar Nova Conta a Receber</h5>
+                <button type="button" class="btn-close" (click)="isNovaContaReceberModalOpen.set(false)"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="salvarNovaContaReceber()">
+                    <div class="mb-3">
+                        <label for="modalRubricaSelect" class="form-label">Rubrica</label>
+                        <select id="modalRubricaSelect" [(ngModel)]="novaConta.rubricaId" name="rubricaId" required
+                                class="form-control">
+                            <option value="">Selecione a rubrica</option>
+                            <option *ngFor="let rubrica of rubricas()" [value]="rubrica.id">{{ rubrica.nome }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalDescricaoInput" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="modalDescricaoInput" [(ngModel)]="novaConta.descricao" name="descricao" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalDataVencimentoInput" class="form-label">Data de Vencimento</label>
+                        <input type="date" class="form-control" id="modalDataVencimentoInput" [(ngModel)]="novaConta.dataVencimento" name="dataVencimento" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalValorInput" class="form-label">Valor (R$)</label>
+                        <input type="number" class="form-control" id="modalValorInput" [(ngModel)]="novaConta.valor" name="valor" required min="0.01" step="0.01">
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary me-2" (click)="isNovaContaReceberModalOpen.set(false)">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Salvar Conta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Editar Conta a Receber -->
+<div class="modal fade" [class.show]="isEditContaReceberModalOpen()" 
+     *ngIf="isEditContaReceberModalOpen()" 
+     (click)="isEditContaReceberModalOpen.set(false)" 
+     style="display: block; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Conta a Receber</h5>
+                <button type="button" class="btn-close" (click)="isEditContaReceberModalOpen.set(false)"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="salvarEdicaoContaReceber()">
+                    <div class="mb-3">
+                        <label for="editModalDescricaoInput" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="editModalDescricaoInput" [(ngModel)]="editConta.descricao" name="editDescricao" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editModalDataVencimentoInput" class="form-label">Data de Vencimento</label>
+                        <input type="date" class="form-control" id="editModalDataVencimentoInput" [(ngModel)]="editConta.dataVencimento" name="editDataVencimento" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editModalValorInput" class="form-label">Valor (R$)</label>
+                        <input type="number" class="form-control" id="editModalValorInput" [(ngModel)]="editConta.valor" name="editValor" required min="0.01" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editModalRubricaSelect" class="form-label">Rubrica</label>
+                        <select id="editModalRubricaSelect" [(ngModel)]="editConta.rubricaId" name="editRubricaId" required
+                                class="form-control">
+                            <option value="">Selecione a rubrica</option>
+                            <option *ngFor="let rubrica of rubricas()" [value]="rubrica.id">{{ rubrica.nome }}</option>
+                        </select>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary me-2" (click)="isEditContaReceberModalOpen.set(false)">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Confirmar Exclusão -->
+<div class="modal fade" [class.show]="isExcluirContaReceberModalOpen()" 
+     *ngIf="isExcluirContaReceberModalOpen()" 
+     (click)="isExcluirContaReceberModalOpen.set(false)" 
+     style="display: block; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" (click)="isExcluirContaReceberModalOpen.set(false)"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <strong>Atenção!</strong> Esta ação não pode ser desfeita.
+                </div>
+                <p>Você tem certeza que deseja excluir esta conta a receber?</p>
+                <div class="card bg-light mb-3" *ngIf="contaParaExcluir()">
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Descrição:</dt>
+                            <dd class="col-sm-8">{{ contaParaExcluir().descricao }}</dd>
+                            <dt class="col-sm-4">Valor:</dt>
+                            <dd class="col-sm-8">{{ contaParaExcluir().valor | currency:'BRL':'symbol':'1.2-2':'pt' }}</dd>
+                            <dt class="col-sm-4">Vencimento:</dt>
+                            <dd class="col-sm-8">{{ contaParaExcluir().dataVencimento | date:'dd/MM/yyyy' }}</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-secondary me-2" (click)="isExcluirContaReceberModalOpen.set(false)">Cancelar</button>
+                    <button type="button" (click)="confirmarExclusao()" class="btn btn-danger">
+                        Excluir Conta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

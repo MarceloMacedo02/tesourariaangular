@@ -153,28 +153,7 @@ export const MENU: MenuItem[] = [
     link: '/pages/financeiro/cobrancas-avulsas/lista',
     parentId: 33,
   },
-  // Itens de Quitação
-  {
-    id: 170,
-    label: 'Quitar Transações',
-    icon: 'ti ti-currency-dollar',
-    link: '/pages/financeiro/quitar-transacoes',
-    parentId: 33,
-  },
-  {
-    id: 171,
-    label: 'Quitação de Crédito',
-    icon: 'ti ti-credit-card',
-    link: '/pages/financeiro/quitacao-credito',
-    parentId: 33,
-  },
-  {
-    id: 172,
-    label: 'Quitar Transações de Crédito',
-    icon: 'ti ti-arrows-right-left',
-    link: '/pages/financeiro/quitar-transacoes-credito',
-    parentId: 33,
-  },
+
   // Seção Transações
   {
     id: 167,
@@ -186,12 +165,6 @@ export const MENU: MenuItem[] = [
         id: 168,
         label: 'Listar Transações',
         link: '/pages/financeiro/transacoes/listar',
-        parentId: 167,
-      },
-      {
-        id: 169,
-        label: 'Nova Transação',
-        link: '/pages/financeiro/transacoes/nova',
         parentId: 167,
       },
       {

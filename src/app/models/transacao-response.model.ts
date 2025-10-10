@@ -39,6 +39,8 @@ export interface TransacaoDto {
   tipoRelacionamento: TipoRelacionamento;
   relacionadoId: number | null;
   fornecedorId: number | null;
+  socioId: number | null;
+  socioNome: string | null;
   statusIdentificacao: StatusIdentificacao;
   caminhoComprovante: string;
   // Fields from the original TransacaoDto model (may not be in API response but required for compatibility)
@@ -46,6 +48,6 @@ export interface TransacaoDto {
 }
 
 export type TipoTransacao = 'CREDITO' | 'DEBITO';
-export type Lancado = 'LANCADO' | 'NAOLANCADO'; // Use the same type as transacao-ofx.model to maintain compatibility
+export type Lancado = 'LANCADO' | 'NAOLANCADO' | 'SIM' | 'NAO'; // Supports both formats for compatibility
 export type TipoRelacionamento = 'SOCIO' | 'FORNECEDOR' | 'NAO_ENCONTRADO';
 export type StatusIdentificacao = 'IDENTIFICADO' | 'PENDENTE_REVISAO' | 'NAO_ENCONTRADO';

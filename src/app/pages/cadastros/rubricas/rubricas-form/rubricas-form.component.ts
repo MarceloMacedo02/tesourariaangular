@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Rubrica } from '../rubricas.model';
 import { RubricasService } from '../rubricas.service';
@@ -37,7 +37,8 @@ export class RubricasFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private rubricasService: RubricasService
+    private rubricasService: RubricasService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -98,6 +99,9 @@ export class RubricasFormComponent implements OnInit {
           this.selectedGrupoFinanceiroId = null;
         }
         this.loading = false;
+        
+        // Forçar detecção de mudanças para garantir que o ng-select atualize corretamente
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Erro ao carregar rubrica:', error);

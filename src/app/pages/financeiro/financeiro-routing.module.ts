@@ -1,29 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/guards/auth.guard';
-import { CobrancasAvulsasDetalhesComponent } from './cobrancas-avulsas/cobrancas-avulsas-detalhes.component';
-import { CobrancasAvulsasFormComponent } from './cobrancas-avulsas/cobrancas-avulsas-form.component';
-import { CobrancasAvulsasListarComponent } from './cobrancas-avulsas/cobrancas-avulsas-listar.component';
-import { CobrancasAvulsasPagamentoComponent } from './cobrancas-avulsas/cobrancas-avulsas-pagamento.component';
-import { ContasPagarDetalhesComponent } from './contas-a-pagar/contas-a-pagar-detalhes.component';
-import { ContasPagarFormComponent } from './contas-a-pagar/contas-a-pagar-form.component';
-import { ContasPagarListarComponent } from './contas-a-pagar/contas-a-pagar-listar.component';
-import { ContasPagarPagamentoComponent } from './contas-a-pagar/contas-a-pagar-pagamento.component';
-import { ContasAReceberDetalhesComponent } from './contas-a-receber/contas-a-receber-detalhes.component';
-import { ContasAReceberFormComponent } from './contas-a-receber/contas-a-receber-form.component';
-import { ContasAReceberListarComponent } from './contas-a-receber/contas-a-receber-listar.component';
-import { ContasAReceberPagamentoComponent } from './contas-a-receber/contas-a-receber-pagamento.component';
+import { ContasPagarDetalhesComponent } from './constapagarreceber/contas-a-pagar/contas-a-pagar-detalhes.component';
+import { ContasPagarFormComponent } from './constapagarreceber/contas-a-pagar/contas-a-pagar-form.component';
+import { ContasPagarListarComponent } from './constapagarreceber/contas-a-pagar/contas-a-pagar-listar.component';
+import { ContasPagarPagamentoComponent } from './constapagarreceber/contas-a-pagar/contas-a-pagar-pagamento.component';
+import { ContasAReceberDetalhesComponent } from './constapagarreceber/contas-a-receber/contas-a-receber-detalhes.component';
+import { ContasAReceberFormComponent } from './constapagarreceber/contas-a-receber/contas-a-receber-form.component';
+import { ContasAReceberListarComponent } from './constapagarreceber/contas-a-receber/contas-a-receber-listar.component';
+import { ContasAReceberPagamentoComponent } from './constapagarreceber/contas-a-receber/contas-a-receber-pagamento.component';
 import { UploadOfxComponent } from './upload-ofx/upload-ofx.component';
 
-import { AssociarSocioComponent } from './associar-socio/associar-socio.component';
-import { DespesasComponent } from './despesas/despesas.component';
-import { ReceitasComponent } from './receitas/receitas.component';
-import { ReviewTransacoesComponent } from './review-transacoes/review-transacoes.component';
-import { TransacoesPendentesDetalhesComponent } from './transacoes-pendentes/transacoes-pendentes-detalhes.component';
-import { TransacoesPendentesComponent } from './transacoes-pendentes/transacoes-pendentes.component';
-import { TransacoesCreditoComponent } from './transacoes-credito/transacoes-credito.component';
-import { TransacoesDebitoComponent } from './transacoes-debito/transacoes-debito.component';
-import { BaixaTransacaoComponent } from './baixa-transacao/baixa-transacao.component';
+import { ReviewTransacoesComponent } from './transasoes/review-transacoes/review-transacoes.component';
+import { TransacoesCreditoEditarComponent } from './transasoes/transacoes-credito/transacoes-credito-editar/transacoes-credito-editar.component';
+import { TransacoesCreditoComponent } from './transasoes/transacoes-credito/transacoes-credito.component';
+import { TransacoesDebitoComponent } from './transasoes/transacoes-debito/transacoes-debito.component';
 
 const routes: Routes = [
   {
@@ -57,76 +48,6 @@ const routes: Routes = [
       {
         path: 'pagamento/:id',
         component: ContasPagarPagamentoComponent,
-        canActivate: [AuthGuard],
-      },
-    ],
-  },
-  {
-    path: 'transacoes-pendentes',
-    children: [
-      {
-        path: '',
-        component: TransacoesPendentesComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'detalhes/:id',
-        component: TransacoesPendentesDetalhesComponent,
-        canActivate: [AuthGuard],
-      },
-    ],
-  },
-  {
-    path: 'receitas',
-    component: ReceitasComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'despesas',
-    component: DespesasComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'review-transacoes',
-    component: ReviewTransacoesComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'associar-socio/:id',
-    component: AssociarSocioComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'cobrancas-avulsas',
-    children: [
-      {
-        path: '',
-        redirectTo: 'lista',
-        pathMatch: 'full',
-      },
-      {
-        path: 'lista',
-        component: CobrancasAvulsasListarComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'novo',
-        component: CobrancasAvulsasFormComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'editar/:id',
-        component: CobrancasAvulsasFormComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'detalhes/:id',
-        component: CobrancasAvulsasDetalhesComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'pagamento/:id',
-        component: CobrancasAvulsasPagamentoComponent,
         canActivate: [AuthGuard],
       },
     ],
@@ -166,6 +87,7 @@ const routes: Routes = [
       },
     ],
   },
+
   {
     path: 'upload-ofx',
     component: UploadOfxComponent,
@@ -187,17 +109,27 @@ const routes: Routes = [
       },
       {
         path: 'credito',
-        component: TransacoesCreditoComponent,
-        canActivate: [AuthGuard],
+        children: [
+          {
+            path: '',
+            redirectTo: 'listar',
+            pathMatch: 'full',
+          },
+          {
+            path: 'listar',
+            component: TransacoesCreditoComponent,
+            canActivate: [AuthGuard],
+          },
+          {
+            path: 'baixar/:id',
+            component: TransacoesCreditoEditarComponent,
+            canActivate: [AuthGuard],
+          },
+        ],
       },
       {
         path: 'debito',
         component: TransacoesDebitoComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'baixa/:id',
-        component: BaixaTransacaoComponent,
         canActivate: [AuthGuard],
       },
     ],

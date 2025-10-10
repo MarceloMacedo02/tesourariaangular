@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   GrauSocio,
@@ -50,6 +50,10 @@ export class SocioFormComponent implements OnInit {
 
   // Novo dependente como sócio frequente
   novoDependenteSocioFrequenteId: number | null = null;
+
+  // Toast
+  toastMessage: WritableSignal<string | null> = signal(null);
+  toastType: WritableSignal<'success' | 'error' | 'warning' | 'info'> = signal('info');
 
   constructor(
     private route: ActivatedRoute,
@@ -191,14 +195,17 @@ export class SocioFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    console.log('onSubmit chamado - debug', this.socio);
     this.errors = [];
 
     // Validações de campos obrigatórios
     if (!this.socio.nomeSocio?.trim()) {
+      console.log('Nome do sócio está vazio');
       this.errors.push('Nome do sócio é obrigatório');
     }
 
     if (!this.socio.cpf?.trim()) {
+      console.log('CPF do sócio está vazio');
       this.errors.push('CPF do sócio é obrigatório');
     } else {
       // Validar formato do CPF
@@ -268,6 +275,7 @@ export class SocioFormComponent implements OnInit {
 
     // Validar se ocorreram erros
     if (this.errors.length > 0) {
+      console.log('Erros de validação:', this.errors);
       return;
     }
 
@@ -286,46 +294,63 @@ export class SocioFormComponent implements OnInit {
       );
     }
 
-    // Log do objeto socio antes de salvar
-    console.log('Sócio a ser salvo:', JSON.stringify(this.socio, null, 2));
+    // Preparar os dados para envio, garantindo que dependentes contenham somente os IDs
+    const socioParaEnviar: any = { ...this.socio };
+    
+    // Converter dependentes para uma lista contendo apenas os IDs
+    if (this.socio.dependentes && this.socio.dependentes.length > 0) {
+      const dependentesSomenteComIds = this.socio.dependentes.map(dependente => ({
+        id: dependente.id
+      }));
+      socioParaEnviar.dependentes = dependentesSomenteComIds;
+    } else {
+      socioParaEnviar.dependentes = [];
+    }
 
     // Log do objeto socio antes de salvar
-    console.log('Sócio a ser salvo:', JSON.stringify(this.socio, null, 2));
+    console.log('Sócio a ser salvo:', JSON.stringify(socioParaEnviar, null, 2));
+    console.log('Modo edição:', this.isEditing, 'ID do sócio:', this.socio.id);
 
     this.loading = true;
 
     if (this.isEditing && this.socio.id) {
+      console.log('Atualizando sócio com ID:', this.socio.id);
       // Para edição, atualizar os dados do sócio
-      this.socioService.updateSocio(this.socio.id, this.socio).subscribe({
+      this.socioService.updateSocio(this.socio.id, socioParaEnviar).subscribe({
         next: () => {
+          console.log('Sócio atualizado com sucesso');
           this.loading = false;
           // Redirecionar para a lista após salvar
           this.router.navigate(['/pages/cadastros/socio']);
+          // Mostrar toast de sucesso
+          this.showCustomToast('Sócio atualizado com sucesso!', 'success');
         },
         error: (error: any) => {
           console.error('Erro ao atualizar sócio:', error);
           this.loading = false;
-          this.errors.push(
-            'Erro ao atualizar sócio: ' +
-              (error.error?.message || 'Erro desconhecido')
-          );
+          // Mostrar toast de erro com mensagem amigável
+          const mensagemErro = error.error?.message || 'Não foi possível atualizar o sócio. Tente novamente.';
+          this.showCustomToast(mensagemErro, 'error');
         },
       });
     } else {
+      console.log('Criando novo sócio');
       // Para criação, criar o sócio
-      this.socioService.createSocio(this.socio).subscribe({
+      this.socioService.createSocio(socioParaEnviar).subscribe({
         next: (novoSocio: Socio) => {
+          console.log('Sócio criado com sucesso:', novoSocio);
           this.loading = false;
           // Redirecionar para a lista após salvar
           this.router.navigate(['/pages/cadastros/socio']);
+          // Mostrar toast de sucesso
+          this.showCustomToast('Sócio cadastrado com sucesso!', 'success');
         },
         error: (error: any) => {
           console.error('Erro ao criar sócio:', error);
           this.loading = false;
-          this.errors.push(
-            'Erro ao criar sócio: ' +
-              (error.error?.message || 'Erro desconhecido')
-          );
+          // Mostrar toast de erro com mensagem amigável
+          const mensagemErro = error.error?.message || 'Não foi possível cadastrar o sócio. Tente novamente.';
+          this.showCustomToast(mensagemErro, 'error');
         },
       });
     }
@@ -449,10 +474,11 @@ export class SocioFormComponent implements OnInit {
           this.socio.dependentes = [];
         }
 
-        // Adiciona o sócio frequente como dependente
+        // Adiciona o sócio frequente como dependente usando ID e nome
         const novoDependente: SocioDependente = {
-          nomeSocio: socioFrequente.nomeSocio,
-          grau: 'DEPENDENTE', // Define um grau padrão para dependentes
+          id: socioFrequente.id,
+          nomeSocio: socioFrequente.nomeSocio, // Sempre enviar o nome do dependente
+          grau: 'DEPENDENTE', // Definir o grau como DEPENDENTE
         };
 
         this.socio.dependentes.push(novoDependente);
@@ -483,6 +509,31 @@ export class SocioFormComponent implements OnInit {
       return cleanedCpf.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
     } else {
       return cleanedCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+  }
+
+  // Função de Toast
+  showCustomToast(
+    message: string,
+    type: 'success' | 'error' | 'warning' | 'info'
+  ) {
+    this.toastMessage.set(message);
+    this.toastType.set(type);
+    setTimeout(() => this.toastMessage.set(null), 5000);
+  }
+
+  getToastClasses(type: 'success' | 'error' | 'warning' | 'info') {
+    switch (type) {
+      case 'success':
+        return 'bg-success text-white';
+      case 'error':
+        return 'bg-danger text-white';
+      case 'warning':
+        return 'bg-warning text-white';
+      case 'info':
+        return 'bg-info text-white';
+      default:
+        return 'bg-secondary text-white';
     }
   }
 }

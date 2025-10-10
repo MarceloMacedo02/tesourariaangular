@@ -94,9 +94,10 @@ export class CobrancaLoteComponent implements OnInit {
     this.loadSocios();
   }
 
-  onPageSizeChange(newSize: number): void {
-    if (this.pageSize !== newSize) {
-      this.pageSize = newSize;
+  onPageSizeChange(newSize: string | number): void {
+    const newSizeNum = Number(newSize);
+    if (this.pageSize !== newSizeNum) {
+      this.pageSize = newSizeNum;
       this.currentPage = 0; // Voltar para a primeira página ao mudar o tamanho da página
       this.loadSocios();
     }
@@ -266,6 +267,9 @@ export class CobrancaLoteComponent implements OnInit {
     } else {
       this.showCustomToast(response.mensagem, 'success');
     }
+
+    // Recarregar os sócios para refletir quaisquer mudanças após a geração de cobranças
+    this.loadSocios();
   }
 
   private tratarErroCobranca(error: any): void {

@@ -62,7 +62,37 @@
                     {{ rubrica.tipo }}
                   </span>
                 </td>
-                <td>{{ rubrica.grupoFinanceiroNome || rubrica.grupoFinanceiroId || '-' }}</td>
+                <td>
+                  <div *ngIf="rubrica.id && !editandoGrupoFinanceiro[rubrica.id.toString()]">
+                    <span>{{ rubrica.grupoFinanceiroNome || rubrica.grupoFinanceiroId || '-' }}</span>
+                    <button class="btn btn-sm btn-outline-primary ms-2" (click)="editarGrupoFinanceiro(rubrica)" title="Editar Grupo Financeiro">
+                      <i class="ri-edit-line"></i>
+                    </button>
+                  </div>
+                  <div *ngIf="rubrica.id && editandoGrupoFinanceiro[rubrica.id.toString()]" class="d-flex align-items-center">
+                    <ng-select 
+                      [(ngModel)]="grupoFinanceiroSelecionado[rubrica.id.toString()]"
+                      [name]="'grupoFinanceiroId_' + rubrica.id"
+                      [disabled]="loading"
+                      [clearable]="false"
+                      [searchable]="true"
+                      [closeOnSelect]="true"
+                      placeholder="Selecione um grupo financeiro"
+                      [items]="gruposFinanceiros"
+                      bindValue="id"
+                      bindLabel="nomeGrupoFinanceiro"
+                      (change)="onGrupoFinanceiroChange(rubrica.id, $event)">
+                    </ng-select>
+                    <div class="btn-group ms-2" role="group">
+                      <button class="btn btn-sm btn-success" (click)="salvarGrupoFinanceiro(rubrica)" [disabled]="loading" title="Salvar">
+                        <i class="ri-check-line"></i>
+                      </button>
+                      <button class="btn btn-sm btn-secondary" (click)="cancelarEdicao(rubrica)" [disabled]="loading" title="Cancelar">
+                        <i class="ri-close-line"></i>
+                      </button>
+                    </div>
+                  </div>
+                </td>
                 <td>
                   <span class="badge" [ngClass]="getStatusBadgeClass(rubrica.ativo!)">
                     {{ getStatusText(rubrica.ativo!) }}

@@ -23,6 +23,7 @@ export class SocioComponent implements OnInit {
   loading = false;  // Indicador de carregamento
   loadingGruposMensalidade = false;  // Indicador de carregamento dos grupos
   breadCrumbItems!: Array<{}>;  // Itens do breadcrumb
+  editandoGrupoMensalidade: { [key: string]: boolean } = {}; // Controle de edição inline
 
   constructor(
     private socioService: SocioService,
@@ -63,6 +64,15 @@ export class SocioComponent implements OnInit {
         next: (response: Page<Socio>) => {
           this.page = response;
           this.socios = response.content;
+          
+          // Inicializar os estados de edição
+          this.editandoGrupoMensalidade = {};
+          this.socios.forEach(socio => {
+            if (socio.id) {
+              this.editandoGrupoMensalidade[socio.id.toString()] = false;
+            }
+          });
+          
           this.loading = false;
         },
         error: (error: any) => {
@@ -95,8 +105,10 @@ export class SocioComponent implements OnInit {
         return 'bg-success';
       case 'inativo':
         return 'bg-danger';
+      case 'afastado':
+        return 'bg-danger';
       default:
-        return 'bg-secondary';
+        return 'bg-primary';
     }
   }
 
@@ -110,6 +122,57 @@ export class SocioComponent implements OnInit {
     }
     const grupo = this.gruposMensalidade.find(g => g.id === grupoMensalidadeId);
     return grupo ? grupo.nomeGrupoMensalidade : 'Grupo não encontrado';
+  }
+
+  // Método para iniciar a edição do grupo mensalidade
+  editarGrupoMensalidade(socio: Socio): void {
+    if (socio.id) {
+      this.editandoGrupoMensalidade[socio.id.toString()] = true;
+    }
+  }
+
+  // Método para salvar a alteração do grupo mensalidade
+  salvarGrupoMensalidade(socio: Socio): void {
+    if (!socio.id) return;
+    
+    const socioIdStr = socio.id.toString();
+    
+    // Enviar a atualização para o backend
+    this.loading = true;
+    this.socioService.updateSocio(socio.id, socio).subscribe({
+      next: (updatedSocio) => {
+        this.loading = false;
+        // Atualizar o estado de edição
+        this.editandoGrupoMensalidade[socioIdStr] = false;
+        console.log('Grupo mensalidade atualizado com sucesso:', updatedSocio);
+      },
+      error: (error) => {
+        console.error('Erro ao atualizar grupo mensalidade:', error);
+        this.loading = false;
+        // Reverter a alteração em caso de erro (atualizar a lista para garantir consistência)
+        this.loadSocios();
+      }
+    });
+  }
+
+  // Método para cancelar a edição
+  cancelarEdicao(socio: Socio): void {
+    if (socio.id) {
+      const socioIdStr = socio.id.toString();
+      this.editandoGrupoMensalidade[socioIdStr] = false;
+      // Recarregar o sócio para reverter quaisquer alterações não salvas
+      this.socioService.getSocioById(socio.id).subscribe({
+        next: (socioAtualizado) => {
+          const index = this.socios.findIndex(s => s.id === socio.id);
+          if (index !== -1) {
+            this.socios[index] = socioAtualizado;
+          }
+        },
+        error: (error) => {
+          console.error('Erro ao recarregar sócio:', error);
+        }
+      });
+    }
   }
 
   getVisiblePages(): number[] {

@@ -1,35 +1,27 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CobrancasAvulsasDetalhesComponent } from './cobrancas-avulsas/cobrancas-avulsas-detalhes.component';
-import { CobrancasAvulsasFormComponent } from './cobrancas-avulsas/cobrancas-avulsas-form.component';
-import { CobrancasAvulsasListarComponent } from './cobrancas-avulsas/cobrancas-avulsas-listar.component';
-import { CobrancasAvulsasPagamentoComponent } from './cobrancas-avulsas/cobrancas-avulsas-pagamento.component';
-import { ContasPagarDetalhesComponent } from './contas-a-pagar/contas-a-pagar-detalhes.component';
-import { ContasPagarFormComponent } from './contas-a-pagar/contas-a-pagar-form.component';
-import { ContasPagarListarComponent } from './contas-a-pagar/contas-a-pagar-listar.component';
-import { ContasPagarPagamentoComponent } from './contas-a-pagar/contas-a-pagar-pagamento.component';
-import { ContasAReceberDetalhesComponent } from './contas-a-receber/contas-a-receber-detalhes.component';
-import { ContasAReceberFormComponent } from './contas-a-receber/contas-a-receber-form.component';
-import { ContasAReceberListarComponent } from './contas-a-receber/contas-a-receber-listar.component';
-import { ContasAReceberPagamentoComponent } from './contas-a-receber/contas-a-receber-pagamento.component';
+import { ContasPagarDetalhesComponent } from './constapagarreceber/contas-a-pagar/contas-a-pagar-detalhes.component';
+import { ContasPagarFormComponent } from './constapagarreceber/contas-a-pagar/contas-a-pagar-form.component';
+import { ContasPagarListarComponent } from './constapagarreceber/contas-a-pagar/contas-a-pagar-listar.component';
+import { ContasPagarPagamentoComponent } from './constapagarreceber/contas-a-pagar/contas-a-pagar-pagamento.component';
+import { ContasAReceberDetalhesComponent } from './constapagarreceber/contas-a-receber/contas-a-receber-detalhes.component';
+import { ContasAReceberFormComponent } from './constapagarreceber/contas-a-receber/contas-a-receber-form.component';
+import { ContasAReceberListarComponent } from './constapagarreceber/contas-a-receber/contas-a-receber-listar.component';
+import { ContasAReceberPagamentoComponent } from './constapagarreceber/contas-a-receber/contas-a-receber-pagamento.component';
 import { FinanceiroRoutingModule } from './financeiro-routing.module';
 import { UploadOfxComponent } from './upload-ofx/upload-ofx.component';
-import { TransacoesCreditoComponent } from './transacoes-credito/transacoes-credito.component';
-import { TransacoesDebitoComponent } from './transacoes-debito/transacoes-debito.component';
-import { BaixaTransacaoComponent } from './baixa-transacao/baixa-transacao.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { AssociarSocioComponent } from './associar-socio/associar-socio.component';
-import { DespesasComponent } from './despesas/despesas.component';
-import { ReceitasComponent } from './receitas/receitas.component';
-import { ReviewTransacoesComponent } from './review-transacoes/review-transacoes.component';
-import { TransacoesPendentesDetalhesComponent } from './transacoes-pendentes/transacoes-pendentes-detalhes.component';
-import { TransacoesPendentesComponent } from './transacoes-pendentes/transacoes-pendentes.component';
+import { ReviewTransacoesComponent } from './transasoes/review-transacoes/review-transacoes.component';
+
+import { TransacoesCreditoEditarComponent } from './transasoes/transacoes-credito/transacoes-credito-editar/transacoes-credito-editar.component';
+import { TransacoesCreditoComponent } from './transasoes/transacoes-credito/transacoes-credito.component';
+import { TransacoesDebitoComponent } from './transasoes/transacoes-debito/transacoes-debito.component';
 
 @NgModule({
   declarations: [
@@ -37,24 +29,19 @@ import { TransacoesPendentesComponent } from './transacoes-pendentes/transacoes-
     ContasPagarFormComponent,
     ContasPagarDetalhesComponent,
     ContasPagarPagamentoComponent,
-    CobrancasAvulsasListarComponent,
-    CobrancasAvulsasFormComponent,
-    CobrancasAvulsasDetalhesComponent,
-    CobrancasAvulsasPagamentoComponent,
     ContasAReceberListarComponent,
     ContasAReceberFormComponent,
     ContasAReceberDetalhesComponent,
     ContasAReceberPagamentoComponent,
     UploadOfxComponent,
     ReviewTransacoesComponent,
-    TransacoesPendentesComponent,
-    TransacoesPendentesDetalhesComponent,
-    ReceitasComponent,
-    DespesasComponent,
-    ReviewTransacoesComponent,
-    AssociarSocioComponent,
+    TransacoesCreditoComponent,
+    TransacoesDebitoComponent,
+    TransacoesCreditoEditarComponent,
   ],
   imports: [
+    CurrencyPipe,
+    DatePipe,
     CommonModule,
     RouterModule,
     FormsModule,

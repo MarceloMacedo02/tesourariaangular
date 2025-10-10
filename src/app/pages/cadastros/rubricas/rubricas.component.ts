@@ -19,6 +19,9 @@ export class RubricasComponent implements OnInit {
   filtro = '';  // Filtro de busca
   loading = false;  // Indicador de carregamento
   breadCrumbItems!: Array<{}>;  // Itens do breadcrumb
+  gruposFinanceiros: any[] = []; // Lista de grupos financeiros para o ng-select
+  editandoGrupoFinanceiro: { [key: string]: boolean } = {}; // Controle de edição inline (usando string como chave)
+  grupoFinanceiroSelecionado: { [key: string]: number | null } = {}; // Armazena seleção do grupo financeiro por rubrica (usando string como chave)
 
   constructor(private rubricasService: RubricasService) { }
 
@@ -36,18 +39,72 @@ export class RubricasComponent implements OnInit {
 
   loadRubricas(): void {
     this.loading = true;
-    this.rubricasService.getRubricas(this.currentPage, this.pageSize, this.filtro)
-      .subscribe({
-        next: (response) => {
-          this.page = response;
-          this.rubricas = response.content;
-          this.loading = false;
-        },
-        error: (error) => {
-          console.error('Erro ao carregar rubricas:', error);
-          this.loading = false;
-        }
-      });
+    
+    // Primeiro carregamos os grupos financeiros para mapear os nomes e usar no inline edit
+    this.rubricasService.getGruposFinanceiros().subscribe({
+      next: (gruposFinanceiros) => {
+        this.gruposFinanceiros = gruposFinanceiros;
+        
+        // Depois carregamos as rubricas
+        this.rubricasService.getRubricas(this.currentPage, this.pageSize, this.filtro)
+          .subscribe({
+            next: (response) => {
+              this.page = response;
+              // Enriquecer as rubricas com os nomes dos grupos financeiros
+              this.rubricas = response.content.map(rubrica => {
+                const grupo = gruposFinanceiros.find((g: any) => g.id === rubrica.grupoFinanceiroId);
+                return {
+                  ...rubrica,
+                  grupoFinanceiroNome: grupo ? grupo.nomeGrupoFinanceiro : undefined
+                };
+              });
+              
+              // Inicializar os estados de edição e seleção
+              this.editandoGrupoFinanceiro = {};
+              this.grupoFinanceiroSelecionado = {};
+              this.rubricas.forEach(rubrica => {
+                if (rubrica.id) {
+                  this.editandoGrupoFinanceiro[rubrica.id.toString()] = false;
+                  this.grupoFinanceiroSelecionado[rubrica.id.toString()] = rubrica.grupoFinanceiroId || null;
+                }
+              });
+              
+              this.loading = false;
+            },
+            error: (error) => {
+              console.error('Erro ao carregar rubricas:', error);
+              this.loading = false;
+            }
+          });
+      },
+      error: (error) => {
+        console.error('Erro ao carregar grupos financeiros:', error);
+        // Mesmo com erro nos grupos financeiros, ainda carregamos as rubricas
+        this.rubricasService.getRubricas(this.currentPage, this.pageSize, this.filtro)
+          .subscribe({
+            next: (response) => {
+              this.page = response;
+              this.rubricas = response.content;
+              
+              // Inicializar os estados de edição e seleção mesmo sem grupos financeiros
+              this.editandoGrupoFinanceiro = {};
+              this.grupoFinanceiroSelecionado = {};
+              this.rubricas.forEach(rubrica => {
+                if (rubrica.id) {
+                  this.editandoGrupoFinanceiro[rubrica.id.toString()] = false;
+                  this.grupoFinanceiroSelecionado[rubrica.id.toString()] = rubrica.grupoFinanceiroId || null;
+                }
+              });
+              
+              this.loading = false;
+            },
+            error: (error) => {
+              console.error('Erro ao carregar rubricas:', error);
+              this.loading = false;
+            }
+          });
+      }
+    });
   }
 
   onPageChange(page: number): void {
@@ -114,5 +171,67 @@ export class RubricasComponent implements OnInit {
       style: 'currency',
       currency: 'BRL'
     });
+  }
+
+  // Método para iniciar a edição do grupo financeiro
+  editarGrupoFinanceiro(rubrica: Rubrica): void {
+    if (rubrica.id) {
+      this.editandoGrupoFinanceiro[rubrica.id.toString()] = true;
+      this.grupoFinanceiroSelecionado[rubrica.id.toString()] = rubrica.grupoFinanceiroId || null;
+    }
+  }
+
+  // Método chamado quando o grupo financeiro é selecionado no ng-select
+  onGrupoFinanceiroChange(rubricaId: number | undefined, event: any): void {
+    if (rubricaId) {
+      this.grupoFinanceiroSelecionado[rubricaId.toString()] = event?.id || null;
+    }
+  }
+
+  // Método para salvar a alteração do grupo financeiro
+  salvarGrupoFinanceiro(rubrica: Rubrica): void {
+    if (!rubrica.id) return;
+    
+    const rubricaIdStr = rubrica.id.toString();
+    const novoGrupoFinanceiroId = this.grupoFinanceiroSelecionado[rubricaIdStr];
+    
+    // Atualizar a rubrica localmente
+    rubrica.grupoFinanceiroId = novoGrupoFinanceiroId || undefined;
+    
+    // Atualizar o nome do grupo financeiro na exibição
+    if (novoGrupoFinanceiroId) {
+      const grupo = this.gruposFinanceiros.find((g: any) => g.id === novoGrupoFinanceiroId);
+      rubrica.grupoFinanceiroNome = grupo ? grupo.nomeGrupoFinanceiro : undefined;
+    } else {
+      rubrica.grupoFinanceiroNome = undefined;
+    }
+    
+    // Enviar a atualização para o backend
+    this.loading = true;
+    this.rubricasService.updateRubrica(rubrica.id, rubrica).subscribe({
+      next: (updatedRubrica) => {
+        this.loading = false;
+        // Atualizar o estado de edição
+        this.editandoGrupoFinanceiro[rubricaIdStr] = false;
+        console.log('Grupo financeiro atualizado com sucesso:', updatedRubrica);
+      },
+      error: (error) => {
+        console.error('Erro ao atualizar grupo financeiro:', error);
+        this.loading = false;
+        // Reverter a alteração em caso de erro
+        const originalGrupo = this.gruposFinanceiros.find((g: any) => g.id === rubrica.grupoFinanceiroId);
+        rubrica.grupoFinanceiroNome = originalGrupo ? originalGrupo.nomeGrupoFinanceiro : undefined;
+      }
+    });
+  }
+
+  // Método para cancelar a edição
+  cancelarEdicao(rubrica: Rubrica): void {
+    if (rubrica.id) {
+      const rubricaIdStr = rubrica.id.toString();
+      this.editandoGrupoFinanceiro[rubricaIdStr] = false;
+      // Restaurar o valor original
+      this.grupoFinanceiroSelecionado[rubricaIdStr] = rubrica.grupoFinanceiroId || null;
+    }
   }
 }

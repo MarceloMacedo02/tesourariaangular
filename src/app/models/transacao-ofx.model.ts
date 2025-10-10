@@ -54,6 +54,11 @@ export interface TransacaoDto {
   lancado: 'LANCADO' | 'NAOLANCADO';
   tipoRelacionamento: 'SOCIO' | 'FORNECEDOR' | null;
   relacionadoId: number | null;
+  fornecedorId: number | null;
+  socioId: number | null;
+  socioNome: string | null;
+  statusIdentificacao: 'IDENTIFICADO' | 'PENDENTE_ASSOCIACAO' | 'PENDENTE_REVISAO';
+  caminhoComprovante: string | null;
   manualSelectionNeeded: boolean;
 }
 
@@ -69,12 +74,27 @@ export interface TransacaoPendente {
   arquivoOrigem: string;
   processado: boolean;
   lancado: 'LANCADO' | 'NAOLANCADO';
+  tipoRelacionamento: 'SOCIO' | 'FORNECEDOR' | null;
+  relacionadoId: number | null;
+  fornecedorId: number | null;
+  socioId: number | null;
+  socioNome: string | null;
+  statusIdentificacao: 'IDENTIFICADO' | 'PENDENTE_ASSOCIACAO' | 'PENDENTE_REVISAO';
+  caminhoComprovante: string | null;
+  ativo: boolean;
 }
 
 export interface TransacaoProcessingResult {
   creditTransacoes: TransacaoDto[];
   debitTransacoes: TransacaoDto[];
   transacoesPendentes: TransacaoPendente[];
+  nomeArquivo?: string;
+  totalTransacoesProcessadas?: number;
+  totalCreditos?: number;
+  totalDebitos?: number;
+  totalPendentes?: number;
+  totalDuplicadosIgnorados?: number;
+  mensagemResumo?: string;
 }
 
 export interface ReferenciasFinanceiras {

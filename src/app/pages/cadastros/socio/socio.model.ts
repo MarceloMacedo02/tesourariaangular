@@ -29,7 +29,7 @@ export interface Socio {
 export interface SocioDependente {
   id?: number;                                   // ID do dependente
   nomeSocio: string;                             // Nome do dependente
-  grau: string;                                  // Grau do dependente
+  grau?: string;                                 // Grau do dependente (opcional ao enviar nome)
 }
 
 export interface Page<T> {

@@ -102,6 +102,7 @@
                                 </label>
                                 <ng-select 
                                     [(ngModel)]="selectedGrupoFinanceiroId"
+                                    name="grupoFinanceiroId"
                                     [disabled]="loading"
                                     [clearable]="false"
                                     [searchable]="true"
@@ -148,7 +149,7 @@
                                     class="form-control" 
                                     id="dataCriacao"
                                     name="dataCriacao"
-                                    [value]="(rubrica.dataCriacao | date:'short') || ''"
+                                    [value]="rubrica.dataCriacao ? (rubrica.dataCriacao | date:'short') : ''"
                                     readonly
                                     placeholder="Data de criação">
                                 <small class="text-muted">Campo de uso exclusivo do backend</small>
